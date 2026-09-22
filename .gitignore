@@ -2,6 +2,7 @@
 /artifacts/
 /CMakeUserPresets.json
 /Makefile
+/profiles/*/Makefile
 /.cache/
 /.cortex-debug*
 /.vscode/*.log

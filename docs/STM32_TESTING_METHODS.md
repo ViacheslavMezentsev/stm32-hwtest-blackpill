@@ -109,7 +109,7 @@ t.reach("Error_Handler")
 в `mutations` JSON. После каждого теста reset/run восстанавливает штатное состояние.
 Применимость к другим версиям HAL проверять по исходникам заново.
 
-Рабочие рецепты находятся в [test_peripheral_methods.py](../Tests/board/test_peripheral_methods.py).
+Рабочие рецепты находятся в [test_peripheral_methods.py](../profiles/f411/Tests/board/test_peripheral_methods.py).
 Для ADC этот же шаблон может выбирать `hadc` + канал + ранг и проверять структуру
 на входе HAL, но реальное преобразование требует отдельного источника/эталона.
 Для SPI/UART проверка init должна дополняться передачей известных данных и проверкой
@@ -190,17 +190,17 @@ TogglePin с ODR13=0 и выбирает следующий с ODR13=1; посл
 Для сравнения `HW_RCC_ERROR` принудительно возвращает ошибку без выполнения HAL.
 Ни один сценарий не имитирует физическую неисправность HSI или аппаратный timeout.
 
-Совместный прогон: 11/11 CTest (9 аппаратных и 2 host, один из них содержит 7 unit tests).
+Совместный прогон: 11/11 CTest (9 аппаратных и 2 host, один из них содержит 9 unit tests).
 JSON/JUnit и SHA ELF находятся в `build/debug-hwtest/hwtest`, отрицательные опыты —
 `build/method-negative`. Артефакты локальные, в Git не включаются.
 
-Отрицательные примеры сохранены в [Tests/experiments](../Tests/experiments/test_api_negative.py)
+Отрицательные примеры сохранены в [profiles/f411/Tests/experiments](../profiles/f411/Tests/experiments/test_api_negative.py)
 и намеренно исключены из обычного CTest. Повторение из корня проекта после сборки:
 
 ```powershell
 New-Item -ItemType Directory -Force build/method-negative | Out-Null
 $session = Get-Content build/debug-hwtest/hwtest/session.json -Raw | ConvertFrom-Json
-$session.tests = (Resolve-Path Tests/experiments).Path
+$session.tests = (Resolve-Path profiles/f411/Tests/experiments).Path
 $session.out = Join-Path (Resolve-Path build/method-negative).Path 'runs'
 $json = $session | ConvertTo-Json
 $destination = Join-Path (Resolve-Path build/method-negative).Path 'session.json'
@@ -223,10 +223,12 @@ ctest --preset hw -R '^hw.HW_BLINK$'
 | GDB API исполнения/наблюдения/инъекций | Периферийные capabilities, MMIO read policy, debug freeze, multicore/security/cache | Последовательности ADC/SPI/DMA и собственная логика |
 | Адаптеры серверов и контракты их готовности | Probe/serial/соединения и безопасное состояние выхода | Независимые ожидаемые результаты и границы покрытия |
 
-Нынешний hwtest ещё содержит F411-зависимости: 0x08000000/512 KiB, четыре fault-handler,
-шесть breakpoint, CFSR/HFSR, конфигурацию OpenOCD, reset/run, resource lock BlackPill.
-Также CMake и runner предполагают расположение модуля в корне проекта, один ELF
-и Windows. Копирование каталога пока не равно переносимой системе для любых STM32.
+Параметры Flash, DBGMCU identity, fault-handlers/регистры, breakpoint budget,
+OpenOCD target и reset-команды теперь вынесены в profiles/<MCU>/target.toml.
+F411 проверен, F103 пока описание без аппаратной валидации. Остаются предположения:
+один непрерывный Flash-образ, Windows, расположение модуля в корне проекта и
+reset/halt → reset/run. Разделение путей модуля и проекта-потребителя ещё впереди.
+Состояние профилей и предложения для IOC: [PERIPHERAL_PLAN.md](PERIPHERAL_PLAN.md).
 
 Следующие этапы без привязки ко времени:
 

@@ -14,6 +14,18 @@ RCC/GPIO, переключение PC13, ход SysTick и обработку о
 Запуск: [HWTEST](docs/HWTEST.md). Первичная проверка: [протокол](docs/HARDWARE_VALIDATION.md).
 Методы, границы покрытия и путь к самостоятельному модулю: [практика STM32](docs/STM32_TESTING_METHODS.md).
 
+## Профили MCU
+
+- [profiles/f411](profiles/f411/README.md): действующий BlackPill, его IOC/Core/User и тесты.
+- [profiles/f103](profiles/f103/README.md): папка для BluePill; ожидается
+  `profiles/f103/stm32-hwtest-bluepill.ioc` и генерация CubeMX в эту же папку.
+
+Профиль выбирает `STM32_YML_PROFILE` через stm32-cmake-yml. Старые presets относятся
+к F411; `f103-debug` подготовлен, но до получения IOC и Core/Src/main.c не собирается.
+Для разных MCU обязательны отдельные build-каталоги. Параметры GDB/OpenOCD находятся
+в `profiles/<MCU>/target.toml`; F103 ещё не проверен на оборудовании.
+Предложения по ADC/DMA/TIM/RTC/PWR и настройки CubeMX: [план периферии](docs/PERIPHERAL_PLAN.md).
+
 ## Зависимости
 
 - Windows, Git, CMake >= 3.21 (для presets), Ninja, Mike Farah yq v4 в PATH.
@@ -113,7 +125,7 @@ define `STM32F411xE`, начальный SP `0x20020000`, reset-вектор в�
 `_lseek`: файловый ввод-вывод не реализован. Эти функции удалены сборщиком
 неиспользуемых секций и отсутствуют в конечном ELF; предупреждения не подавляются.
 Перед добавлением printf/UART потребуется реализация соответствующего retargeting.
-Сгенерированные CubeMX `Core/Src/syscalls.c` и `sysmem.c` сейчас не включены в сборку.
+Сгенерированные CubeMX `profiles/f411/Core/Src/syscalls.c` и `sysmem.c` сейчас не включены в сборку.
 
 ## Дальнейшая работа
 

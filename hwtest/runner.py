@@ -11,7 +11,8 @@ import subprocess
 import time
 import traceback
 
-from hwtest.openocd import load_stand, server_command, RESET_HALT, RESET_RUN
+from hwtest.openocd import load_stand, server_command
+from hwtest.profile import load_profile
 from hwtest.processes import FLAGS, probe_lock, stop_tree
 from hwtest.reports import CODES, write_reports
 
@@ -42,8 +43,10 @@ def run(session, test, stand_path=None, timeout=None):
         if not path:
             raise RuntimeError("Select a local stand with HWTEST_STAND or --stand")
         stand = load_stand(path)
+        profile = load_profile(session["profile"])
+        report["profile"] = profile
         with probe_lock(ROOT, stand["serial"]):
-            execute(session, test, stand, out, report, limit)
+            execute(session, test, stand, out, report, limit, profile)
     except BaseException:
         report.update(status="ERROR", error=traceback.format_exc())
     report["duration_s"] = round(time.monotonic() - started, 3)
@@ -54,7 +57,7 @@ def run(session, test, stand_path=None, timeout=None):
     return CODES[report["status"]]
 
 
-def execute(session, test, stand, out, report, timeout):
+def execute(session, test, stand, out, report, timeout, profile):
     server = client = None
     ready = False
     env = os.environ.copy()
@@ -80,19 +83,20 @@ def execute(session, test, stand, out, report, timeout):
             subprocess.run(gdb_base + ["-ex", "python import gdb, json; print(gdb.VERSION)"],
                            check=True, timeout=10, env=env, stdout=log,
                            stderr=subprocess.STDOUT, creationflags=FLAGS)
-        if not 0 < image.stat().st_size <= 512 * 1024:
-            raise ValueError("Firmware image is empty or exceeds F411 Flash")
+        if not 0 < image.stat().st_size <= profile["flash_size"]:
+            raise ValueError("Firmware image is empty or exceeds profile Flash")
         with socket.socket() as sock:
             sock.bind(("127.0.0.1", 0))
             port = sock.getsockname()[1]
         endpoint = f"127.0.0.1:{port}"
         run_data = dict(test=test, elf=str(elf), image=str(image), result=str(agent_result),
-                        endpoint=endpoint, flash=stand["flash"], reset_halt=RESET_HALT, reset_run=RESET_RUN)
+                        endpoint=endpoint, flash=stand["flash"], profile=profile,
+                        reset_halt=profile["reset_halt"], reset_run=profile["reset_run"])
         run_file = out / "run.json"
         run_file.write_text(json.dumps(run_data), encoding="utf-8")
         env["HWTEST_RUN"] = str(run_file)
         with (out / "server.log").open("wb") as server_log, (out / "gdb.log").open("wb") as gdb_log:
-            server = subprocess.Popen(server_command(stand, port), env=env, cwd=ROOT,
+            server = subprocess.Popen(server_command(stand, port, profile), env=env, cwd=ROOT,
                                       stdout=server_log, stderr=subprocess.STDOUT, creationflags=FLAGS)
             deadline = time.monotonic() + 10
             while time.monotonic() < deadline:
@@ -123,7 +127,7 @@ def execute(session, test, stand, out, report, timeout):
             if ready and report.get("teardown") != "reset_run":
                 with (out / "recovery.log").open("wb") as log:
                     subprocess.run(gdb_base + ["-ex", "set confirm off", "-ex",
-                                   "target extended-remote " + endpoint, "-ex", RESET_RUN, "-ex", "disconnect"],
+                                   "target extended-remote " + endpoint, "-ex", profile["reset_run"], "-ex", "disconnect"],
                                    check=True, timeout=10, env=env, stdout=log,
                                    stderr=subprocess.STDOUT, creationflags=FLAGS)
                 report["teardown"] = "reset_run (host recovery)"

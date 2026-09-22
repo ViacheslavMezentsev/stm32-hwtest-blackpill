@@ -8,8 +8,9 @@ class CheckFailed(AssertionError):
 
 
 class Target:
-    def __init__(self, report):
+    def __init__(self, report, profile):
         self.report = report
+        self.profile = profile
         self.owned = []
         self.stops = []
         gdb.events.stop.connect(self.on_stop)
@@ -50,8 +51,8 @@ class Target:
             dict(expression=expression, value=value, before=before, after=after))
 
     def breakpoint(self, function, temporary=False, when=None):
-        if sum(bp.is_valid() for bp in self.owned) >= 6:
-            raise RuntimeError("F411 hardware breakpoint budget exhausted")
+        if sum(bp.is_valid() for bp in self.owned) >= self.profile["breakpoint_limit"]:
+            raise RuntimeError("Profile hardware breakpoint budget exhausted")
         bp = gdb.Breakpoint(function, type=gdb.BP_HARDWARE_BREAKPOINT, temporary=temporary)
         self.owned.append(bp)
         try:
@@ -82,7 +83,7 @@ class Target:
     def boot(self, reset_command):
         self.clear()
         gdb.execute(reset_command)
-        for name in ("HardFault_Handler", "MemManage_Handler", "BusFault_Handler", "UsageFault_Handler"):
+        for name in self.profile["fault_handlers"]:
             self.breakpoint(name)
         self.reach("main")
 

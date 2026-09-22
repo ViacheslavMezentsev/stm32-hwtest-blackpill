@@ -26,12 +26,8 @@ def load_stand(path):
     return dict(data, executable=executable, speed_khz=speed, flash=policy)
 
 
-def server_command(stand, port):
-    return [stand["executable"], "-f", "interface/stlink.cfg", "-f", "target/stm32f4x.cfg",
+def server_command(stand, port, profile):
+    return [stand["executable"], "-f", "interface/stlink.cfg", "-f", profile["openocd_target"],
             "-c", f"adapter serial {stand['serial']}", "-c", f"adapter speed {stand['speed_khz']}",
             "-c", "bindto 127.0.0.1", "-c", f"gdb_port {port}",
             "-c", "tcl_port disabled", "-c", "telnet_port disabled"]
-
-
-RESET_HALT = "monitor reset halt"
-RESET_RUN = "monitor reset run"

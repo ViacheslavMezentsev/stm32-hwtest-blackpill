@@ -8,7 +8,8 @@ from unittest.mock import patch
 
 from hwtest.collect import collect, trace
 from hwtest.processes import probe_lock
-from hwtest.openocd import load_stand
+from hwtest.openocd import load_stand, server_command
+from hwtest.profile import load_profile
 from hwtest.reports import write_reports
 from hwtest.runner import ROOT, run
 
@@ -26,6 +27,25 @@ class HostTests(unittest.TestCase):
             'raise RuntimeError("must not import")\n@case("HW_ONE", labels=("gpio",))\ndef one(t): pass\n')
         cases = collect(self.directory)
         self.assertEqual(cases[0]["id"], "HW_ONE")
+
+    def test_profiles_select_distinct_mcus_and_flash_limits(self):
+        f411 = load_profile(ROOT / "profiles/f411/target.toml")
+        f103 = load_profile(ROOT / "profiles/f103/target.toml")
+        self.assertEqual((f411["flash_size"], f103["flash_size"]), (512 * 1024, 64 * 1024))
+        self.assertNotEqual(f411["identity"]["value"], f103["identity"]["value"])
+        stand = dict(executable="openocd", serial="TEST", speed_khz=1000)
+        self.assertIn("target/stm32f1x.cfg", server_command(stand, 1234, f103))
+        self.assertNotIn("target/stm32f4x.cfg", server_command(stand, 1234, f103))
+
+    def test_profile_rejects_typo_and_missing_settings(self):
+        source = (ROOT / "profiles/f411/target.toml").read_text()
+        path = self.directory / "target.toml"
+        for old, new in (("flash_size", "flash_szie"), ('schema = 1', 'schema = 2'),
+                         ('breakpoint_limit = 6', 'breakpoint_limit = 4'),
+                         ('flash_size = 524288', 'flash_size = -1')):
+            path.write_text(source.replace(old, new))
+            with self.assertRaises(ValueError):
+                load_profile(path)
 
     def test_duplicate_and_dynamic_metadata_rejected(self):
         p = self.directory / "test_bad.py"

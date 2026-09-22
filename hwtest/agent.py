@@ -17,6 +17,7 @@ from hwtest.target import Target, CheckFailed
 
 def main():
     session = json.loads(Path(os.environ["HWTEST_RUN"]).read_text(encoding="utf-8"))
+    profile = session["profile"]
     report = {"id": session["test"]["id"], "status": "ERROR", "checks": [],
               "gdb_version": gdb.VERSION, "python_version": sys.version.split()[0]}
     connected = False
@@ -32,16 +33,21 @@ def main():
         connected = True
         gdb.execute(session["reset_halt"])
         inferior = gdb.selected_inferior()
-        matches = bytes(inferior.read_memory(0x08000000, len(image))) == image
         report["flashed"] = False
+        identity = profile["identity"]
+        device_id = int.from_bytes(inferior.read_memory(identity["address"], 4), "little")
+        report["device_id"] = device_id & identity["mask"]
+        if report["device_id"] != identity["value"]:
+            raise RuntimeError("Connected MCU does not match the selected profile")
+        matches = bytes(inferior.read_memory(profile["flash_start"], len(image))) == image
         if not matches and session["flash"] == "if-different":
             gdb.execute("load")
             report["flashed"] = True
-            matches = bytes(inferior.read_memory(0x08000000, len(image))) == image
+            matches = bytes(inferior.read_memory(profile["flash_start"], len(image))) == image
         if not matches:
             raise RuntimeError("Flash does not match the selected ELF image")
         report["image_verified"] = True
-        target = Target(report)
+        target = Target(report, profile)
         target.boot(session["reset_halt"])
         spec = importlib.util.spec_from_file_location("board_test", session["test"]["path"])
         module = importlib.util.module_from_spec(spec)
@@ -56,12 +62,12 @@ def main():
         if report["status"] != "PASS" and connected:
             diagnostics = report["diagnostics"] = {}
             diagnostic_errors = {}
-            for name in ("pc", "lr", "sp", "xPSR"):
+            for name in profile["core_registers"]:
                 try:
                     diagnostics[name] = int(gdb.newest_frame().read_register(name))
                 except Exception as exc:
                     diagnostic_errors[name] = str(exc)
-            for name, address in (("CFSR", 0xE000ED28), ("HFSR", 0xE000ED2C)):
+            for name, address in profile["diagnostic_registers"].items():
                 try:
                     diagnostics[name] = int.from_bytes(
                         gdb.selected_inferior().read_memory(address, 4), "little")

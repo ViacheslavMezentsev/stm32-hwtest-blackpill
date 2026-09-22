@@ -7,6 +7,10 @@ UART/VCOM не нужен. Прошивка не содержит тестово
 GDB 14.2.90.20240526-git с Python 3.11.4 и OpenOCD 0.12.0.
 Host Python >= 3.11 требуется для стандартного TOML-парсера.
 
+Код и тесты BlackPill находятся в profiles/f411. Профиль F103 пока подготовлен
+без IOC/прошивки; его аппаратная поддержка не подтверждена. См. [профили](PERIPHERAL_PLAN.md).
+HWTEST получает target.toml через session.json и проверяет DBGMCU ID до прошивки.
+
 Это реализация Level 1 из архитектурного документа: явное подключение после
 `stm32_yml_setup_project`. Мультиплатформенность, другие пробники, multi-node,
 JUnit-сервис CI и автоматический SKIP не заявлены. Отсутствие выбранного стенда
@@ -64,13 +68,14 @@ python -B hwtest/cli.py run --session build/debug-hwtest/hwtest/session.json --t
 | hwtest/collect.py | AST-сбор `@case` без импорта тестов; сверка ID требований |
 | hwtest/runner.py | снимок ELF, GDB/OpenOCD, сроки ожидания, восстановление |
 | hwtest/processes.py | блокировка пробника и завершение созданных деревьев процессов |
-| hwtest/openocd.py | TOML стенда, аргументы сервера, диалект reset |
+| hwtest/openocd.py | TOML стенда, аргументы сервера по профилю |
+| hwtest/profile.py | проверка схемы target.toml |
 | hwtest/agent.py | подключение, проверка/загрузка образа, запуск теста, диагностика |
 | hwtest/target.py | breakpoint events, проверки, чтение значений и fault injection |
 | hwtest/reports.py | JSON/JUnit и различение FAIL/ERROR |
-| Tests/board/test_blackpill.py | пять базовых сценариев поведения прошивки |
-| Tests/board/test_peripheral_methods.py | четыре сценария проверки контрактов и инъекций |
-| Tests/requirements.md | проверяемые требования с такими же ID |
+| profiles/f411/Tests/board/test_blackpill.py | пять базовых сценариев поведения прошивки |
+| profiles/f411/Tests/board/test_peripheral_methods.py | четыре сценария проверки контрактов и инъекций |
+| profiles/f411/Tests/requirements.md | проверяемые требования с такими же ID |
 
 ## Жизненный цикл и отчёты
 
@@ -121,7 +126,7 @@ GDB API вызывается только из главного потока. П
 
 ## Проверка реализации
 
-- `check-hw`: 11/11 PASS — девять аппаратных тестов, трассируемость и набор из семи host-тестов.
+- `check-hw`: 11/11 PASS — девять аппаратных тестов, трассируемость и набор из девяти host-тестов.
 - `ctest --preset hw` с jobs=4: аппаратные проверки не пересекаются.
 - Намеренно неверное ожидание: FAIL/код 1, JUnit failure.
 - Перевод PC на fault-handler вместо ожидаемого loop: FAIL, причина остановки и регистры сохранены.

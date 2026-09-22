@@ -18,7 +18,8 @@
         "STM32_TOOLCHAIN_PATH": "$penv{USERPROFILE}/xpack-arm-none-eabi-gcc-13.3.1-1.1",
         "CMAKE_EXPORT_COMPILE_COMMANDS": true,
         "CMAKE_C_FLAGS_DEBUG": "-Og -g3",
-        "CMAKE_CXX_FLAGS_DEBUG": "-Og -g3"
+        "CMAKE_CXX_FLAGS_DEBUG": "-Og -g3",
+        "STM32_YML_PROFILE": "f411"
       }
     },
     {
@@ -58,6 +59,15 @@
       "cacheVariables": {
         "ENABLE_HW_TESTING": true
       }
+    },
+    {
+      "name": "f103-debug",
+      "inherits": "base",
+      "displayName": "BluePill F103 Debug (awaiting CubeMX)",
+      "cacheVariables": {
+        "STM32_YML_PROFILE": "f103",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
     }
   ],
   "buildPresets": [
@@ -87,6 +97,10 @@
       "targets": [
         "check-hw"
       ]
+    },
+    {
+      "name": "f103-debug",
+      "configurePreset": "f103-debug"
     }
   ],
   "testPresets": [
