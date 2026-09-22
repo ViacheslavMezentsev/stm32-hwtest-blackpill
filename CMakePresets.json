@@ -1,0 +1,73 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "environment": {
+        "CMAKE_USER_HOME": "$penv{USERPROFILE}"
+      },
+      "cacheVariables": {
+        "STM32_TOOLCHAIN_PATH": "$penv{USERPROFILE}/xpack-arm-none-eabi-gcc-13.3.1-1.1",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_C_FLAGS_DEBUG": "-Og -g3",
+        "CMAKE_CXX_FLAGS_DEBUG": "-Og -g3"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": "base",
+      "displayName": "BlackPill Debug (GCC 13)",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "base",
+      "displayName": "BlackPill Release (GCC 13)",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "debug-gcc14",
+      "inherits": "debug",
+      "cacheVariables": {
+        "STM32_TOOLCHAIN_PATH": "$penv{USERPROFILE}/xpack-arm-none-eabi-gcc-14.2.1-1.1"
+      }
+    },
+    {
+      "name": "debug-gcc15",
+      "inherits": "debug",
+      "cacheVariables": {
+        "STM32_TOOLCHAIN_PATH": "$penv{USERPROFILE}/xpack-arm-none-eabi-gcc-15.2.1-1.1"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "debug-gcc14",
+      "configurePreset": "debug-gcc14"
+    },
+    {
+      "name": "debug-gcc15",
+      "configurePreset": "debug-gcc15"
+    }
+  ]
+}

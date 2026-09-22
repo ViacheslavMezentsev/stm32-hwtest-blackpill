@@ -1,0 +1,8 @@
+{
+  "cmake.useCMakePresets": "always",
+  "cmake.configureOnOpen": false,
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "cortex-debug.gdbPath.windows": "${config:toolchain}/bin/arm-none-eabi-gdb.exe",
+  "cortex-debug.openocdPath.windows": "openocd.exe",
+  "toolchain": "${env:USERPROFILE}/xpack-arm-none-eabi-gcc-13.3.1-1.1"
+}

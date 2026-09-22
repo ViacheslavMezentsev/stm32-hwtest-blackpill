@@ -1,0 +1,12 @@
+{
+  "configurations": [
+    {
+      "name": "STM32F411",
+      "configurationProvider": "ms-vscode.cmake-tools",
+      "intelliSenseMode": "gcc-arm",
+      "cStandard": "c17",
+      "cppStandard": "c++17"
+    }
+  ],
+  "version": 4
+}
