@@ -34,15 +34,36 @@ class Target:
         value.fetch_lazy()
         return int(value)
 
-    def breakpoint(self, function, temporary=False):
+    def fields(self, expression, expected):
+        """Compare scalar fields separately; expected values are C expressions or integers."""
+        for field, reference in expected.items():
+            actual = self.value(f"({expression}).{field}")
+            wanted = self.value(reference) if isinstance(reference, str) else reference
+            self.check(f"{expression}.{field}", actual, wanted)
+
+    def set_value(self, expression, value):
+        """Explicit, logged mutation; test authors must check HAL preconditions first."""
+        before = self.value(expression)
+        gdb.execute(f"set variable {expression} = {value}")
+        after = self.value(expression)
+        self.report.setdefault("mutations", []).append(
+            dict(expression=expression, value=value, before=before, after=after))
+
+    def breakpoint(self, function, temporary=False, when=None):
         if sum(bp.is_valid() for bp in self.owned) >= 6:
             raise RuntimeError("F411 hardware breakpoint budget exhausted")
         bp = gdb.Breakpoint(function, type=gdb.BP_HARDWARE_BREAKPOINT, temporary=temporary)
         self.owned.append(bp)
+        try:
+            if when is not None:
+                bp.condition = when
+        except BaseException:
+            bp.delete()
+            raise
         return bp
 
-    def reach(self, function):
-        bp = self.breakpoint(function, temporary=True)
+    def reach(self, function, when=None):
+        bp = self.breakpoint(function, temporary=True, when=when)
         number = bp.number
         self.stops.clear()
         try:
@@ -51,6 +72,9 @@ class Target:
             self.report.setdefault("stops", []).append(stop)
             self.check(f"breakpoint reached: {function}", number in stop.get("breakpoints", []), True)
             self.check(f"frame: {function}", gdb.newest_frame().name(), function)
+            if when is not None:
+                # GDB can stop after a condition evaluation error; never accept that silently.
+                self.check(f"condition: {when}", bool(self.value(when)), True)
         finally:
             if bp.is_valid():
                 bp.delete()
@@ -63,7 +87,10 @@ class Target:
         self.reach("main")
 
     def force_return(self, expression):
+        function = gdb.newest_frame().name()
         gdb.execute("return " + expression)
+        self.report.setdefault("mutations", []).append(
+            dict(operation="force_return", function=function, value=expression))
 
     def clear(self):
         for bp in self.owned:

@@ -68,7 +68,8 @@ python -B hwtest/cli.py run --session build/debug-hwtest/hwtest/session.json --t
 | hwtest/agent.py | подключение, проверка/загрузка образа, запуск теста, диагностика |
 | hwtest/target.py | breakpoint events, проверки, чтение значений и fault injection |
 | hwtest/reports.py | JSON/JUnit и различение FAIL/ERROR |
-| Tests/board/test_blackpill.py | пять сценариев поведения прошивки |
+| Tests/board/test_blackpill.py | пять базовых сценариев поведения прошивки |
+| Tests/board/test_peripheral_methods.py | четыре сценария проверки контрактов и инъекций |
 | Tests/requirements.md | проверяемые требования с такими же ID |
 
 ## Жизненный цикл и отчёты
@@ -120,7 +121,7 @@ GDB API вызывается только из главного потока. П
 
 ## Проверка реализации
 
-- `check-hw`: 7/7 PASS — пять аппаратных тестов, трассируемость и набор из семи host-тестов.
+- `check-hw`: 11/11 PASS — девять аппаратных тестов, трассируемость и набор из семи host-тестов.
 - `ctest --preset hw` с jobs=4: аппаратные проверки не пересекаются.
 - Намеренно неверное ожидание: FAIL/код 1, JUnit failure.
 - Перевод PC на fault-handler вместо ожидаемого loop: FAIL, причина остановки и регистры сохранены.
@@ -135,3 +136,6 @@ Fault-handler для негативного сценария достигалс�
 это проверка классификации остановки, не испытание аппаратного механизма HardFault.
 Тесты GPIO читают ODR и HAL tick; электрические уровни, физическое свечение LED
 и точность частоты осциллятора этой проверкой не измеряются.
+
+Новые методы `reach(when=...)`, `fields`, `set_value`, результаты опытов
+и ограничения переносимости описаны в [STM32_TESTING_METHODS.md](STM32_TESTING_METHODS.md).
