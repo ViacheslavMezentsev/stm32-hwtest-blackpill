@@ -1,0 +1,13 @@
+/build/
+/artifacts/
+/CMakeUserPresets.json
+/Makefile
+/.cache/
+/.cortex-debug*
+/.vscode/*.log
+/.vscode/browse.vc.db*
+/Tests/stands/*.local.toml
+__pycache__/
+*.pyc
+*.bak
+.mxproject
