@@ -9,7 +9,6 @@ from pathlib import Path
 import shutil
 import subprocess
 import socket
-import tempfile
 import time
 
 
@@ -42,9 +41,11 @@ def main():
     import msvcrt
 
     lock_name = hashlib.sha256(args.serial.encode()).hexdigest()
-    lock = open(Path(tempfile.gettempdir()) / f"blackpill-smoke-{lock_name}.lock", "a+b")
+    lock_dir = ROOT / "build" / "probe-locks"
+    lock_dir.mkdir(parents=True, exist_ok=True)
+    lock = open(lock_dir / f"{lock_name}.lock", "a+b")
     lock.seek(0)
-    if not lock.read(1):
+    if os.fstat(lock.fileno()).st_size == 0:
         lock.write(b"0")
         lock.flush()
     lock.seek(0)

@@ -50,6 +50,14 @@
       "cacheVariables": {
         "STM32_TOOLCHAIN_PATH": "$penv{USERPROFILE}/xpack-arm-none-eabi-gcc-15.2.1-1.1"
       }
+    },
+    {
+      "name": "debug-hwtest",
+      "inherits": "debug",
+      "displayName": "BlackPill Debug + HW tests",
+      "cacheVariables": {
+        "ENABLE_HW_TESTING": true
+      }
     }
   ],
   "buildPresets": [
@@ -68,6 +76,41 @@
     {
       "name": "debug-gcc15",
       "configurePreset": "debug-gcc15"
+    },
+    {
+      "name": "debug-hwtest",
+      "configurePreset": "debug-hwtest"
+    },
+    {
+      "name": "check-hw",
+      "configurePreset": "debug-hwtest",
+      "targets": [
+        "check-hw"
+      ]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "hw",
+      "configurePreset": "debug-hwtest",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 4
+      }
+    },
+    {
+      "name": "host",
+      "configurePreset": "debug-hwtest",
+      "filter": {
+        "include": {
+          "label": "host"
+        }
+      },
+      "output": {
+        "outputOnFailure": true
+      }
     }
   ]
 }

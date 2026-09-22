@@ -27,3 +27,10 @@ project(${PROJECT_NAME} LANGUAGES ${PROJECT_LANGUAGES})
 
 # Вызываем основную функцию настройки.
 stm32_yml_setup_project(${PROJECT_NAME})
+
+option(ENABLE_HW_TESTING "Enable BlackPill hardware tests" OFF)
+if(ENABLE_HW_TESTING)
+    enable_testing()
+    include(hwtest/cmake/HwTest.cmake)
+    hwtest_attach(${PROJECT_NAME})
+endif()

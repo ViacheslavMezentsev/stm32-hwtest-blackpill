@@ -9,8 +9,9 @@
 500 мс (полный период — около 1 с), использует HSI 16 МГц, APB1/APB2 8 МГц.
 Semihosting не требуется. Аппаратный smoke-тест подтвердил запуск, настройки
 RCC/GPIO, переключение PC13, ход SysTick и обработку ошибки HAL.
-UART/VCOM и полноценная интеграция hwtest/CTest пока не реализованы.
-Команды и результаты: [аппаратная проверка](docs/HARDWARE_VALIDATION.md).
+Реализована минимальная интеграция hwtest/CTest: пять отдельных аппаратных тестов,
+прошивка при несовпадении образа, логи и JSON/JUnit. UART/VCOM пока не используется.
+Запуск: [HWTEST](docs/HWTEST.md). Первичная проверка: [протокол](docs/HARDWARE_VALIDATION.md).
 
 ## Зависимости
 
@@ -76,6 +77,22 @@ GDB по умолчанию берётся из GCC 13; для другого р
 настройку `toolchain` VS Code. OpenOCD проверен через CLI; запуск из интерфейса VS Code ещё не проверен.
 VCOM не используется для SWD-прошивки и не настроен в прошивке.
 
+## Аппаратные тесты
+
+Скопируйте `Tests/stands/blackpill.example.toml` в `blackpill.local.toml` в том же
+каталоге и укажите серийный номер ST-Link. Локальный файл игнорируется Git.
+Текущий подключённый стенд уже настроен локально.
+
+```powershell
+cmake --preset debug-hwtest
+cmake --build --preset check-hw
+```
+
+Вторая команда собирает ELF и запускает CTest. Режим `flash = "if-different"`
+разрешает прошивку выбранного ELF при несовпадении Flash. Для проверки без записи
+используйте `flash = "verify-only"`. Отчёты: `build/debug-hwtest/hwtest/`.
+Только проверки инфраструктуры без платы: `ctest --preset host`.
+
 ## Проверка сборки
 
 Проверено: CMake 4.4.3, Ninja 1.13.2, yq 4.53.6, Cube F4 V1.28.3.
@@ -102,4 +119,4 @@ define `STM32F411xE`, начальный SP `0x20020000`, reset-вектор в�
 - Архитектура: [docs/HWTEST_ARCHITECTURE.md](docs/HWTEST_ARCHITECTURE.md).
 - План: [TODO.md](TODO.md); журнал: [CHANGELOG.md](CHANGELOG.md).
 - Правила: [AGENTS.md](AGENTS.md).
-- До реализации GDB-Python изучить `../buck-boost-course/99_BOARD_TEST` и `Tests`.
+- Перед реализацией GDB-Python изучены исходный BOARD_TEST и раздел 23.3 руководства GDB.
