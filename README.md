@@ -7,20 +7,21 @@
 
 Сборка восстановлена и проверена на плате через SWD. Прошивка переключает PC13 каждые
 500 мс (полный период — около 1 с), использует HSI 16 МГц, HCLK 8 МГц, APB1 8 МГц / APB2 2 МГц.
+Приложение также выполняет ADC temperature/VREFINT через DMA, считает TIM2 IRQ и RTC alarm.
 Semihosting не требуется. Аппаратный smoke-тест подтвердил запуск, настройки
 RCC/GPIO, переключение PC13, ход SysTick и обработку ошибки HAL.
-Реализована минимальная интеграция hwtest/CTest: двенадцать отдельных аппаратных тестов,
+Реализована минимальная интеграция hwtest/CTest: семнадцать отдельных аппаратных тестов,
 прошивка при несовпадении образа, логи и JSON/JUnit. UART/VCOM пока не используется.
 Запуск: [HWTEST](docs/HWTEST.md). Первичная проверка: [протокол](docs/HARDWARE_VALIDATION.md).
 Методы, границы покрытия и путь к самостоятельному модулю: [практика STM32](docs/STM32_TESTING_METHODS.md).
 
 ## Профили MCU
 
-- [profiles/f411](profiles/f411/README.md): действующий BlackPill, его IOC/Core/User и тесты.
+- [profiles/f411](profiles/f411/README.md): действующий BlackPill, его IOC/Core/Platform и тесты.
 - [profiles/f103](profiles/f103/README.md): BluePill с пользовательским IOC и сгенерированной периферией; сборка проверена, аппаратная проверка ожидается.
 
 Профиль выбирает `STM32_YML_PROFILE` через stm32-cmake-yml. Старые presets относятся
-к F411; `f103-debug` собирает F103; его прикладной цикл пока пуст.
+к F411; `f103-debug` собирает F103; оба профиля используют общий прикладной цикл из `User/`.
 Для разных MCU обязательны отдельные build-каталоги. Параметры GDB/OpenOCD находятся
 в `profiles/<MCU>/target.toml`; F103 ещё не проверен на оборудовании.
 Предложения по ADC/DMA/TIM/RTC/PWR и настройки CubeMX: [план периферии](docs/PERIPHERAL_PLAN.md).
@@ -132,3 +133,14 @@ define `STM32F411xE`, начальный SP `0x20020000`, reset-вектор в�
 - План: [TODO.md](TODO.md); журнал: [CHANGELOG.md](CHANGELOG.md).
 - Правила: [AGENTS.md](AGENTS.md).
 - Перед реализацией GDB-Python изучены исходный BOARD_TEST и раздел 23.3 руководства GDB.
+
+## SVD и руководство GDB
+
+`docs/gdb.pdf` хранится в репозитории; Python API описан в разделе 23.3.
+Это руководство GDB 19, доступность API сверяется с реально установленным GDB.
+В `.vscode/launch.json` каждая конфигурация Cortex-Debug имеет свой `svdFile`:
+BlackPill — `resources/STM32F411.svd`, BluePill — `resources/STM32F103.svd`.
+Ручное комментирование в settings.json не требуется. Перед запуском выберите
+соответствующий CMake preset (`debug` / `f103-debug`): ELF по-прежнему берётся
+из активной цели CMake. Отображение регистров в UI VS Code отдельно не проверялось.
+SVD описывает регистры семейства; наличие блока на конкретном MCU сверяется с reference manual.

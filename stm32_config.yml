@@ -27,14 +27,14 @@ profiles:
     project_name: stm32-hwtest-blackpill
     mcu: STM32F411CEU6
     cubefw_package: V1.28.3
-    sources: [profiles/f411/Core, profiles/f411/User, profiles/f411/Core/Src/system_stm32f4xx.c, profiles/f411/startup_stm32f411xe.s]
-    include_directories: [profiles/f411/Core/Inc]
+    sources: [profiles/f411/Core, User, profiles/f411/Platform, profiles/f411/Core/Src/system_stm32f4xx.c, profiles/f411/startup_stm32f411xe.s]
+    include_directories: [profiles/f411/Core/Inc, User/Inc]
     linker_script: profiles/f411/STM32F411xx_FLASH.ld
   f103:
     ioc_file: profiles/f103/stm32-hwtest-bluepill.ioc
     project_name: stm32-hwtest-bluepill
     mcu: STM32F103C8T6
     cubefw_package: V1.8.7
-    sources: [profiles/f103/Core, profiles/f103/Core/Src/system_stm32f1xx.c, profiles/f103/startup_stm32f103xb.s]
-    include_directories: [profiles/f103/Core/Inc]
+    sources: [profiles/f103/Core, User, profiles/f103/Platform, profiles/f103/Core/Src/system_stm32f1xx.c, profiles/f103/startup_stm32f103xb.s]
+    include_directories: [profiles/f103/Core/Inc, User/Inc]
     linker_script: profiles/f103/STM32F103xx_FLASH.ld

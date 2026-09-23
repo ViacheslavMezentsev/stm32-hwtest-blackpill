@@ -4,7 +4,7 @@ from hwtest import case
 
 @case("HW_ADC_DMA_INIT", labels=("adc", "dma", "init"))
 def adc_dma_init(t):
-    t.reach("loop")
+    t.reach("setup")
     t.fields("hadc1", {"Instance": "ADC1", "Init.NbrOfConversion": 2,
                        "Init.ContinuousConvMode": 0, "Init.ScanConvMode": 1,
                        "Init.ClockPrescaler": "ADC_CLOCK_SYNC_PCLK_DIV2"})
@@ -25,7 +25,7 @@ def adc_dma_init(t):
 
 @case("HW_TIM2_INIT", labels=("tim", "init"))
 def tim2_init(t):
-    t.reach("loop")
+    t.reach("setup")
     t.check("TIM2 prescaler", t.value("TIM2->PSC"), 7999)
     t.check("TIM2 period", t.value("TIM2->ARR"), 99)
     t.check("TIM2 not started", t.value("TIM2->CR1") & 1, 0)
@@ -33,7 +33,7 @@ def tim2_init(t):
 
 @case("HW_RTC_INIT", labels=("rtc", "init"))
 def rtc_init(t):
-    t.reach("loop")
+    t.reach("setup")
     t.check("RTC source LSI", (t.value("RCC->BDCR") >> 8) & 3, 2)
     t.check("RTC clock enabled", (t.value("RCC->BDCR") >> 15) & 1, 1)
     t.check("LSI ready", (t.value("RCC->CSR") >> 1) & 1, 1)

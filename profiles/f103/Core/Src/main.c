@@ -27,6 +27,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "app.h"
 
 /* USER CODE END Includes */
 
@@ -79,6 +80,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
+  init();
 
   /* USER CODE END Init */
 
@@ -97,6 +99,7 @@ int main(void)
   MX_RTC_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  setup();
 
   /* USER CODE END 2 */
 
@@ -107,6 +110,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    loop();
   }
   /* USER CODE END 3 */
 }

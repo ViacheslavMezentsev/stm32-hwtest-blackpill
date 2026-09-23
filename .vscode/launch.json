@@ -15,7 +15,8 @@
         "target/stm32f4x.cfg"
       ],
       "preLaunchTask": "CMake: build",
-      "runToEntryPoint": "main"
+      "runToEntryPoint": "main",
+      "svdFile": "${workspaceFolder}/resources/STM32F411.svd"
     },
     {
       "name": "BluePill F103 / ST-Link / OpenOCD",
@@ -31,7 +32,8 @@
         "target/stm32f1x.cfg"
       ],
       "preLaunchTask": "CMake: build",
-      "runToEntryPoint": "main"
+      "runToEntryPoint": "main",
+      "svdFile": "${workspaceFolder}/resources/STM32F103.svd"
     }
   ]
 }

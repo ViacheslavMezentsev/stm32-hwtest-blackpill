@@ -63,7 +63,7 @@
     {
       "name": "f103-debug",
       "inherits": "base",
-      "displayName": "BluePill F103 Debug (awaiting CubeMX)",
+      "displayName": "BluePill F103 Debug (GCC 13)",
       "cacheVariables": {
         "STM32_YML_PROFILE": "f103",
         "CMAKE_BUILD_TYPE": "Debug"
