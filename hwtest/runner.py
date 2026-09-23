@@ -17,6 +17,7 @@ from hwtest.processes import FLAGS, probe_lock, stop_tree
 from hwtest.reports import CODES, write_reports
 from hwtest.compatibility import runtime_manifest
 from hwtest.build_manifest import load_verified
+from hwtest.contracts import select_contracts
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -89,6 +90,25 @@ def execute(session, test, stand, out, report, timeout, profile):
             manifest = load_verified(session["build_manifest"], report["elf_sha256"], session["profile"])
             report["build_manifest"] = manifest
             (out / "build-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+        names = test.get("contracts", [])
+        report["contracts"] = dict(schema=1, requested=names, status="ERROR" if names else "NOT_REQUESTED")
+        selected = select_contracts(Path(session["profile"]).parent / "Tests/contracts.json",
+                                    names, report.get("build_manifest"))
+        if names:
+            report["contracts"].update(status="ERROR", selected=selected)
+            request = out / "contract-request.json"
+            result = out / "contract-result.json"
+            request.write_text(json.dumps(dict(elf=str(elf), result=str(result), selected=selected)), encoding="utf-8")
+            env["HWTEST_CONTRACT_REQUEST"] = str(request)
+            with (out / "contract-preflight.log").open("wb") as log:
+                preflight = subprocess.run(gdb_base + [str(elf), "-x", str(ROOT / "hwtest/contract_preflight.py")],
+                    timeout=15, env=env, stdout=log, stderr=subprocess.STDOUT, creationflags=FLAGS)
+            evidence = json.loads(result.read_text(encoding="utf-8"))
+            report["contracts"].update(evidence)
+            if (preflight.returncode != 0 or evidence.get("status") != "PASS"
+                    or evidence.get("elf_sha256") != report["elf_sha256"]):
+                report["contracts"]["status"] = "ERROR"
+                raise RuntimeError("ELF contract preflight failed; see contracts and contract-preflight.log")
         with (out / "prepare.log").open("wb") as log:
             subprocess.run([str(gdb.parent / "arm-none-eabi-objcopy.exe"), "-O", "binary",
                             str(elf), str(image)], check=True, timeout=15, env=env,

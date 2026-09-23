@@ -25,10 +25,16 @@ def collect(directory):
                 if identifier in identifiers:
                     raise ValueError(f"Duplicate case ID: {identifier}")
                 options = {kw.arg: ast.literal_eval(kw.value) for kw in decorator.keywords}
-                if set(options) - {"timeout_s", "labels"}:
+                if set(options) - {"timeout_s", "labels", "contracts"}:
                     raise ValueError(f"Unsupported case metadata: {identifier}")
                 timeout = options.get("timeout_s", 20)
                 labels = options.get("labels", ())
+                contracts = options.get("contracts", ())
+                if not isinstance(contracts, (tuple, list)) or any(
+                        not isinstance(x, str) or not re.fullmatch(r"[a-z][a-z0-9_]+", x) for x in contracts):
+                    raise ValueError(f"Invalid contracts: {identifier}")
+                if len(contracts) != len(set(contracts)):
+                    raise ValueError(f"Duplicate contracts: {identifier}")
                 if type(timeout) is not int or not 1 <= timeout <= 300:
                     raise ValueError(f"Invalid timeout: {identifier}")
                 if not isinstance(labels, (tuple, list)) or any(
@@ -36,7 +42,7 @@ def collect(directory):
                     raise ValueError(f"Invalid labels: {identifier}")
                 identifiers.add(identifier)
                 tests.append(dict(id=identifier, path=str(path.resolve()), function=node.name,
-                                  timeout_s=timeout, labels=list(labels)))
+                                  timeout_s=timeout, labels=list(labels), contracts=list(contracts)))
     if not tests:
         raise ValueError("No hardware cases found")
     return tests

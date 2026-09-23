@@ -23,6 +23,6 @@ def blink(t):
     scenarios.blink(t, EXPECTED)
 
 
-@case("HW_RCC_ERROR", labels=("rcc", "injection"))
+@case("HW_RCC_ERROR", labels=("rcc", "injection"), contracts=("rcc_error",))
 def rcc_error(t):
     scenarios.rcc_error(t, EXPECTED)

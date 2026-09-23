@@ -7,6 +7,12 @@
 
 ### Added
 
+- Offline ELF/HAL preflight до запуска GDB-сервера: литеральные @case contracts,
+  профильный JSON, сигнатуры/аргументы/поля/enum и reviewed-source hash для NULL.
+  F103: семь сценариев, 80 проверок; шесть отрицательных вариантов в реальном GDB.
+  Полная регрессия BluePill/J-Link 24/24 CTest; host-набор — 27 unittest.
+  HAL_CONTRACTS.md описывает применение, C/C++ type context и границы доказательства.
+
 - Build manifest schema 1 после линковки: ELF/profile SHA-256, зависимости Ninja,
   исходники/объекты, версии и хеши Cube/HAL/CMSIS/компилятора, выбранные compile flags.
   Раннер проверяет привязку до запуска сервера и сохраняет снимок в JSON/JUnit.
