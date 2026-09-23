@@ -144,7 +144,8 @@ define `STM32F411xE`, начальный SP `0x20020000`, reset-вектор в�
 
 ## Дальнейшая работа
 
-- Архитектура: [docs/HWTEST_ARCHITECTURE.md](docs/HWTEST_ARCHITECTURE.md).
+- Фактическая архитектура: [HWTEST_ARCHITECTURE_V2.md](docs/HWTEST_ARCHITECTURE_V2.md).
+- Исходный замысел: [HWTEST_ARCHITECTURE.md](docs/HWTEST_ARCHITECTURE.md).
 - План: [TODO.md](TODO.md); журнал: [CHANGELOG.md](CHANGELOG.md).
 - Правила: [AGENTS.md](AGENTS.md).
 - Перед реализацией GDB-Python изучены исходный BOARD_TEST и раздел 23.3 руководства GDB.
