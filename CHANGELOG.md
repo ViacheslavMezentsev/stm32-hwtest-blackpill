@@ -7,6 +7,12 @@
 
 ### Added
 
+- J-Link GDB Server backend и пример локального стенда, явный USB serial/device,
+  аппаратные точки без Flash breakpoints, команды setup/reset/finish и runtime firmware.
+- BluePill/J-Link: 24/24 CTest PASS, запись и возврат образа, verify-only отказ,
+  timeout/recovery. Commander после выхода подтвердил Sleep и продвижение uwTick.
+- JLINK.md: запуск и анализ предоставленных VS Code/Commander примеров.
+
 - Backend ST-LINK GDB Server: отдельный локальный TOML и команды запуска/reset/finish,
   persistent recovery, CubeProgrammer Flash verify и runtime version metadata.
 - GDB_BACKENDS.md: настройка и сравнение серверов; общие сценарии BluePill дали

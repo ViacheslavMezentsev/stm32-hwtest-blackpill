@@ -98,10 +98,12 @@ def execute(session, test, stand, out, report, timeout, profile):
             port = sock.getsockname()[1]
         endpoint = f"127.0.0.1:{port}"
         backend = server_spec(stand, port, profile, out)
-        report["backend_commands"] = dict(reset_halt=backend["reset_halt"], finish=backend["finish"])
+        report["backend_commands"] = dict(reset_halt=backend["reset_halt"], finish=backend["finish"],
+                                          setup=backend.get("setup", []))
         run_data = dict(test=test, elf=str(elf), image=str(image), result=str(agent_result),
                         endpoint=endpoint, flash=stand["flash"], profile=profile,
-                        reset_halt=backend["reset_halt"], finish=backend["finish"])
+                        reset_halt=backend["reset_halt"], finish=backend["finish"],
+                        setup=backend.get("setup", []))
         run_file = out / "run.json"
         run_file.write_text(json.dumps(run_data), encoding="utf-8")
         env["HWTEST_RUN"] = str(run_file)

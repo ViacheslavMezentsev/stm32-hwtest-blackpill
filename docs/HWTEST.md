@@ -3,7 +3,7 @@
 ## Границы реализации
 
 Поддерживается Windows и один выбранный SWD-стенд: F411/F103 через OpenOCD,
-F103 также проверен через ST-LINK GDB Server 7.14.0.
+F103 также проверен через ST-LINK GDB Server 7.14.0 и J-Link GDB Server V8.32.
 [Выбор сервера и различия](GDB_BACKENDS.md).
 UART/VCOM не нужен. Прошивка не содержит тестового кода. Проверен Debug на GCC 13.3.1,
 GDB 14.2.90.20240526-git с Python 3.11.4 и OpenOCD 0.12.0.
@@ -68,7 +68,7 @@ python -B hwtest/cli.py run --session build/debug-hwtest/hwtest/session.json --t
 | hwtest/cmake/HwTest.cmake | session.json, регистрация CTest, цель check-hw |
 | hwtest/collect.py | AST-сбор `@case` без импорта тестов; сверка ID требований |
 | hwtest/runner.py | снимок ELF, GDB/backend, сроки ожидания, восстановление |
-| hwtest/backends.py | запуск, готовность, reset и finish OpenOCD/ST-LINK |
+| hwtest/backends.py | запуск, готовность, reset и finish OpenOCD/ST-LINK/J-Link |
 | hwtest/processes.py | блокировка отладчика и завершение созданных деревьев процессов |
 | hwtest/openocd.py | TOML стенда, аргументы сервера по профилю |
 | hwtest/profile.py | проверка схемы target.toml |

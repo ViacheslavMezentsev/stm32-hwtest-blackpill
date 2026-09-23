@@ -36,6 +36,8 @@ def main():
         report["connection_attempted"] = True
         gdb.execute("target extended-remote " + session["endpoint"])
         connected = True
+        for command in session.get("setup", []):
+            gdb.execute(command)
         gdb.execute(session["reset_halt"])
         inferior = gdb.selected_inferior()
         report["flashed"] = False

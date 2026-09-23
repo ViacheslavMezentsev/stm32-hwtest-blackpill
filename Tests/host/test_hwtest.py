@@ -109,6 +109,35 @@ class HostTests(unittest.TestCase):
         self.assertEqual(oc["finish"], ["monitor reset run", "disconnect"])
         self.assertIn(profile["openocd_target"], oc["command"])
 
+    def test_jlink_requires_serial_and_known_device_mapping(self):
+        path = self.directory / "stand.toml"
+        with patch("hwtest.backends.shutil.which", return_value="JLinkGDBServerCL.exe"):
+            for serial in ("0", "1", "nickname", "001234"):
+                path.write_text('[probe]\nbackend="jlink"\nserial="' + serial + '"\n')
+                with self.assertRaisesRegex(ValueError, "explicit decimal"):
+                    load_backend_stand(path)
+            path.write_text('[probe]\nbackend="jlink"\nserial="123456789"\n')
+            stand = load_backend_stand(path)
+        profile = load_profile(ROOT / "profiles/f103/target.toml")
+        spec = server_spec(stand, 1234, profile, self.directory)
+        self.assertIn("STM32F103C8", spec["command"])
+        self.assertIn("-nosinglerun", spec["command"])
+        self.assertNotIn("-singlerun", spec["command"])
+        self.assertEqual(spec["setup"], ["monitor flash breakpoints = 0"])
+        self.assertEqual(spec["finish"], ["monitor reset", "monitor go", "disconnect"])
+        with self.assertRaisesRegex(ValueError, "mapping not validated"):
+            server_spec(stand, 1234, dict(profile, mcu="STM32H503CBT6"), self.directory)
+
+    def test_jlink_runtime_version_and_firmware_are_separate(self):
+        report = runtime_manifest({"backend": "jlink"},
+            "SEGGER J-Link GDB Server V8.32 Command Line Version\n"
+            "Firmware: J-Link V9 compiled May  7 2021 16:26:12\n"
+            "S/N: PRIVATE\nCommand line: -USB PRIVATE\n")
+        self.assertEqual(report["backend"]["version"], "8.32")
+        self.assertEqual(report["debugger"]["firmware"], "J-Link V9 compiled May  7 2021 16:26:12")
+        self.assertIsNone(report["debugger"]["api"])
+        self.assertNotIn("PRIVATE", json.dumps(report))
+
     def test_profiles_select_distinct_mcus_and_flash_limits(self):
         f411 = load_profile(ROOT / "profiles/f411/target.toml")
         f103 = load_profile(ROOT / "profiles/f103/target.toml")

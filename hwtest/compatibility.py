@@ -35,7 +35,11 @@ def require_gdb_api(checks):
 def runtime_manifest(report, server_log=""):
     """Extract allowlisted tokens, never copy log lines containing stand identity."""
     name = report.get("backend", "openocd")
-    if name == "stlink":
+    if name == "jlink":
+        backend = re.search(r"SEGGER J-Link GDB Server V([0-9][A-Za-z0-9._-]*)", server_log)
+        debugger = re.search(r"^Firmware: (J-Link [A-Za-z0-9 -]+ compiled [A-Za-z]{3}\s+\d{1,2} \d{4} \d{2}:\d{2}:\d{2})\s*$", server_log, re.M)
+        api = None
+    elif name == "stlink":
         backend = re.search(r"ST-LINK GDB server\. Version ([0-9][A-Za-z0-9.+_-]*)", server_log)
         debugger = re.search(r"ST-LINK Firmware version\s*:\s*(V[0-9]+J[0-9]+(?:[A-Z][0-9]+)*)", server_log)
         api = None  # This server does not publish the OpenOCD STLINK API field.
@@ -61,7 +65,8 @@ def runtime_manifest(report, server_log=""):
         "debugger": {
             "firmware": debugger.group(1) if debugger else None,
             "api": api,
-            "evidence": "server.log STLINK banner" if debugger else "unavailable: banner not recognized",
+            "evidence": ("server.log firmware banner" if name == "jlink" else "server.log STLINK banner")
+                        if debugger else "unavailable: banner not recognized",
         },
         "build": {
             "elf_sha256": report.get("elf_sha256"),

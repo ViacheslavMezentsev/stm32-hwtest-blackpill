@@ -10,7 +10,7 @@ Cube/HAL/CMSIS, компилятора, GDB/Python, сервера и отлад
 общие проектные сценарии, проверка MCU перед Flash, проверка образа, лимит breakpoint,
 запрет pending breakpoint, внешний timeout. Отчёт сохраняет профиль, хеш ELF/образа,
 версии GDB и встроенного Python. Добавлен блок `compatibility` schema 1:
-версия host Python, фактические GDB/Python, OpenOCD либо ST GDB Server и firmware/API ST-Link из
+версия host Python, фактические GDB/Python, OpenOCD, ST либо J-Link GDB Server и firmware/API ST-Link из
 журнала текущего запуска (ST не сообщает API version: null). Перед подключением
 к серверу из GDB проверяется наличие используемых
 GDB API; отсутствие обязательного API даёт ERROR до reset/Flash. Это проверка
@@ -127,3 +127,7 @@ firmware/API; строки целиком, пути и серийный номе
 ST backend проверен на BluePill; команды finish/reset сохраняются в backend_commands.
 Сам ST-сервер подключается к SWD при запуске до GDB preflight. Подробнее:
 [GDB_BACKENDS](GDB_BACKENDS.md). HAL/build-time provenance остаётся отдельной задачей.
+
+J-Link V8.32 проверен на F103: отдельные setup/reset/finish, Flash breakpoints
+отключены. Фактическая версия firmware J-Link сохраняется отдельно от пакета;
+API version ST-Link к J-Link неприменима. [Результаты](JLINK.md).

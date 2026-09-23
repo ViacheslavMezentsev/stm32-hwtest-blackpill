@@ -1,8 +1,9 @@
-# Серверы GDB: OpenOCD и ST-LINK
+# Серверы GDB: OpenOCD, ST-LINK и J-Link
 
 Общие тесты работают через GDB-Python и RSP. Backend задаёт запуск сервера,
 готовность, reset/halt, завершение и recovery; он не меняет ожидания периферии.
-Реализация выбора — `hwtest/backends.py`. J-Link пока не реализован и не проверен.
+Реализация выбора — `hwtest/backends.py`. J-Link V8.32 проверен на BluePill:
+[настройка, результаты и Commander](JLINK.md).
 
 ## Запуск ST-LINK на BluePill
 
@@ -88,7 +89,8 @@ Option bytes, mass erase и обновление firmware отладчика н�
 `tools/observe_sleep.py` пока намеренно OpenOCD-only: он использует Tcl read_memory
 при работающем MCU. Его нельзя автоматически перенаправить в ST через замену exe.
 Для ST нужен отдельный подтверждённый способ чтения без halt. То же относится к
-будущему J-Link: переносимость RSP не доказывает одинаковую семантику monitor/detach.
+другим backend: переносимость RSP не доказывает одинаковую семантику monitor/detach.
+Для J-Link выполнен отдельный опыт Commander, описанный в JLINK.md.
 
 Источники: справка `ST-LINK_gdbserver.exe --help` установленного CubeCLT,
 практические журналы в build/hwtest и

@@ -177,3 +177,7 @@ LED/ревизию конкретной платы ещё сверяем; под
 Тесты BluePill также проверены напрямую через ST-LINK GDB Server из CubeCLT 1.22.0:
 [выбор backend, запуск и сравнение с OpenOCD](docs/GDB_BACKENDS.md).
 Меняется локальный TOML стенда, общие Python-сценарии остаются теми же.
+
+BluePill также проверена с прямым **J-Link GDB Server V8.32** (24/24 CTest):
+[запуск J-Link и приёмы Commander](docs/JLINK.md). При подключённом J-Link
+выбирать `bluepill-jlink.local.toml`; конфигурация по умолчанию не выбирает его автоматически.
