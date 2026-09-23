@@ -27,14 +27,16 @@
 - Pinout подключённой WeAct F103: LED_USER на PB2 (подтверждено пользователем), не типовой PC13. F411 остаётся PC13. Общие GPIO-сценарии обязаны получать порт/пин/уровень из EXPECTED профиля.
 - app_idle использует обычный Sleep/WFI с активным SysTick; Stop ещё не реализован. На F103 проверены 24/24 CTest и S_SLEEP без halt через tools/observe_sleep.py. Не считать это измерением энергопотребления: SWD и DBGMCU влияют на тактирование.
 - В русских описаниях использовать термин «отладчик». Английские API/probe и существующую TOML-схему не переименовывать ради терминологии.
-- Совместимость зависит от GDB/Python, Cube/HAL/CMSIS, ABI/оптимизации, backend/прошивки отладчика, MCU и платы. Следовать docs/COMPATIBILITY.md; различать реализованный runtime manifest/API presence и планируемые build manifest/HAL preflight.
+- Совместимость зависит от GDB/Python, Cube/HAL/CMSIS, ABI/оптимизации, backend/прошивки отладчика, MCU и платы. Следовать docs/COMPATIBILITY.md; различать runtime manifest/API presence, post-link build manifest и планируемый HAL preflight.
 - h503 — планируемый профиль, не добавлен в CMake/YAML. Получены IOC/Core/SVD для подтверждённого владельцем STM32H503CBT6, 128 KiB Flash/32 KiB RAM, CubeH5 V1.7.0. Инструкция docs/H503_CUBEMX.md; перед интеграцией проверить DMA/IRQ/RTC, pinout и backend. Не переносить ADC-калибровку 30/110°C F411 на H503; не приписывать H503 TrustZone по аналогии с H563.
 
 - H503 приостановлен владельцем до отдельного сообщения; настройки/генерацию не менять. Действующий стенд — BluePill F103.
-- compatibility schema 1 в отчёте — только runtime metadata и наличие GDB API до подключения; build-time HAL/CMSIS/compiler provenance и HAL preflight ещё не реализованы.
+- compatibility schema 1 в отчёте — только runtime metadata и наличие GDB API до подключения; post-link HAL/CMSIS/compiler manifest находится в отдельном build_manifest; HAL preflight ещё не реализован.
 
 - Backend выбирается локальным TOML: openocd, stlink либо jlink. ST 7.14.0/CubeCLT 1.22.0 проверен на F103: 24/24, Flash/recovery. Диалекты в hwtest/backends.py; ST finish=monitor reset+detach. Observe_sleep пока OpenOCD-only. Не включать shared mode, mass erase, option-byte изменения или обновление firmware отладчика автоматически. См. docs/GDB_BACKENDS.md.
 
 - Сейчас BluePill подключена к J-Link; для HW запусков выбирать Tests/stands/bluepill-jlink.local.toml явно (session default остаётся ST-Link). J-Link V8.32 проверен 24/24; mapping MCU пока только STM32F103C8T6→STM32F103C8. Не включать Flash breakpoints: setup их отключает, используются hardware BP. Finish=reset/go/disconnect. См. docs/JLINK.md; приложенные launch/tasks изучены, внешний проект не изменять.
 
 - Перед каждым новым набором аппаратных тестов заранее сообщать плату/MCU, отладчик, backend и требуемые соединения; явно говорить, оставить текущий стенд или изменить его. Для подтверждённого текущего стенда повторное разрешение не требуется. При смене платы/отладчика/проводки дождаться подтверждения владельца до аппаратных действий. Наличие USB-устройства не заменяет подтверждение разводки.
+
+- HWTEST CMake создаёт post-link build-manifest.json (Windows/Ninja); новые session требуют его совпадения с ELF и target.toml до запуска сервера. Не восстанавливать версии библиотек из текущих исходников во время HW-run. После замены toolchain — чистый build; границы доказательства описаны в docs/COMPATIBILITY.md.

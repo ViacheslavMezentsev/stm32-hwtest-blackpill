@@ -16,6 +16,7 @@ from hwtest.profile import load_profile
 from hwtest.processes import FLAGS, probe_lock, stop_tree
 from hwtest.reports import CODES, write_reports
 from hwtest.compatibility import runtime_manifest
+from hwtest.build_manifest import load_verified
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -84,6 +85,10 @@ def execute(session, test, stand, out, report, timeout, profile):
         # All clients consume this immutable per-run snapshot, never a changing build ELF.
         elf.write_bytes(Path(session["elf"]).read_bytes())
         report["elf_sha256"] = hashlib.sha256(elf.read_bytes()).hexdigest()
+        if session.get("build_manifest"):
+            manifest = load_verified(session["build_manifest"], report["elf_sha256"], session["profile"])
+            report["build_manifest"] = manifest
+            (out / "build-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         with (out / "prepare.log").open("wb") as log:
             subprocess.run([str(gdb.parent / "arm-none-eabi-objcopy.exe"), "-O", "binary",
                             str(elf), str(image)], check=True, timeout=15, env=env,

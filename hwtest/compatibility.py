@@ -71,6 +71,7 @@ def runtime_manifest(report, server_log=""):
         "build": {
             "elf_sha256": report.get("elf_sha256"),
             "image_sha256": report.get("bin_sha256"),
-            "provenance": "unavailable: build-time Cube/HAL/CMSIS/compiler manifest not implemented",
+            "provenance": "verified: report.build_manifest" if "build_manifest" in report
+                          else "unavailable: no verified build manifest",
         },
     }
