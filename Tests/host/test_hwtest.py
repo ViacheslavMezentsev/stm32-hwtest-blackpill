@@ -5,6 +5,7 @@ import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 from unittest.mock import patch
+from types import SimpleNamespace
 
 from hwtest.collect import collect, trace
 from hwtest.processes import probe_lock
@@ -12,6 +13,7 @@ from hwtest.openocd import load_stand, server_command
 from hwtest.profile import load_profile
 from hwtest.reports import write_reports
 from hwtest.runner import ROOT, run
+from hwtest.compatibility import REQUIRED_GDB_API, inspect_gdb_api, require_gdb_api, runtime_manifest
 
 
 class HostTests(unittest.TestCase):
@@ -27,6 +29,41 @@ class HostTests(unittest.TestCase):
             'raise RuntimeError("must not import")\n@case("HW_ONE", labels=("gpio",))\ndef one(t): pass\n')
         cases = collect(self.directory)
         self.assertEqual(cases[0]["id"], "HW_ONE")
+
+    def test_gdb_api_checks_do_not_infer_support_from_version(self):
+        api = SimpleNamespace(VERSION="999.0")
+        for name in REQUIRED_GDB_API:
+            obj = api
+            parts = name.split(".")
+            for part in parts:
+                if not hasattr(obj, part):
+                    setattr(obj, part, SimpleNamespace())
+                obj = getattr(obj, part)
+        require_gdb_api(inspect_gdb_api(api))
+        del api.Breakpoint.pending
+        checks = inspect_gdb_api(api)
+        self.assertFalse(checks["Breakpoint.pending"])
+        with self.assertRaisesRegex(RuntimeError, "Breakpoint.pending"):
+            require_gdb_api(checks)
+
+    def test_manifest_extracts_versions_without_copying_private_log_data(self):
+        log = ("Open On-Chip Debugger 0.12.0+dev (build)\n"
+               "Info : STLINK V2J43M28 (API v2) VID:PID 0483:3752\n"
+               "adapter serial PRIVATE_SERIAL\nC:/Users/PRIVATE_USER/tools\n")
+        manifest = runtime_manifest(dict(gdb_version="14.2.90", python_version="3.11.4"), log)
+        self.assertEqual(manifest["backend"]["version"], "0.12.0+dev")
+        self.assertEqual(manifest["debugger"]["firmware"], "V2J43M28")
+        self.assertEqual(manifest["debugger"]["api"], 2)
+        self.assertNotIn("PRIVATE", json.dumps(manifest))
+        self.assertEqual(manifest["gdb"]["python"], "3.11.4")
+
+    def test_missing_runtime_evidence_is_explicit_not_success(self):
+        manifest = runtime_manifest({}, "unrecognized backend banner")
+        for section, key in (("gdb", "version"), ("backend", "version"), ("debugger", "firmware")):
+            self.assertIsNone(manifest[section][key])
+            self.assertTrue(manifest[section]["evidence"].startswith("unavailable:"))
+        self.assertEqual(manifest["schema"], 1)
+        self.assertIn("unavailable:", manifest["build"]["provenance"])
 
     def test_profiles_select_distinct_mcus_and_flash_limits(self):
         f411 = load_profile(ROOT / "profiles/f411/target.toml")
@@ -71,6 +108,7 @@ class HostTests(unittest.TestCase):
     def test_reports_distinguish_assertion_and_infrastructure(self):
         for status, tag in (("PASS", None), ("FAIL", "failure"), ("ERROR", "error")):
             report = dict(id="HW_ONE", status=status, duration_s=1.25, error='expected <x> & "y"')
+            report["compatibility"] = runtime_manifest(report)
             write_reports(self.directory, report)
             root = ET.parse(self.directory / "junit.xml").getroot()
             case = root.find("testcase")
@@ -79,6 +117,7 @@ class HostTests(unittest.TestCase):
             if tag:
                 self.assertIn(report["error"], case.find(tag).text)
             self.assertEqual(json.loads((self.directory / "result.json").read_text()), report)
+            self.assertEqual(json.loads(case.find("system-out").text)["compatibility"], report["compatibility"])
 
     def test_missing_stand_is_error_with_reports(self):
         session = dict(out=str(self.directory), stand=str(self.directory / "absent.toml"))
@@ -87,6 +126,8 @@ class HostTests(unittest.TestCase):
         self.assertEqual(code, 2)
         report = json.loads(next(self.directory.glob("*/result.json")).read_text())
         self.assertEqual(report["status"], "ERROR")
+        self.assertEqual(report["compatibility"]["schema"], 1)
+        self.assertIsNone(report["compatibility"]["backend"]["version"])
         self.assertTrue(next(self.directory.glob("*/junit.xml")).exists())
 
     @unittest.skipUnless(os.name == "nt", "Windows lock")

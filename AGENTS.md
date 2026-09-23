@@ -27,5 +27,8 @@
 - Pinout подключённой WeAct F103: LED_USER на PB2 (подтверждено пользователем), не типовой PC13. F411 остаётся PC13. Общие GPIO-сценарии обязаны получать порт/пин/уровень из EXPECTED профиля.
 - app_idle использует обычный Sleep/WFI с активным SysTick; Stop ещё не реализован. На F103 проверены 24/24 CTest и S_SLEEP без halt через tools/observe_sleep.py. Не считать это измерением энергопотребления: SWD и DBGMCU влияют на тактирование.
 - В русских описаниях использовать термин «отладчик». Английские API/probe и существующую TOML-схему не переименовывать ради терминологии.
-- Совместимость зависит от GDB/Python, Cube/HAL/CMSIS, ABI/оптимизации, backend/прошивки отладчика, MCU и платы. Следовать docs/COMPATIBILITY.md; не считать planned manifest/preflight уже реализованными.
+- Совместимость зависит от GDB/Python, Cube/HAL/CMSIS, ABI/оптимизации, backend/прошивки отладчика, MCU и платы. Следовать docs/COMPATIBILITY.md; различать реализованный runtime manifest/API presence и планируемые build manifest/HAL preflight.
 - h503 — планируемый профиль, не добавлен в CMake/YAML. Получены IOC/Core/SVD для подтверждённого владельцем STM32H503CBT6, 128 KiB Flash/32 KiB RAM, CubeH5 V1.7.0. Инструкция docs/H503_CUBEMX.md; перед интеграцией проверить DMA/IRQ/RTC, pinout и backend. Не переносить ADC-калибровку 30/110°C F411 на H503; не приписывать H503 TrustZone по аналогии с H563.
+
+- H503 приостановлен владельцем до отдельного сообщения; настройки/генерацию не менять. Действующий стенд — BluePill F103.
+- compatibility schema 1 в отчёте — только runtime metadata и наличие GDB API до подключения; build-time HAL/CMSIS/compiler provenance и HAL preflight ещё не реализованы.

@@ -13,13 +13,15 @@ import gdb
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from hwtest.target import Target, CheckFailed
+from hwtest.compatibility import inspect_gdb_api, require_gdb_api
 
 
 def main():
     session = json.loads(Path(os.environ["HWTEST_RUN"]).read_text(encoding="utf-8"))
     profile = session["profile"]
     report = {"id": session["test"]["id"], "status": "ERROR", "checks": [],
-              "gdb_version": gdb.VERSION, "python_version": sys.version.split()[0]}
+              "gdb_version": gdb.VERSION, "python_version": sys.version.split()[0],
+              "connection_attempted": False}
     connected = False
     target = None
     try:
@@ -29,6 +31,9 @@ def main():
         image = Path(session["image"]).read_bytes()
         report["elf_sha256"] = hashlib.sha256(Path(session["elf"]).read_bytes()).hexdigest()
         report["bin_sha256"] = hashlib.sha256(image).hexdigest()
+        report["gdb_api_checks"] = inspect_gdb_api(gdb)
+        require_gdb_api(report["gdb_api_checks"])
+        report["connection_attempted"] = True
         gdb.execute("target extended-remote " + session["endpoint"])
         connected = True
         gdb.execute(session["reset_halt"])

@@ -15,6 +15,7 @@ from hwtest.openocd import load_stand, server_command
 from hwtest.profile import load_profile
 from hwtest.processes import FLAGS, probe_lock, stop_tree
 from hwtest.reports import CODES, write_reports
+from hwtest.compatibility import runtime_manifest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -49,6 +50,12 @@ def run(session, test, stand_path=None, timeout=None):
             execute(session, test, stand, out, report, limit, profile)
     except BaseException:
         report.update(status="ERROR", error=traceback.format_exc())
+    server_log = ""
+    try:
+        server_log = (out / "server.log").read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        pass  # Runs failing before server startup still receive an explicit partial manifest.
+    report["compatibility"] = runtime_manifest(report, server_log)
     report["duration_s"] = round(time.monotonic() - started, 3)
     write_reports(out, report)
     print(f"{report['status']} {test['id']}: {out / 'result.json'}")
@@ -124,7 +131,8 @@ def execute(session, test, stand, out, report, timeout, profile):
     finally:
         try:
             stop_tree(client)
-            if ready and report.get("teardown") != "reset_run":
+            if (ready and report.get("connection_attempted", True)
+                    and report.get("teardown") != "reset_run"):
                 with (out / "recovery.log").open("wb") as log:
                     subprocess.run(gdb_base + ["-ex", "set confirm off", "-ex",
                                    "target extended-remote " + endpoint, "-ex", profile["reset_run"], "-ex", "disconnect"],

@@ -7,6 +7,14 @@
 
 ### Added
 
+- Runtime compatibility schema 1 в JSON/JUnit: GDB/Python, OpenOCD, firmware/API
+  ST-Link, источник сведений и явные отсутствующие значения.
+- Проверка наличия обязательного GDB Python API перед подключением к MCU;
+  host-регрессии отсутствующего API, частичного отчёта и исключения личных данных
+  из извлекаемых токенов версии. BluePill: 24/24 CTest PASS; отрицательный
+  опыт в реальном GDB подтвердил ERROR без подключения к MCU.
+  Build-time HAL/CMSIS manifest остаётся следующим этапом.
+
 - Исходная генерация profiles/h503 для STM32H503CBT6 и предоставленный SVD.
   Профиль пока не включён в сборку и не проверен аппаратно.
 - H503_CUBEMX.md: аудит IOC/Core, пошаговые настройки GPDMA, TIM2/RTC IRQ,
