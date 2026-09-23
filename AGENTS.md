@@ -32,3 +32,5 @@
 
 - H503 приостановлен владельцем до отдельного сообщения; настройки/генерацию не менять. Действующий стенд — BluePill F103.
 - compatibility schema 1 в отчёте — только runtime metadata и наличие GDB API до подключения; build-time HAL/CMSIS/compiler provenance и HAL preflight ещё не реализованы.
+
+- Backend выбирается локальным TOML: openocd либо stlink. ST 7.14.0/CubeCLT 1.22.0 проверен на F103: 24/24, Flash/recovery. Диалекты в hwtest/backends.py; ST finish=monitor reset+detach. Observe_sleep пока OpenOCD-only. Не включать shared mode, mass erase, option-byte изменения или обновление firmware отладчика автоматически. См. docs/GDB_BACKENDS.md.

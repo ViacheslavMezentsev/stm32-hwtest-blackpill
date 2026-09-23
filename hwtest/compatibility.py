@@ -34,8 +34,15 @@ def require_gdb_api(checks):
 
 def runtime_manifest(report, server_log=""):
     """Extract allowlisted tokens, never copy log lines containing stand identity."""
-    backend = re.search(r"^Open On-Chip Debugger ([0-9][A-Za-z0-9.+_-]*)\b", server_log, re.M)
-    debugger = re.search(r"\bSTLINK (V[0-9]+J[0-9]+(?:[A-Z][0-9]+)*) \(API v([0-9]+)\)", server_log)
+    name = report.get("backend", "openocd")
+    if name == "stlink":
+        backend = re.search(r"ST-LINK GDB server\. Version ([0-9][A-Za-z0-9.+_-]*)", server_log)
+        debugger = re.search(r"ST-LINK Firmware version\s*:\s*(V[0-9]+J[0-9]+(?:[A-Z][0-9]+)*)", server_log)
+        api = None  # This server does not publish the OpenOCD STLINK API field.
+    else:
+        backend = re.search(r"^Open On-Chip Debugger ([0-9][A-Za-z0-9.+_-]*)\b", server_log, re.M)
+        debugger = re.search(r"\bSTLINK (V[0-9]+J[0-9]+(?:[A-Z][0-9]+)*) \(API v([0-9]+)\)", server_log)
+        api = int(debugger.group(2)) if debugger else None
     return {
         "schema": 1,
         "scope": "runtime-only",
@@ -47,13 +54,13 @@ def runtime_manifest(report, server_log=""):
             "evidence": "agent" if "gdb_version" in report else "unavailable: no agent report",
         },
         "backend": {
-            "name": "openocd",
+            "name": name,
             "version": backend.group(1) if backend else None,
             "evidence": "server.log banner" if backend else "unavailable: banner not recognized",
         },
         "debugger": {
             "firmware": debugger.group(1) if debugger else None,
-            "api": int(debugger.group(2)) if debugger else None,
+            "api": api,
             "evidence": "server.log STLINK banner" if debugger else "unavailable: banner not recognized",
         },
         "build": {

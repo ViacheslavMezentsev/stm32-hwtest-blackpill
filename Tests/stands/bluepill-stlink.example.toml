@@ -1,0 +1,8 @@
+[probe]
+backend = "stlink"
+serial = "REPLACE_WITH_STLINK_SERIAL"
+# Absolute local paths; use forward slashes. Do not commit your local copy.
+executable = "C:/ST/STM32CubeCLT_1.22.0/STLink-gdb-server/bin/ST-LINK_gdbserver.exe"
+programmer_dir = "C:/ST/STM32CubeCLT_1.22.0/STM32CubeProgrammer/bin"
+speed_khz = 1000
+flash = "if-different"

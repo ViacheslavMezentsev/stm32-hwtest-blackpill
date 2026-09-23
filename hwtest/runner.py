@@ -11,7 +11,7 @@ import subprocess
 import time
 import traceback
 
-from hwtest.openocd import load_stand, server_command
+from hwtest.backends import load_stand, server_spec
 from hwtest.profile import load_profile
 from hwtest.processes import FLAGS, probe_lock, stop_tree
 from hwtest.reports import CODES, write_reports
@@ -44,6 +44,7 @@ def run(session, test, stand_path=None, timeout=None):
         if not path:
             raise RuntimeError("Select a local stand with HWTEST_STAND or --stand")
         stand = load_stand(path)
+        report["backend"] = stand["backend"]
         profile = load_profile(session["profile"])
         report["profile"] = profile
         with probe_lock(ROOT, stand["serial"]):
@@ -96,25 +97,27 @@ def execute(session, test, stand, out, report, timeout, profile):
             sock.bind(("127.0.0.1", 0))
             port = sock.getsockname()[1]
         endpoint = f"127.0.0.1:{port}"
+        backend = server_spec(stand, port, profile, out)
+        report["backend_commands"] = dict(reset_halt=backend["reset_halt"], finish=backend["finish"])
         run_data = dict(test=test, elf=str(elf), image=str(image), result=str(agent_result),
                         endpoint=endpoint, flash=stand["flash"], profile=profile,
-                        reset_halt=profile["reset_halt"], reset_run=profile["reset_run"])
+                        reset_halt=backend["reset_halt"], finish=backend["finish"])
         run_file = out / "run.json"
         run_file.write_text(json.dumps(run_data), encoding="utf-8")
         env["HWTEST_RUN"] = str(run_file)
         with (out / "server.log").open("wb") as server_log, (out / "gdb.log").open("wb") as gdb_log:
-            server = subprocess.Popen(server_command(stand, port, profile), env=env, cwd=ROOT,
+            server = subprocess.Popen(backend["command"], env=env, cwd=out,
                                       stdout=server_log, stderr=subprocess.STDOUT, creationflags=FLAGS)
             deadline = time.monotonic() + 10
             while time.monotonic() < deadline:
                 if server.poll() is not None:
-                    raise RuntimeError("OpenOCD exited before ready; see server.log")
-                if f"Listening on port {port} for gdb connections" in (out / "server.log").read_text(errors="replace"):
+                    raise RuntimeError("GDB server exited before ready; see server.log")
+                if backend["ready"] in (out / "server.log").read_text(errors="replace"):
                     ready = True
                     break
                 time.sleep(0.1)
             if not ready:
-                raise TimeoutError("OpenOCD startup timed out")
+                raise TimeoutError("GDB server startup timed out")
             client = subprocess.Popen(gdb_base + [str(elf), "-x", str(ROOT / "hwtest/agent.py")],
                                       env=env, cwd=ROOT, stdout=gdb_log, stderr=subprocess.STDOUT,
                                       creationflags=FLAGS)
@@ -134,8 +137,9 @@ def execute(session, test, stand, out, report, timeout, profile):
             if (ready and report.get("connection_attempted", True)
                     and report.get("teardown") != "reset_run"):
                 with (out / "recovery.log").open("wb") as log:
+                    finish = [item for command in backend["finish"] for item in ("-ex", command)]
                     subprocess.run(gdb_base + ["-ex", "set confirm off", "-ex",
-                                   "target extended-remote " + endpoint, "-ex", profile["reset_run"], "-ex", "disconnect"],
+                                   "target extended-remote " + endpoint] + finish,
                                    check=True, timeout=10, env=env, stdout=log,
                                    stderr=subprocess.STDOUT, creationflags=FLAGS)
                 report["teardown"] = "reset_run (host recovery)"

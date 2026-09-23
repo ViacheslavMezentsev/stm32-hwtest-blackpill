@@ -7,6 +7,12 @@
 
 ### Added
 
+- Backend ST-LINK GDB Server: отдельный локальный TOML и команды запуска/reset/finish,
+  persistent recovery, CubeProgrammer Flash verify и runtime version metadata.
+- GDB_BACKENDS.md: настройка и сравнение серверов; общие сценарии BluePill дали
+  24/24 CTest PASS на ST и OpenOCD. Проверены запись/возврат образа, отказ verify-only,
+  внешний timeout/recovery и работа MCU после ST detach.
+
 - Runtime compatibility schema 1 в JSON/JUnit: GDB/Python, OpenOCD, firmware/API
   ST-Link, источник сведений и явные отсутствующие значения.
 - Проверка наличия обязательного GDB Python API перед подключением к MCU;

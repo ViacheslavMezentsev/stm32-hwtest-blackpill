@@ -88,8 +88,8 @@ def main():
             if target:
                 target.close()
             if connected:
-                gdb.execute(session["reset_run"])
-                gdb.execute("disconnect")
+                for command in session["finish"]:
+                    gdb.execute(command)
                 report["teardown"] = "reset_run"
         except BaseException:
             report.update(status="ERROR", teardown_error=traceback.format_exc())

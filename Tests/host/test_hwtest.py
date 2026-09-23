@@ -14,6 +14,7 @@ from hwtest.profile import load_profile
 from hwtest.reports import write_reports
 from hwtest.runner import ROOT, run
 from hwtest.compatibility import REQUIRED_GDB_API, inspect_gdb_api, require_gdb_api, runtime_manifest
+from hwtest.backends import load_stand as load_backend_stand, server_spec
 
 
 class HostTests(unittest.TestCase):
@@ -64,6 +65,49 @@ class HostTests(unittest.TestCase):
             self.assertTrue(manifest[section]["evidence"].startswith("unavailable:"))
         self.assertEqual(manifest["schema"], 1)
         self.assertIn("unavailable:", manifest["build"]["provenance"])
+
+    def test_stlink_manifest_does_not_invent_openocd_api_version(self):
+        manifest = runtime_manifest({"backend": "stlink"},
+            "STMicroelectronics ST-LINK GDB server. Version 7.14.0\n"
+            "ST-LINK Firmware version : V2J43M28\nSerial: PRIVATE\n")
+        self.assertEqual(manifest["backend"]["name"], "stlink")
+        self.assertEqual(manifest["backend"]["version"], "7.14.0")
+        self.assertEqual(manifest["debugger"]["firmware"], "V2J43M28")
+        self.assertIsNone(manifest["debugger"]["api"])
+        self.assertNotIn("PRIVATE", json.dumps(manifest))
+
+    def test_stlink_requires_programmer_and_rejects_unknown_settings(self):
+        stand = self.directory / "stand.toml"
+        content = '[probe]\nbackend="stlink"\nserial="TEST"\n'
+        with patch("hwtest.backends.shutil.which", return_value="server.exe"):
+            stand.write_text(content)
+            with self.assertRaisesRegex(ValueError, "programmer_dir"):
+                load_backend_stand(stand)
+            (self.directory / "STM32_Programmer_CLI.exe").touch()
+            content += 'programmer_dir="' + self.directory.as_posix() + '"\n'
+            stand.write_text(content + 'flash_policy="verify-only"\n')
+            with self.assertRaisesRegex(ValueError, "Unknown probe setting"):
+                load_backend_stand(stand)
+            stand.write_text(content)
+            loaded = load_backend_stand(stand)
+            self.assertEqual(loaded["flash"], "if-different")
+            self.assertEqual(loaded["backend"], "stlink")
+
+    def test_backend_dialects_keep_vendor_commands_separate(self):
+        profile = load_profile(ROOT / "profiles/f103/target.toml")
+        stand = dict(backend="stlink", executable="server.exe", programmer_dir="C:/ST/bin",
+                     serial="TEST", speed_khz=1000)
+        st = server_spec(stand, 1234, profile, self.directory)
+        self.assertEqual(st["finish"], ["monitor reset", "detach"])
+        self.assertNotIn(profile["openocd_target"], st["command"])
+        self.assertIn(str(self.directory), st["command"])
+        self.assertIn("-e", st["command"])
+        self.assertIn("-g", st["command"])
+        self.assertNotIn("--erase-all", st["command"])
+        self.assertNotIn("-t", st["command"])
+        oc = server_spec(dict(stand, backend="openocd"), 1234, profile, self.directory)
+        self.assertEqual(oc["finish"], ["monitor reset run", "disconnect"])
+        self.assertIn(profile["openocd_target"], oc["command"])
 
     def test_profiles_select_distinct_mcus_and_flash_limits(self):
         f411 = load_profile(ROOT / "profiles/f411/target.toml")
