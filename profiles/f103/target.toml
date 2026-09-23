@@ -1,4 +1,4 @@
-# Validated on BluePill via SWD: GCC13 Debug, 20 hardware scenarios.
+# Validated on BluePill via SWD: GCC13 Debug, 22 hardware scenarios.
 schema = 1
 name = "f103"
 mcu = "STM32F103C8T6"

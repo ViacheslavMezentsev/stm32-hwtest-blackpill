@@ -1,4 +1,7 @@
-# WeAct BlackPill v3 — STM32F411CEU6
+# WeAct BlackPill V3.1 — STM32F411CEU6
+
+[Проект производителя](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1)
+
 
 IOC: `profiles/f411/stm32-hwtest-blackpill.ioc`.
 Открывайте перенесённый файл и генерируйте CubeMX-код в эту папку, чтобы Core/Src

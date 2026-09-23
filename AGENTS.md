@@ -1,6 +1,6 @@
 # Работа над проектом
 
-- Платформа: WeAct BlackPill v3, STM32F411CEU6; ST-Link v2 с USB-VCOM.
+- Платы: WeAct BlackPill V3.1 (STM32F411CEU6, LED PC13) и WeAct BluePill V1.1 / BluePill-Plus (STM32F103C8T6, LED PB2); ST-Link v2 с USB-VCOM. Официальные проекты указаны в README.
 - Основная среда: Windows, PowerShell, VS Code, CMake/Ninja, xPack ARM GCC.
 - Конфигурацию прошивки вести в `stm32_config.yml`; CMake оставлять тонким слоем интеграции stm32-cmake-yml.
 - Зависимости в `modules/` — Git-подмодули с закреплёнными коммитами. Не редактировать их как исходники проекта без отдельной причины.
@@ -25,3 +25,4 @@
 - Проектные общие сценарии — Tests/scenarios; обёртки @case и MCU-ожидания — profiles/<MCU>/Tests. Не переносить приложение-специфичную логику в hwtest.
 - ADC: User/Src/adc_units.cpp — чистая арифметика; Platform читает калибровку. F103 quality=TYPICAL, F411=FACTORY; м°C не означают точность 0.001°C. Native tests — Tests/native, build/adc-native. Новые ADC-сценарии проверены аппаратно только на F103.
 - Pinout подключённой WeAct F103: LED_USER на PB2 (подтверждено пользователем), не типовой PC13. F411 остаётся PC13. Общие GPIO-сценарии обязаны получать порт/пин/уровень из EXPECTED профиля.
+- app_idle использует обычный Sleep/WFI с активным SysTick; Stop ещё не реализован. На F103 проверены 24/24 CTest и S_SLEEP без halt через tools/observe_sleep.py. Не считать это измерением энергопотребления: SWD и DBGMCU влияют на тактирование.

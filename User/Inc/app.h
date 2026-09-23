@@ -6,6 +6,7 @@ extern "C" {
 void init( void );
 void setup( void );
 void loop( void );
+void app_idle( uint32_t milliseconds );
 
 /* Numeric units describe representation, not measurement accuracy. */
 typedef enum

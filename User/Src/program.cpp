@@ -45,7 +45,18 @@ void loop( void )
         rtc_handled = events;
     }
     HAL_GPIO_TogglePin( LED_USER_GPIO_Port, LED_USER_Pin );
-    HAL_Delay( 500 );
+    app_idle( 500 );
+}
+
+// Keep SysTick enabled: it wakes the CPU and advances the idle deadline.
+// Ordinary Sleep preserves clocks; Stop and clock restoration are separate policies.
+void app_idle( uint32_t milliseconds )
+{
+    const uint32_t started = HAL_GetTick();
+    while ( ( uint32_t ) ( HAL_GetTick() - started ) < milliseconds )
+    {
+        HAL_PWR_EnterSLEEPMode( PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI );
+    }
 }
 
 extern "C" void HAL_ADC_ConvCpltCallback( ADC_HandleTypeDef* adc )

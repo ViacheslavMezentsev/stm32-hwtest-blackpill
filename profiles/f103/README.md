@@ -1,4 +1,7 @@
-# BluePill STM32F103C8T6 — проверенный профиль
+# WeAct BluePill V1.1 — STM32F103C8T6
+
+[Проект производителя](https://github.com/WeActStudio/BluePill-Plus)
+
 
 IOC и сгенерированный код добавлены: `profiles/f103/stm32-hwtest-bluepill.ioc`.
 Подключённый вариант платы WeAct имеет пользовательский LED на **PB2**, а не PC13.
@@ -14,8 +17,8 @@ Keep User Code, генерация пар `.c/.h` для периферии. SWD
 Сборка проверена на GCC13. Core/CMakeLists.txt подхватывает generated `.c`;
 сгенерированные system/startup/linker подключены явно через YAML без дублирования.
 Общий `../../User` подключён к main через USER CODE-секции. `Platform` содержит
-калибровку ADC F1 и настройку RTC alarm. На BluePill прошли 20 аппаратных тестов
-и две host-проверки (22/22 CTest), включая ADC/DMA, TIM2 IRQ и повторный RTC alarm.
+калибровку ADC F1 и настройку RTC alarm. На BluePill прошли 22 аппаратных теста
+и две host-проверки (24/24 CTest), включая ADC/DMA, TIM2 IRQ и повторный RTC alarm.
 
 `target.toml` проверен на подключённой плате (DBGMCU device ID 0x410).
 `Tests/board` содержит отдельные F103-ожидания; F411-тесты автоматически не наследуются.

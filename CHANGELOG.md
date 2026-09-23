@@ -7,6 +7,13 @@
 
 ### Added
 
+- README описывает обе платы: WeAct BlackPill V3.1 / STM32F411CEU6 и WeAct BluePill V1.1 /
+  STM32F103C8T6, проекты производителя, профили и разные выводы LED.
+- Обычный Sleep/WFI в ожидании LED с активным SysTick; общие сценарии SysTick/TIM2 IRQ.
+  На BluePill 24/24 CTest PASS, F411 собран; его новые сценарии ожидают аппаратного прогона.
+- tools/observe_sleep.py: отдельное чтение DHCSR/SCR/uwTick/DBGMCU_CR без halt/reset/flash,
+  JSON/лог внутри build. Sleep подтверждён; намеренный halt дал FAIL, после resume — PASS.
+
 - Пересчёт ADC в VDDA (мВ) и температуру (м°C), с признаком INVALID/TYPICAL/FACTORY:
   типовые параметры F103, заводские точки F411, защита от нулевых/насыщенных отсчётов.
 - Три новых аппаратных сценария: реальные величины, известные опорные точки,
