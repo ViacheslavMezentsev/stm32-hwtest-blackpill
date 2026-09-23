@@ -22,3 +22,5 @@
 - Форматировать только C/C++ в User по корневой .clang-format (clang-format --dry-run --Werror); не применять форматирование к CubeMX/Core, Platform и подмодулям. Навык cpp-clang-format использован по запросу пользователя.
 - F103: RTC IRQ в IOC включён, но текущая генерация пропускает NVIC/handler; мост находится в Platform/platform.c. При регенерации исключить дублирование обработчика.
 - GDB Python может создать pending breakpoint вопреки CLI pending off; сохранять явную проверку bp.pending и внешний таймаут.
+- Проектные общие сценарии — Tests/scenarios; обёртки @case и MCU-ожидания — profiles/<MCU>/Tests. Не переносить приложение-специфичную логику в hwtest.
+- ADC: User/Src/adc_units.cpp — чистая арифметика; Platform читает калибровку. F103 quality=TYPICAL, F411=FACTORY; м°C не означают точность 0.001°C. Native tests — Tests/native, build/adc-native. Новые ADC-сценарии проверены аппаратно только на F103.

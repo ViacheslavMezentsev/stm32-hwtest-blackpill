@@ -7,7 +7,7 @@ UART/VCOM не нужен. Прошивка не содержит тестово
 GDB 14.2.90.20240526-git с Python 3.11.4 и OpenOCD 0.12.0.
 Host Python >= 3.11 требуется для стандартного TOML-парсера.
 
-Код и тесты BlackPill находятся в profiles/f411. F103 находится в profiles/f103; на каждой плате прошли по 17 аппаратных сценариев. См. [профили](PERIPHERAL_PLAN.md).
+Код и тесты BlackPill находятся в profiles/f411. F103 находится в profiles/f103; на F103 прошли 20 аппаратных сценариев; F411 ранее прошёл 17, новый пересчёт ожидает аппаратной проверки. См. [профили](PERIPHERAL_PLAN.md).
 HWTEST получает target.toml через session.json и проверяет DBGMCU ID до прошивки.
 
 Это реализация Level 1 из архитектурного документа: явное подключение после
@@ -156,8 +156,8 @@ Fault-handler для негативного сценария достигалс�
 `.clang-format`, проверенная версия инструмента — 23.1.1.
 
 ```powershell
-clang-format -i User/Inc/app.h User/Src/program.cpp
-clang-format --dry-run --Werror User/Inc/app.h User/Src/program.cpp
+clang-format -i User/Inc/app.h User/Src/program.cpp User/Src/adc_units.cpp
+clang-format --dry-run --Werror User/Inc/app.h User/Src/program.cpp User/Src/adc_units.cpp
 ```
 
 CubeMX/Core и зависимости в эту команду не входят. Семантика User не менялась.
@@ -170,3 +170,17 @@ arm-none-eabi-gdb-py3 -q -nx -batch -ex "source Tests/gdb/check_breakpoint.py"
 Проверяется немедленный отказ на неизвестный символ и удаление pending breakpoint.
 `set breakpoint pending off` само по себе не запрещает создание pending breakpoint
 через Python API в установленном GDB; Target проверяет свойство `Breakpoint.pending`.
+
+
+## Общие проектные сценарии
+
+`Tests/scenarios` содержит общие проверки приложения. `profiles/<MCU>/Tests/board`
+сохраняет функции с буквальными `@case` для AST-сбора; обёртки передают
+`Tests/expectations.py` своего профиля. Три init-теста остаются локальными:
+они непосредственно описывают различные регистры ADC/DMA/TIM/RTC.
+При добавлении MCU не копируйте алгоритм сценария: задайте его ожидания и
+требования. При изменении поведения приложения меняйте общий сценарий и
+проверяйте все доступные профили. Совпадение ID между профилями допустимо —
+сбор и отчёты ведутся отдельно. `hwtest` ничего не знает об app_state и ADC units.
+
+Новые проверки пересчёта и native-команды описаны в [ADC_MEASUREMENTS](ADC_MEASUREMENTS.md).

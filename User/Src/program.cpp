@@ -31,8 +31,12 @@ void loop( void )
         if ( ( uint32_t ) ( HAL_GetTick() - started ) >= 100 ) Error_Handler();
     }
     if ( HAL_ADC_Stop_DMA( &hadc1 ) != HAL_OK ) Error_Handler();
-    app_state.temperature_raw = adc_samples[0];
-    app_state.vrefint_raw     = adc_samples[1];
+    app_state.temperature_raw                = adc_samples[0];
+    app_state.vrefint_raw                    = adc_samples[1];
+    const AdcReading reading                 = platform_adc_convert( app_state.temperature_raw, app_state.vrefint_raw );
+    app_state.measurement.vdda_mv            = reading.vdda_mv;
+    app_state.measurement.temperature_mdeg_c = reading.temperature_mdeg_c;
+    app_state.measurement.quality            = reading.quality;
     ++app_state.adc_sequences;
     const uint32_t events = app_state.rtc_events;
     if ( events != rtc_handled )

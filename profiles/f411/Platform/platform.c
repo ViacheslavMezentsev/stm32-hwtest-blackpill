@@ -2,6 +2,7 @@
 #include "main.h"
 #include "adc.h"
 #include "rtc.h"
+#include "stm32f4xx_ll_adc.h"
 
 void platform_adc_prepare(void)
 {
@@ -32,4 +33,10 @@ void platform_rtc_arm(void)
     alarm.AlarmDateWeekDaySel = RTC_ALARMDATEWEEKDAYSEL_DATE;
     alarm.AlarmDateWeekDay = 1;
     if (HAL_RTC_SetAlarm_IT(&hrtc, &alarm, RTC_FORMAT_BIN) != HAL_OK) Error_Handler();
+}
+
+AdcReading platform_adc_convert(uint16_t temperature, uint16_t reference)
+{
+    return adc_convert_factory(temperature, reference, *VREFINT_CAL_ADDR,
+                               *TEMPSENSOR_CAL1_ADDR, *TEMPSENSOR_CAL2_ADDR);
 }

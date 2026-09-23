@@ -10,7 +10,7 @@
 Приложение также выполняет ADC temperature/VREFINT через DMA, считает TIM2 IRQ и RTC alarm.
 Semihosting не требуется. Аппаратный smoke-тест подтвердил запуск, настройки
 RCC/GPIO, переключение PC13, ход SysTick и обработку ошибки HAL.
-Реализована минимальная интеграция hwtest/CTest: семнадцать отдельных аппаратных тестов,
+Реализована минимальная интеграция hwtest/CTest: 20 аппаратных сценариев для каждого профиля (на F103 все проверены, новые F411 ожидают стенда),
 прошивка при несовпадении образа, логи и JSON/JUnit. UART/VCOM пока не используется.
 Запуск: [HWTEST](docs/HWTEST.md). Первичная проверка: [протокол](docs/HARDWARE_VALIDATION.md).
 Методы, границы покрытия и путь к самостоятельному модулю: [практика STM32](docs/STM32_TESTING_METHODS.md).
@@ -18,7 +18,7 @@ RCC/GPIO, переключение PC13, ход SysTick и обработку о
 ## Профили MCU
 
 - [profiles/f411](profiles/f411/README.md): действующий BlackPill, его IOC/Core/Platform и тесты.
-- [profiles/f103](profiles/f103/README.md): BluePill с пользовательским IOC и сгенерированной периферией; прошли 17 аппаратных тестов и две host-проверки.
+- [profiles/f103](profiles/f103/README.md): BluePill с пользовательским IOC и сгенерированной периферией; прошли 20 аппаратных тестов и две host-проверки.
 
 Профиль выбирает `STM32_YML_PROFILE` через stm32-cmake-yml. Старые presets относятся
 к F411; `f103-debug` собирает F103; оба профиля используют общий прикладной цикл из `User/`.
@@ -144,3 +144,6 @@ BlackPill — `resources/STM32F411.svd`, BluePill — `resources/STM32F103.svd`.
 соответствующий CMake preset (`debug` / `f103-debug`): ELF по-прежнему берётся
 из активной цели CMake. Отображение регистров в UI VS Code отдельно не проверялось.
 SVD описывает регистры семейства; наличие блока на конкретном MCU сверяется с reference manual.
+
+Пересчёт ADC, источники параметров, статус качества и отдельные численные проверки:
+[ADC units](docs/ADC_MEASUREMENTS.md).

@@ -38,3 +38,8 @@ void platform_rtc_arm(void)
     alarm.Alarm = RTC_ALARM_A;
     if (HAL_RTC_SetAlarm_IT(&hrtc, &alarm, RTC_FORMAT_BIN) != HAL_OK) Error_Handler();
 }
+
+AdcReading platform_adc_convert(uint16_t temperature, uint16_t reference)
+{
+    return adc_convert_typical(temperature, reference);
+}

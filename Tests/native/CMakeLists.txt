@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.21)
+project(adc_units_native LANGUAGES CXX)
+enable_testing()
+add_executable(adc_units_test adc_units_test.cpp ../../User/Src/adc_units.cpp)
+target_include_directories(adc_units_test PRIVATE ../../User/Inc)
+target_compile_features(adc_units_test PRIVATE cxx_std_17)
+target_compile_options(adc_units_test PRIVATE -Wall -Wextra -Werror -UNDEBUG)
+add_test(NAME adc.units COMMAND adc_units_test)

@@ -13,8 +13,8 @@ Keep User Code, генерация пар `.c/.h` для периферии. SWD
 Сборка проверена на GCC13. Core/CMakeLists.txt подхватывает generated `.c`;
 сгенерированные system/startup/linker подключены явно через YAML без дублирования.
 Общий `../../User` подключён к main через USER CODE-секции. `Platform` содержит
-калибровку ADC F1 и настройку RTC alarm. На BluePill прошли 17 аппаратных тестов
-и две host-проверки (19/19 CTest), включая ADC/DMA, TIM2 IRQ и повторный RTC alarm.
+калибровку ADC F1 и настройку RTC alarm. На BluePill прошли 20 аппаратных тестов
+и две host-проверки (22/22 CTest), включая ADC/DMA, TIM2 IRQ и повторный RTC alarm.
 
 `target.toml` проверен на подключённой плате (DBGMCU device ID 0x410).
 `Tests/board` содержит отдельные F103-ожидания; F411-тесты автоматически не наследуются.
