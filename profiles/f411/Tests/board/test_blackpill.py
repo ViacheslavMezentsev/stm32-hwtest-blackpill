@@ -9,10 +9,10 @@ def boot(t):
 @case("HW_CLOCK", labels=("rcc",))
 def clock(t):
     t.reach("loop")
-    t.check("SystemCoreClock", t.value("SystemCoreClock"), 16000000)
+    t.check("SystemCoreClock", t.value("SystemCoreClock"), 8000000)
     cfgr = t.value("RCC->CFGR")
-    for name, shift, mask, expected in (("HSI", 2, 3, 0), ("AHB /1", 4, 15, 0),
-                                        ("APB1 /2", 10, 7, 4), ("APB2 /2", 13, 7, 4)):
+    for name, shift, mask, expected in (("HSI", 2, 3, 0), ("AHB /2", 4, 15, 8),
+                                        ("APB1 /1", 10, 7, 0), ("APB2 /4", 13, 7, 5)):
         t.check(name, (cfgr >> shift) & mask, expected)
 
 

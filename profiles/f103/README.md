@@ -1,6 +1,6 @@
 # BluePill STM32F103C8T6 — подготовка профиля
 
-Положите ваш IOC сюда: `profiles/f103/stm32-hwtest-bluepill.ioc`.
+IOC и сгенерированный код добавлены: `profiles/f103/stm32-hwtest-bluepill.ioc`.
 MCU: STM32F103C8T6, документированные 64 KiB Flash и 20 KiB RAM.
 Не рассчитываем на неофициальные дополнительные 64 KiB.
 
@@ -10,10 +10,10 @@ Keep User Code, генерация пар `.c/.h` для периферии. SWD
 Профиль ожидает Cube F1 V1.8.7; при другом пакете согласовать `cubefw_package` в YAML.
 
 После генерации: `cmake --preset f103-debug`, `cmake --build --preset f103-debug`.
-До появления IOC и main.c Configure намеренно сообщает, чего не хватает.
-Core/CMakeLists.txt подхватывает generated `.c`; system/startup пока берутся из CMSIS,
-linker script — из фреймворка. CubeMX linker/startup рядом с IOC пока не подключаются.
-После получения IOC проверим clock tree, HAL-компоненты, startup и linker отдельно.
+Сборка проверена на GCC13. Core/CMakeLists.txt подхватывает generated `.c`;
+сгенерированные system/startup/linker подключены явно через YAML без дублирования.
+User пока не включён в сборку, main содержит пустой цикл после инициализации.
+Общий User/адаптеры профилей и runtime-сценарии будут отдельным этапом.
 
 `target.toml` — начальное описание GDB/OpenOCD, на F103 ещё не проверено.
 Проектных Python-тестов пока нет: F411-тесты автоматически не наследуются.

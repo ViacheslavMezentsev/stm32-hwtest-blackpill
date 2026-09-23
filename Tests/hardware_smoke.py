@@ -73,13 +73,13 @@ try:
 
     boot()
     reach("loop")
-    check("SystemCoreClock", value("SystemCoreClock"), 16000000)
+    check("SystemCoreClock", value("SystemCoreClock"), 8000000)
     # Field positions from STM32Cube F4 V1.28.3 stm32f411xe.h.
     cfgr = value("RCC->CFGR")
     check("SYSCLK source HSI", (cfgr >> 2) & 3, 0)
-    check("AHB divide by 1", (cfgr >> 4) & 15, 0)
-    check("APB1 divide by 2", (cfgr >> 10) & 7, 4)
-    check("APB2 divide by 2", (cfgr >> 13) & 7, 4)
+    check("AHB divide by 2", (cfgr >> 4) & 15, 8)
+    check("APB1 divide by 1", (cfgr >> 10) & 7, 0)
+    check("APB2 divide by 4", (cfgr >> 13) & 7, 5)
     check("GPIOC clock enabled", (value("RCC->AHB1ENR") >> 2) & 1, 1)
     check("PC13 output mode", (value("GPIOC->MODER") >> 26) & 3, 1)
     check("PC13 push-pull", (value("GPIOC->OTYPER") >> 13) & 1, 0)

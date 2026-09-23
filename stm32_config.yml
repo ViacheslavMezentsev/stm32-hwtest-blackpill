@@ -4,7 +4,7 @@ stm32_cmake_yml_version: "0.9.2"
 stm32_cmake_yml_version_check: true
 use_cmsis: true
 use_hal: true
-hal_components: [CORTEX, FLASH, RCC, GPIO, PWR]
+hal_components: [CORTEX, FLASH, RCCEx, GPIO, PWR, ADCEx, DMA, CRC, RTCEx, TIMEx]
 
 languages: [C, CXX, ASM]
 c_standard: 17
@@ -35,6 +35,6 @@ profiles:
     project_name: stm32-hwtest-bluepill
     mcu: STM32F103C8T6
     cubefw_package: V1.8.7
-    sources: [profiles/f103/Core]
+    sources: [profiles/f103/Core, profiles/f103/Core/Src/system_stm32f1xx.c, profiles/f103/startup_stm32f103xb.s]
     include_directories: [profiles/f103/Core/Inc]
-    # CMSIS startup/system и linker script пока предоставляет фреймворк.
+    linker_script: profiles/f103/STM32F103xx_FLASH.ld

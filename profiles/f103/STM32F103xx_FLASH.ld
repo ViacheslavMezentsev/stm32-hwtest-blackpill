@@ -6,8 +6,8 @@
 **
 **  Author		: STM32CubeMX
 **
-**  Abstract    : Linker script for STM32F411CEUx series
-**                512Kbytes FLASH and 128Kbytes RAM
+**  Abstract    : Linker script for STM32F103C8Tx series
+**                64Kbytes FLASH and 20Kbytes RAM
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -54,7 +54,6 @@ ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM);    /* end of RAM */
-_sstack = _estack - _Min_Stack_Size;
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0x200;      /* required amount of heap  */
 _Min_Stack_Size = 0x400; /* required amount of stack */
@@ -62,8 +61,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K
-FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 512K
+RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 20K
+FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 64K
 }
 
 /* Define output sections */
