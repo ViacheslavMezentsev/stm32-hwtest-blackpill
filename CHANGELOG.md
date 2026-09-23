@@ -7,6 +7,11 @@
 
 ### Added
 
+- Исходная генерация profiles/h503 для STM32H503CBT6 и предоставленный SVD.
+  Профиль пока не включён в сборку и не проверен аппаратно.
+- H503_CUBEMX.md: аудит IOC/Core, пошаговые настройки GPDMA, TIM2/RTC IRQ,
+  RTC LSI prescalers и границы следующей интеграции.
+
 - План будущего h503: уточнение MCU/платы, backend, CubeH5, ADC/GPDMA/TIM/RTC/PWR
   и последующее расширение периферии; профиль пока не включён в сборку.
 - COMPATIBILITY.md: границы общего API, зависимости от HAL/CMSIS/GDB/backend,
