@@ -7,6 +7,9 @@
 
 ### Added
 
+- Матрица F103/F411 × отладчик/backend и порядок ближайших этапов; правило
+  объявления стенда перед каждым аппаратным набором и подтверждения переключений.
+
 - J-Link GDB Server backend и пример локального стенда, явный USB serial/device,
   аппаратные точки без Flash breakpoints, команды setup/reset/finish и runtime firmware.
 - BluePill/J-Link: 24/24 CTest PASS, запись и возврат образа, verify-only отказ,

@@ -33,6 +33,8 @@
 - H503 приостановлен владельцем до отдельного сообщения; настройки/генерацию не менять. Действующий стенд — BluePill F103.
 - compatibility schema 1 в отчёте — только runtime metadata и наличие GDB API до подключения; build-time HAL/CMSIS/compiler provenance и HAL preflight ещё не реализованы.
 
-- Backend выбирается локальным TOML: openocd либо stlink. ST 7.14.0/CubeCLT 1.22.0 проверен на F103: 24/24, Flash/recovery. Диалекты в hwtest/backends.py; ST finish=monitor reset+detach. Observe_sleep пока OpenOCD-only. Не включать shared mode, mass erase, option-byte изменения или обновление firmware отладчика автоматически. См. docs/GDB_BACKENDS.md.
+- Backend выбирается локальным TOML: openocd, stlink либо jlink. ST 7.14.0/CubeCLT 1.22.0 проверен на F103: 24/24, Flash/recovery. Диалекты в hwtest/backends.py; ST finish=monitor reset+detach. Observe_sleep пока OpenOCD-only. Не включать shared mode, mass erase, option-byte изменения или обновление firmware отладчика автоматически. См. docs/GDB_BACKENDS.md.
 
 - Сейчас BluePill подключена к J-Link; для HW запусков выбирать Tests/stands/bluepill-jlink.local.toml явно (session default остаётся ST-Link). J-Link V8.32 проверен 24/24; mapping MCU пока только STM32F103C8T6→STM32F103C8. Не включать Flash breakpoints: setup их отключает, используются hardware BP. Finish=reset/go/disconnect. См. docs/JLINK.md; приложенные launch/tasks изучены, внешний проект не изменять.
+
+- Перед каждым новым набором аппаратных тестов заранее сообщать плату/MCU, отладчик, backend и требуемые соединения; явно говорить, оставить текущий стенд или изменить его. Для подтверждённого текущего стенда повторное разрешение не требуется. При смене платы/отладчика/проводки дождаться подтверждения владельца до аппаратных действий. Наличие USB-устройства не заменяет подтверждение разводки.
