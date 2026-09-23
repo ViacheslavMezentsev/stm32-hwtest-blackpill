@@ -11,9 +11,9 @@ Host Python >= 3.11 требуется для стандартного TOML-па
 HWTEST получает target.toml через session.json и проверяет DBGMCU ID до прошивки.
 
 Это реализация Level 1 из архитектурного документа: явное подключение после
-`stm32_yml_setup_project`. Мультиплатформенность, другие пробники, multi-node,
+`stm32_yml_setup_project`. Мультиплатформенность, другие отладчики, multi-node,
 JUnit-сервис CI и автоматический SKIP не заявлены. Отсутствие выбранного стенда
-или пробника — ERROR; оно не должно создавать ложный зелёный прогон.
+или отладчика — ERROR; оно не должно создавать ложный зелёный прогон.
 
 ## Настройка
 
@@ -66,7 +66,7 @@ python -B hwtest/cli.py run --session build/debug-hwtest/hwtest/session.json --t
 | hwtest/cmake/HwTest.cmake | session.json, регистрация CTest, цель check-hw |
 | hwtest/collect.py | AST-сбор `@case` без импорта тестов; сверка ID требований |
 | hwtest/runner.py | снимок ELF, GDB/OpenOCD, сроки ожидания, восстановление |
-| hwtest/processes.py | блокировка пробника и завершение созданных деревьев процессов |
+| hwtest/processes.py | блокировка отладчика и завершение созданных деревьев процессов |
 | hwtest/openocd.py | TOML стенда, аргументы сервера по профилю |
 | hwtest/profile.py | проверка схемы target.toml |
 | hwtest/agent.py | подключение, проверка/загрузка образа, запуск теста, диагностика |
@@ -206,7 +206,7 @@ python -B tools/observe_sleep.py --session build/f103-debug-hwtest/hwtest/sessio
 Наблюдатель не прошивает, не сбрасывает и не останавливает MCU. Он проверяет ID
 профиля, читает DHCSR/SCR, uwTick по адресу из ELF и DBGMCU_CR. PASS требует хотя бы
 одного S_SLEEP, отсутствия S_HALT/SLEEPDEEP и продвижения uwTick. OpenOCD запускается
-с выключенными серверными портами, используется общая блокировка пробника.
+с выключенными серверными портами, используется общая блокировка отладчика.
 Есть внешний таймаут; результаты — build/sleep-observation/result.json и openocd.log.
 
 Перед наблюдением нужен успешный check-hw: наблюдатель сам не сверяет Flash с ELF.
