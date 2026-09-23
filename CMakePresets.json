@@ -68,6 +68,13 @@
         "STM32_YML_PROFILE": "f103",
         "CMAKE_BUILD_TYPE": "Debug"
       }
+    },
+    {
+      "name": "f103-debug-hwtest",
+      "inherits": "f103-debug",
+      "cacheVariables": {
+        "ENABLE_HW_TESTING": true
+      }
     }
   ],
   "buildPresets": [
@@ -101,6 +108,17 @@
     {
       "name": "f103-debug",
       "configurePreset": "f103-debug"
+    },
+    {
+      "name": "f103-debug-hwtest",
+      "configurePreset": "f103-debug-hwtest"
+    },
+    {
+      "name": "f103-check-hw",
+      "configurePreset": "f103-debug-hwtest",
+      "targets": [
+        "check-hw"
+      ]
     }
   ],
   "testPresets": [
@@ -122,6 +140,13 @@
           "label": "host"
         }
       },
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "f103-hw",
+      "configurePreset": "f103-debug-hwtest",
       "output": {
         "outputOnFailure": true
       }

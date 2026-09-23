@@ -11,6 +11,16 @@ void platform_adc_prepare(void)
 void platform_rtc_prepare(void)
 {
     if (HAL_RTC_DeactivateAlarm(&hrtc, RTC_ALARM_A) != HAL_OK) Error_Handler();
+    /* IOC enables this IRQ, but the current CubeMX output omits its wiring. */
+    HAL_NVIC_SetPriority(RTC_Alarm_IRQn, 0, 0);
+    HAL_NVIC_ClearPendingIRQ(RTC_Alarm_IRQn);
+    HAL_NVIC_EnableIRQ(RTC_Alarm_IRQn);
+}
+
+/* Remove this bridge if future CubeMX output supplies the same handler. */
+void RTC_Alarm_IRQHandler(void)
+{
+    HAL_RTC_AlarmIRQHandler(&hrtc);
 }
 
 void platform_rtc_arm(void)

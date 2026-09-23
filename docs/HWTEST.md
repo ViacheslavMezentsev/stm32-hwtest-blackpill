@@ -1,4 +1,4 @@
-# Минимальный HWTEST для BlackPill
+# Минимальный HWTEST для BlackPill и BluePill
 
 ## Границы реализации
 
@@ -7,7 +7,7 @@ UART/VCOM не нужен. Прошивка не содержит тестово
 GDB 14.2.90.20240526-git с Python 3.11.4 и OpenOCD 0.12.0.
 Host Python >= 3.11 требуется для стандартного TOML-парсера.
 
-Код и тесты BlackPill находятся в profiles/f411. Профиль F103 собирается с новым IOC; его аппаратная поддержка не подтверждена. См. [профили](PERIPHERAL_PLAN.md).
+Код и тесты BlackPill находятся в profiles/f411. F103 находится в profiles/f103; на каждой плате прошли по 17 аппаратных сценариев. См. [профили](PERIPHERAL_PLAN.md).
 HWTEST получает target.toml через session.json и проверяет DBGMCU ID до прошивки.
 
 Это реализация Level 1 из архитектурного документа: явное подключение после
@@ -143,3 +143,30 @@ Fault-handler для негативного сценария достигалс�
 
 Новые методы `reach(when=...)`, `fields`, `set_value`, результаты опытов
 и ограничения переносимости описаны в [STM32_TESTING_METHODS.md](STM32_TESTING_METHODS.md).
+
+
+## BluePill F103 и форматирование User
+
+Для BluePill используйте `Tests/stands/bluepill.local.toml`, configure preset
+`f103-debug-hwtest`, build preset `f103-check-hw`, test preset `f103-hw`.
+Не запускайте F411 preset на BluePill. Тесты/требования раздельные, IDs локальны
+профилю; отчёты сохраняются в соответствующем build-каталоге.
+
+Форматирование касается только исходников `User`; конфигурация — корневая
+`.clang-format`, проверенная версия инструмента — 23.1.1.
+
+```powershell
+clang-format -i User/Inc/app.h User/Src/program.cpp
+clang-format --dry-run --Werror User/Inc/app.h User/Src/program.cpp
+```
+
+CubeMX/Core и зависимости в эту команду не входят. Семантика User не менялась.
+Отдельная регрессия API GDB без платы (нужен GDB с Python):
+
+```powershell
+arm-none-eabi-gdb-py3 -q -nx -batch -ex "source Tests/gdb/check_breakpoint.py"
+```
+
+Проверяется немедленный отказ на неизвестный символ и удаление pending breakpoint.
+`set breakpoint pending off` само по себе не запрещает создание pending breakpoint
+через Python API в установленном GDB; Target проверяет свойство `Breakpoint.pending`.

@@ -1,0 +1,70 @@
+# Требования к минимальной прошивке
+
+## HW_BOOT
+После сброса программа достигает main и основного цикла loop без аварийной остановки.
+
+## HW_CLOCK
+После инициализации SystemCoreClock равен 8000000, SYSCLK использует HSI 8 МГц,
+AHB/APB1/APB2 имеют делитель 1 (PCLK1=PCLK2=8 МГц).
+
+## HW_GPIO
+Включено тактирование GPIOC. PC13 настроен как push-pull output,
+без подтяжки, с низкой скоростью. До первого переключения ODR13 равен 1.
+
+## HW_BLINK
+На двух последовательных проходах loop ODR13 принимает значения 0 и 1.
+Между проходами uwTick увеличивается минимум на 500 мс с учётом переполнения uint32.
+Это проверка программного состояния и HAL-времени, не измерение электрического сигнала.
+
+## HW_RCC_ERROR
+Если HAL_RCC_OscConfig принудительно возвращает HAL_ERROR,
+SystemClock_Config передаёт управление Error_Handler.
+
+## HW_GPIO_ARGUMENTS
+Вызов HAL_GPIO_Init для GPIOC получает PC13, push-pull output, no-pull,
+low-speed. После инициализации CRH13 подтверждает режим output.
+
+## HW_GPIO_FILTERED_CALL
+Условная остановка выбирает вызов HAL_GPIO_TogglePin для PC13 с ODR13=0,
+пропуская первый вызов с ODR13=1. После выбранного вызова ODR13 равен 1.
+
+## HW_RCC_OSC_NULL
+Подмена RCC_OscInitStruct на NULL при входе в HAL_RCC_OscConfig запускает
+реальную проверку аргумента HAL; её ошибка приводит к Error_Handler.
+
+## HW_ADC_DMA_INIT
+ADC1 имеет два ранга: Temperature Sensor и VREFINT, выборку 239.5 циклов,
+делитель PCLK2/8 (ADC=1 МГц), scan без continuous. DMA1 Channel1 настроен
+peripheral-to-memory, normal, halfword/halfword и memory increment.
+Проверка останавливается перед setup, до запуска преобразований.
+
+## HW_TIM2_INIT
+TIM2 настроен PSC=7999, ARR=99 при тактировании 8 МГц (номинальный период 100 мс),
+на входе setup счётчик ещё не запущен. Реальная периодичность IRQ этим тестом не проверяется.
+
+## HW_RTC_INIT
+RTC тактируется от готового LSI, делитель равен 39999, внешний выход выключен.
+Точность RTC и получение alarm-события этим тестом не проверяются.
+
+## HW_RCC_CLOCK_NULL
+Подмена RCC_ClkInitStruct на NULL при входе в HAL_RCC_ClockConfig запускает
+реальную проверку аргумента HAL; её ошибка приводит к Error_Handler.
+
+## HW_ADC_DMA_RUNTIME
+Две последовательности ADC завершаются DMA callback с CNDTR=0 и публикуются
+приложением. Оба канала дают ненулевые ненасыщенные значения (не проверка точности).
+
+## HW_TIM2_IRQ
+Два вызова TIM2 callback увеличивают счётчик; таймер работает.
+Период 100 мс здесь не измеряется из-за влияния остановок GDB.
+
+## HW_RTC_ALARM
+Два alarm A с перевзводом в main увеличивают счётчик событий RTC.
+Точность LSI и календарная граница суток отдельно не проверены.
+
+## HW_ADC_START_ERROR
+Инъекция HAL_ERROR при запуске ADC ведёт в Error_Handler без публикации данных.
+
+## HW_ADC_DMA_TIMEOUT
+Подавление completion callback приводит к Error_Handler по таймауту 100 мс
+SysTick, без публикации старых ADC данных.

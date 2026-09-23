@@ -18,12 +18,12 @@ RCC/GPIO, переключение PC13, ход SysTick и обработку о
 ## Профили MCU
 
 - [profiles/f411](profiles/f411/README.md): действующий BlackPill, его IOC/Core/Platform и тесты.
-- [profiles/f103](profiles/f103/README.md): BluePill с пользовательским IOC и сгенерированной периферией; сборка проверена, аппаратная проверка ожидается.
+- [profiles/f103](profiles/f103/README.md): BluePill с пользовательским IOC и сгенерированной периферией; прошли 17 аппаратных тестов и две host-проверки.
 
 Профиль выбирает `STM32_YML_PROFILE` через stm32-cmake-yml. Старые presets относятся
 к F411; `f103-debug` собирает F103; оба профиля используют общий прикладной цикл из `User/`.
 Для разных MCU обязательны отдельные build-каталоги. Параметры GDB/OpenOCD находятся
-в `profiles/<MCU>/target.toml`; F103 ещё не проверен на оборудовании.
+в `profiles/<MCU>/target.toml`; оба профиля проверены на своих платах через SWD.
 Предложения по ADC/DMA/TIM/RTC/PWR и настройки CubeMX: [план периферии](docs/PERIPHERAL_PLAN.md).
 
 ## Зависимости

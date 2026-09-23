@@ -1,4 +1,4 @@
-# Initial description only: no F103 firmware/hardware validation yet.
+# Validated on BluePill via SWD: GCC13 Debug, 17 hardware scenarios.
 schema = 1
 name = "f103"
 mcu = "STM32F103C8T6"

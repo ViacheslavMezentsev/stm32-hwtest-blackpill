@@ -56,6 +56,8 @@ class Target:
         bp = gdb.Breakpoint(function, type=gdb.BP_HARDWARE_BREAKPOINT, temporary=temporary)
         self.owned.append(bp)
         try:
+            if bp.pending:
+                raise RuntimeError(f"Breakpoint symbol is absent from ELF: {function}")
             if when is not None:
                 bp.condition = when
         except BaseException:
