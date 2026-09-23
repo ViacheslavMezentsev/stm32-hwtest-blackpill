@@ -21,7 +21,7 @@ def blink(t, expected):
     tick = t.value("uwTick")
     for level in (1 - expected["led_initial"], expected["led_initial"]):
         t.reach("loop")
-        t.check("PC13 toggled", (t.value("GPIOC->ODR") >> 13) & 1, level)
+        t.check("LED pin toggled", t.value(expected["led_level"]), level)
         next_tick = t.value("uwTick")
         delta = (next_tick - tick) & 0xFFFFFFFF
         t.report.setdefault("loop_tick_deltas_ms", []).append(delta)

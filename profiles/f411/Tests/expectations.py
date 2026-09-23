@@ -16,3 +16,5 @@ EXPECTED = {'clock': [('HSI', 'RCC->CFGR', 2, 3, 0),
  'measurement_quality': 2}
 
 EXPECTED["adc_vectors"] = [('*(unsigned short *)0x1FFF7A2C', '*(unsigned short *)0x1FFF7A2A', 3300, 30000), ('*(unsigned short *)0x1FFF7A2E', '*(unsigned short *)0x1FFF7A2A', 3300, 110000)]
+
+EXPECTED.update(led_port="GPIOC", led_pin="GPIO_PIN_13", led_level="(GPIOC->ODR >> 13) & 1")

@@ -1,23 +1,23 @@
 """Application scenarios shared by explicitly configured MCU profiles."""
 
 def gpio_arguments(t, expected):
-    t.reach("HAL_GPIO_Init", when="GPIOx == GPIOC")
+    t.reach("HAL_GPIO_Init", when=f"GPIOx == {expected['led_port']}")
     t.fields("*GPIO_Init", {
-        "Pin": "GPIO_PIN_13",
+        "Pin": expected["led_pin"],
         "Mode": "GPIO_MODE_OUTPUT_PP",
         "Pull": "GPIO_NOPULL",
         "Speed": "GPIO_SPEED_FREQ_LOW",
     })
     t.reach("loop")
-    t.check("PC13 mode applied", t.value(expected["gpio_mode_expression"]), expected["gpio_mode"])
+    t.check("LED mode applied", t.value(expected["gpio_mode_expression"]), expected["gpio_mode"])
 
 def gpio_filtered_call(t, expected):
     initial = expected["led_initial"]
     t.reach("HAL_GPIO_TogglePin",
-            when=f"GPIOx == GPIOC && GPIO_Pin == GPIO_PIN_13 && ((GPIOC->ODR >> 13) & 1) == {1 - initial}")
-    t.check("ODR before selected toggle", (t.value("GPIOC->ODR") >> 13) & 1, 1 - initial)
+            when=f"GPIOx == {expected['led_port']} && GPIO_Pin == {expected['led_pin']} && ({expected['led_level']}) == {1 - initial}")
+    t.check("ODR before selected toggle", t.value(expected["led_level"]), 1 - initial)
     t.reach("loop")
-    t.check("ODR after selected toggle", (t.value("GPIOC->ODR") >> 13) & 1, initial)
+    t.check("ODR after selected toggle", t.value(expected["led_level"]), initial)
 
 
 def rcc_osc_null(t, expected):

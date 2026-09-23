@@ -24,3 +24,4 @@
 - GDB Python может создать pending breakpoint вопреки CLI pending off; сохранять явную проверку bp.pending и внешний таймаут.
 - Проектные общие сценарии — Tests/scenarios; обёртки @case и MCU-ожидания — profiles/<MCU>/Tests. Не переносить приложение-специфичную логику в hwtest.
 - ADC: User/Src/adc_units.cpp — чистая арифметика; Platform читает калибровку. F103 quality=TYPICAL, F411=FACTORY; м°C не означают точность 0.001°C. Native tests — Tests/native, build/adc-native. Новые ADC-сценарии проверены аппаратно только на F103.
+- Pinout подключённой WeAct F103: LED_USER на PB2 (подтверждено пользователем), не типовой PC13. F411 остаётся PC13. Общие GPIO-сценарии обязаны получать порт/пин/уровень из EXPECTED профиля.

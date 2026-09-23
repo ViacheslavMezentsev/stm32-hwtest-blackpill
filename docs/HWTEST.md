@@ -184,3 +184,12 @@ arm-none-eabi-gdb-py3 -q -nx -batch -ex "source Tests/gdb/check_breakpoint.py"
 сбор и отчёты ведутся отдельно. `hwtest` ничего не знает об app_state и ADC units.
 
 Новые проверки пересчёта и native-команды описаны в [ADC_MEASUREMENTS](ADC_MEASUREMENTS.md).
+
+
+## LED не мигает
+
+Проверяйте pinout конкретной платы: текущая WeAct F103 использует PB2,
+BlackPill F411 — PC13. Отсутствие свечения не доказывает halt/Stop.
+Тесты завершаются reset_run и отключением GDB; в E07 дополнительно проверена
+работа PB2/SysTick/ADC после этого, без новых halt/reset. Метод и ограничения
+описаны в [STM32_TESTING_METHODS](STM32_TESTING_METHODS.md#e07--правильный-gpio-тест-не-доказывает-соответствие-плате).
