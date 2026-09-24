@@ -7,6 +7,11 @@
 
 ### Changed
 
+- BluePill F103C8/J-Link: новая identity/Flash политика проверена аппаратно,
+  24/24 CTest PASS. DEV_ID0x410 совпадает, Flash-регистр сообщает 128 KiB при
+  профиле64 KiB: warning без расширения linker. Strict boot PASS; после сервера
+  Commander подтвердил работающий MCU/Sleep. См. docs/TARGET_IDENTITY.md.
+
 - F401CC переведён на штатные presets: DEV_ID mismatch по умолчанию WARNING,
   выбранный профиль сохраняется. Общий strict через CLI/env, identity/warnings
   в JSON/JUnit; экспериментальный скрипт теперь только legacy-обёртка.

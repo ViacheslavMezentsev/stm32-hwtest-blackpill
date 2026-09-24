@@ -32,7 +32,8 @@ H503 остаётся отложенным до сообщения владел�
 ## Общая дорожная карта
 
 - [x] Сделать f401cc штатным профилем: общая warn/strict политика DEV_ID, Flash capacity guard, JSON/JUnit warnings. OpenOCD/ST server 24/24, live Sleep PASS.
-- [ ] Проверить новую политику/чтение Flash на F103 и F411 при согласованном переключении стендов.
+- [x] Проверить новую политику/Flash на F103/J-Link: 24/24, strict boot PASS; DEV_ID совпал, Flash128K при профиле64K предупреждает.
+- [ ] Проверить новую политику/чтение Flash на F411 после согласованной замены платы у ST-Link.
 
 - [x] По запросу владельца проверить f401cc «как есть» с отдельным identity override: три init PASS, boot/clock timeout, найдены дубли setup/loop.
 - [x] Удалить дубли setup/loop в USER CODE f401cc: 22/22 HW PASS, два host CTest PASS; ADC channel16 даёт правдоподобную температуру, live Sleep PASS.

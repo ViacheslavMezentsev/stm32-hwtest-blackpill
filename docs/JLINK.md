@@ -119,3 +119,10 @@ try {
 
 Официальная документация: [J-Link GDB Server](https://kb.segger.com/J-Link_GDB_Server),
 [J-Link Commander](https://kb.segger.com/J-Link_Commander).
+
+## Повтор с общей identity/Flash политикой
+
+2026-09-24 f103c8-check-hw: 24/24 PASS, DEV_ID0x410 совпадает; Flash128 KiB
+против профиля64 KiB даёт warning, linker не расширяется. Strict HW_BOOT PASS.
+Live Commander после сервера: S_SLEEP9/10, tick+354ms, без halt. Подробности, ELF
+и границы доказательства: [TARGET_IDENTITY](TARGET_IDENTITY.md).
