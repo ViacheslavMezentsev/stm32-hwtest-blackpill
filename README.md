@@ -39,6 +39,7 @@ flowchart LR
 
 Рабочие профили: WeAct BlackPill V3.1 (STM32F411CEU6), BlackPill v3.0
 (STM32F401CCU6) и BluePill V1.1 / BluePill-Plus (STM32F103C8T6).
+[NUCLEO-F030R8](profiles/f030r8/README.md) доступен для offline-сборки; аппаратная проверка ожидается.
 Профиль STM32H503CBT6 подготовлен частично и ещё не включён в сборку.
 Точные сочетания плат/серверов, результаты и ограничения — в [текущем состоянии](docs/STATUS.md).
 

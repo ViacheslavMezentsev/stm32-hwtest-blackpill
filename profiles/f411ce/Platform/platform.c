@@ -1,6 +1,7 @@
 #include "app.h"
 #include "main.h"
 #include "adc.h"
+#include "tim.h"
 #include "rtc.h"
 #include "stm32f4xx_ll_adc.h"
 
@@ -39,4 +40,44 @@ AdcReading platform_adc_convert(uint16_t temperature, uint16_t reference)
 {
     return adc_convert_factory(temperature, reference, *VREFINT_CAL_ADDR,
                                *TEMPSENSOR_CAL1_ADDR, *TEMPSENSOR_CAL2_ADDR);
+}
+
+void platform_timer_start(void)
+{
+    if (HAL_TIM_Base_Start_IT(&htim2) != HAL_OK) Error_Handler();
+}
+
+void platform_adc_start(volatile uint16_t* samples)
+{
+    if (HAL_ADC_Start_DMA(&hadc1, (uint32_t*)samples, 2) != HAL_OK) Error_Handler();
+}
+
+void platform_adc_stop(void)
+{
+    if (HAL_ADC_Stop_DMA(&hadc1) != HAL_OK) Error_Handler();
+}
+
+void platform_led_toggle(void) { HAL_GPIO_TogglePin(LED_USER_GPIO_Port, LED_USER_Pin); }
+void platform_sleep(void) { HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI); }
+uint32_t platform_ticks(void) { return HAL_GetTick(); }
+void platform_error(void) { Error_Handler(); }
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* adc)
+{
+    if (adc == &hadc1) app_adc_complete();
+}
+
+void HAL_ADC_ErrorCallback(ADC_HandleTypeDef* adc)
+{
+    if (adc == &hadc1) Error_Handler();
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer)
+{
+    if (timer == &htim2) app_timer_event();
+}
+
+void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef* rtc)
+{
+    if (rtc == &hrtc) app_rtc_event();
 }

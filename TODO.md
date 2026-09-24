@@ -6,6 +6,14 @@
 
 ## Ближайшие шаги
 
+- [x] Проверить исправленную генерацию F030R8, подключить offline-сборку и
+  вынести HAL-вызовы общего User в Platform; добавить однократную калибровку ADC
+  и расчёт по TS_CAL1 (одна температурная точка).
+- [ ] F030R8: target/identity/Cortex-M0 диагностика, HAL contracts, параметризация
+  Python-сценариев (hadc/TIM3), локальный stand и согласованная HW-проверка.
+  Подробности: profiles/f030r8/README.md.
+
+
 - [ ] Развить full-image: offline экспорт/VS Code, CRC-поле и сравнение с MCU CRC,
   проверка ST GDB Server и политика соседних Flash-разделов (docs/FULL_IMAGE_CRC.md).
 

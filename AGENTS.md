@@ -115,3 +115,9 @@
   Контейнер program.elf грузить вместе с symbol-file исходного firmware.elf.
   Host65, A5/FF/verify-only/restore и GPIO после реальной записи проверены на двух
   стендах. Снимать env image policy для обычного режима; docs/FULL_IMAGE_CRC.md.
+
+- F030R8: offline preset f030r8-debug, CubeF0 V1.11.6, LED PA5 active-high,
+  hadc/TIM3, ADC scan IN16/17. HW пока заблокирован без target/contracts/M0 review.
+  TS_CAL1 + типовой slope, quality=3; не читать TS_CAL2 по общему LL header.
+  User HAL-free, Platform обслуживает HAL callbacks через app_* callbacks.
+  Не копировать Python-ожидания hadc1/TIM2 в F030; плата ещё не подключена.

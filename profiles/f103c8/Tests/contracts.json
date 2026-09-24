@@ -195,7 +195,7 @@
     },
     "clock_macros": {
       "macros": {
-        "context": "loop",
+        "context": "platform_adc_start",
         "expressions": [
           "RCC_CFGR_SWS_Msk",
           "RCC_CFGR_SWS_Pos",
@@ -213,7 +213,7 @@
     },
     "gpio_macros": {
       "macros": {
-        "context": "loop",
+        "context": "platform_adc_start",
         "expressions": [
           "__HAL_RCC_GPIOB_IS_CLK_ENABLED()",
           "GPIO_CRL_MODE2_Msk",
@@ -226,7 +226,7 @@
     },
     "tim_init_macros": {
       "macros": {
-        "context": "setup",
+        "context": "platform_adc_prepare",
         "expressions": [
           "__HAL_TIM_GET_AUTORELOAD(&htim2)",
           "TIM_CR1_CEN"

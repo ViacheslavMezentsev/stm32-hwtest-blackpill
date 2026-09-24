@@ -4,23 +4,23 @@ def boot(t, expected):
     t.reach("loop")
 
 def clock(t, expected):
-    t.reach("loop")
+    t.reach("platform_adc_start")
     t.check("SystemCoreClock", t.value("SystemCoreClock"), 8000000)
     for name, expression, value in expected["clock"]:
         t.check(name, t.value(expression), value)
 
 
 def gpio(t, expected):
-    t.reach("loop")
+    t.reach("platform_adc_start")
     for name, expression, value in expected["gpio"]:
         t.check(name, t.value(expression), value)
 
 
 def blink(t, expected):
-    t.reach("loop")
+    t.reach("platform_adc_start")
     tick = t.value("uwTick")
     for level in (1 - expected["led_initial"], expected["led_initial"]):
-        t.reach("loop")
+        t.reach("platform_adc_start")
         t.check("LED pin toggled", t.value(expected["led_level"]), level)
         next_tick = t.value("uwTick")
         delta = (next_tick - tick) & 0xFFFFFFFF

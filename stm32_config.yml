@@ -46,3 +46,11 @@ profiles:
     sources: [profiles/f401cc/Core, User, profiles/f401cc/Platform, profiles/f401cc/Core/Src/system_stm32f4xx.c, profiles/f401cc/startup_stm32f401xc.s]
     include_directories: [profiles/f401cc/Core/Inc, User/Inc]
     linker_script: profiles/f401cc/STM32F401xx_FLASH.ld
+  f030r8:
+    ioc_file: profiles/f030r8/stm32-hwtest-nucleo-f030r8.ioc
+    project_name: stm32-hwtest-nucleo-f030r8
+    mcu: STM32F030R8T6
+    cubefw_package: V1.11.6
+    sources: [profiles/f030r8/Core, User, profiles/f030r8/Platform, profiles/f030r8/Core/Src/system_stm32f0xx.c, profiles/f030r8/startup_stm32f030x8.s]
+    include_directories: [profiles/f030r8/Core/Inc, User/Inc]
+    linker_script: profiles/f030r8/STM32F030xx_FLASH.ld

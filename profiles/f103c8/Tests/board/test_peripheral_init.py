@@ -4,7 +4,7 @@ from stm32_gdbtest import case
 
 @case("HW_ADC_DMA_INIT", labels=("adc", "dma", "init"))
 def adc_dma_init(t):
-    t.reach("setup")
+    t.reach("platform_adc_prepare")
     t.fields("hadc1", {"Instance": "ADC1", "Init.NbrOfConversion": 2,
                        "Init.ContinuousConvMode": 0, "Init.ScanConvMode": "ADC_SCAN_ENABLE"})
     t.check("ADC sequence length", (t.value("ADC1->SQR1") >> 20) & 15, 1)
@@ -24,7 +24,7 @@ def adc_dma_init(t):
 
 @case("HW_TIM2_INIT", labels=("tim", "init"), contracts=("tim_init_macros",))
 def tim2_init(t):
-    t.reach("setup")
+    t.reach("platform_adc_prepare")
     t.check("TIM2 prescaler", t.value("TIM2->PSC"), 7999)
     t.check("TIM2 period", t.value("__HAL_TIM_GET_AUTORELOAD(&htim2)"), 99)
     t.check("TIM2 not started", t.value("TIM2->CR1 & TIM_CR1_CEN"), 0)
@@ -32,7 +32,7 @@ def tim2_init(t):
 
 @case("HW_RTC_INIT", labels=("rtc", "init"))
 def rtc_init(t):
-    t.reach("setup")
+    t.reach("platform_adc_prepare")
     t.check("RTC source LSI", (t.value("RCC->BDCR") >> 8) & 3, 2)
     t.check("RTC clock enabled", (t.value("RCC->BDCR") >> 15) & 1, 1)
     t.check("LSI ready", (t.value("RCC->CSR") >> 1) & 1, 1)

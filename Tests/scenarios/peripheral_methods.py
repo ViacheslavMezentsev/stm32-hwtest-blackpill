@@ -8,7 +8,7 @@ def gpio_arguments(t, expected):
         "Pull": "GPIO_NOPULL",
         "Speed": "GPIO_SPEED_FREQ_LOW",
     })
-    t.reach("loop")
+    t.reach("platform_adc_start")
     t.check("LED mode applied", t.value(expected["gpio_mode_expression"]), expected["gpio_mode"])
 
 def gpio_filtered_call(t, expected):
@@ -16,7 +16,7 @@ def gpio_filtered_call(t, expected):
     t.reach("HAL_GPIO_TogglePin",
             when=f"GPIOx == {expected['led_port']} && GPIO_Pin == {expected['led_pin']} && ({expected['led_level']}) == {1 - initial}")
     t.check("ODR before selected toggle", t.value(expected["led_level"]), 1 - initial)
-    t.reach("loop")
+    t.reach("platform_adc_start")
     t.check("ODR after selected toggle", t.value(expected["led_level"]), initial)
 
 

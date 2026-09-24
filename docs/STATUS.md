@@ -20,6 +20,22 @@ H503 приостановлен: генерация сохранена, проф
 Для каждого аппаратного запуска явно выбирать profile и локальный stand TOML.
 Перед сменой платы/отладчика/проводки согласовать замену. UART/VCOM не подключён.
 
+## F030R8 и граница User/Platform
+
+[NUCLEO-F030R8](../profiles/f030r8/README.md) добавлен как offline build:
+GCC13/CubeF0 V1.11.6, Flash 11348 B / 64 KiB, RAM 1888 B / 8 KiB
+(включая linker reserve heap/stack). Плата не подключена, HW не заявлен;
+ENABLE_HW_TESTING отклоняется до подготовки target/contracts/M0 диагностики.
+GDB без подключения нашёл app/Platform callbacks и LED/ADC macros в Platform.
+
+User теперь не включает HAL. Адаптеры четырёх профилей обслуживают ADC/DMA,
+таймер, LED/Sleep и перенаправляют HAL callbacks в app_*.
+Native ADC: прежние формулы и F030 single-point, корректные и неверные входы — PASS.
+Собраны F030/F103/F401/F411. После исправления контекста макросов повторены
+F411CE/ST-Link/OpenOCD 22/22 и F103C8/J-Link 22/22; оба MCU оставлены running.
+Прогоны выполнены в режиме ELF load sections. Новые HW-проверки F401 и F030 ещё ожидаются.
+См. [наблюдение о контексте макросов](STM32_TESTING_METHODS.md#контекст-hal-макросов-после-отделения-platform).
+
 ## Что проверено
 
 Отдельный [PoC К1921ВГ015](K1921VG015_POC.md): bare-metal blink PC0, RISC-V GDB-Python,

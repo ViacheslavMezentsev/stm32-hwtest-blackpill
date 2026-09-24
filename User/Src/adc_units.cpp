@@ -38,3 +38,15 @@ AdcReading adc_convert_factory( uint16_t temperature, uint16_t reference, uint16
     if ( degrees < INT32_MIN || degrees > INT32_MAX ) return {};
     return { vdda, int32_t( degrees ), ADC_FACTORY };
 }
+
+AdcReading adc_convert_single_point( uint16_t temperature, uint16_t reference, uint16_t reference_cal, uint16_t temperature_cal )
+{
+    if ( !valid_raw( temperature ) || !valid_raw( reference ) || !valid_raw( reference_cal ) || !valid_raw( temperature_cal ) ) return {};
+    // F030 DS9773: TS_CAL1 at 30 C / 3.3 V; negative typical slope 4.3 mV/C.
+    // VDDA uses factory VREFINT_CAL; temperature still relies on a typical slope.
+    const uint32_t vdda = 3300U * reference_cal / reference;
+    if ( !valid_supply( vdda ) ) return {};
+    const int64_t delta   = ( int64_t( temperature_cal ) * reference - int64_t( temperature ) * reference_cal ) * 3300000000LL;
+    const int32_t degrees = 30000 + delta / ( 4095LL * reference * 4300LL );
+    return { vdda, degrees, ADC_FACTORY_SINGLE_POINT };
+}

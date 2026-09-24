@@ -7,6 +7,16 @@
 
 ### Added
 
+- Offline-профиль NUCLEO-F030R8 (CubeF0 V1.11.6), preset f030r8-debug,
+  PA5 LED и TIM3/ADC/RTC адаптер; инструкции и ограничения в README профиля.
+- Расчёт F030 по TS_CAL1 и VREFINT_CAL с типовым наклоном, отдельный quality=3
+  и native-проверки. Общий User освобождён от HAL/имён дескрипторов;
+  аппаратные вызовы и HAL callbacks теперь принадлежат Platform.
+- HAL macro contracts и точки наблюдения перенесены из User в Platform:
+  регрессия F411/OpenOCD 22/22 и F103/J-Link 22/22, native ADC PASS.
+  Ограничение контекста -g3 описано в STM32_TESTING_METHODS.md.
+
+
 - Политики полного 16-KiB образа для F411CE/F103C8 и новая версия stm32-gdbtest:
   canonical BIN/ELF-контейнер, readback всех байтов и CRC-32/ISO-HDLC на ПК.
   A5/FF отрицательный опыт, verify-only, восстановление и HAL-макросы после load
