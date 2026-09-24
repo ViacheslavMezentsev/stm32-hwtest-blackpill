@@ -5,6 +5,13 @@
 
 ## [Unreleased]
 
+### Added
+
+- Политики полного 16-KiB образа для F411CE/F103C8 и новая версия stm32-gdbtest:
+  canonical BIN/ELF-контейнер, readback всех байтов и CRC-32/ISO-HDLC на ПК.
+  A5/FF отрицательный опыт, verify-only, восстановление и HAL-макросы после load
+  проверены на F411/OpenOCD и F103/J-Link; host65. Протокол FULL_IMAGE_CRC.md.
+
 ### Fixed
 
 - Обновлён stm32-gdbtest: Flash проверяется по загружаемым секциям ELF/LMA,

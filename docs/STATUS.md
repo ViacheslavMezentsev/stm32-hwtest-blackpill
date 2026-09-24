@@ -93,3 +93,11 @@ Production-код модуля не изменён.
 имеет gap-fill 0xFF. Host53/53, F411/OpenOCD22/22, F103/J-Link22/22; штатный
 CTest HW_BOOT после обновления подмодуля PASS на обоих. Полный образ/CRC —
 следующий отдельный этап. [Протокол и границы доказательства](ELF_LOAD_REGIONS.md).
+
+## Полный образ, 2026-09-25
+
+Полные 16 KiB, fillFF, canonical BIN/ELF-контейнер и CRC-32/ISO-HDLC по readback
+проверены на F411/OpenOCD и F103/J-Link. Host65/65; HW_BOOT/HW_GPIO, реальная
+перезапись A5/FF, ожидаемый ERROR verify-only и восстановление PASS.
+CRC не вычислялся периферией MCU, прошивка не менялась; полный набор22 в этом
+этапе не повторялся. [Протокол и команды](FULL_IMAGE_CRC.md).

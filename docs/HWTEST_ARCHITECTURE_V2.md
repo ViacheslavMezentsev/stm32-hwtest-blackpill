@@ -134,3 +134,11 @@ MCU identity/memory adapter и проверка ELF по load regions. STM32-я�
 Проверка полной области/CRC требует отдельного контракта и режима записи.
 [Механизм модуля](../modules/stm32-gdbtest/docs/IMAGES.md),
 [проверки на текущих STM32-стендах](ELF_LOAD_REGIONS.md).
+
+### Полный образ как отдельный вход runner
+
+Опциональный TOML image policy задаёт диапазон и fill. Ядро создаёт canonical BIN
+и односекционный ELF для GDB, сохраняет исходный ELF для символов, сравнивает весь
+readback и CRC-32/ISO-HDLC на ПК. Это не MCU CRC и не встроенное CRC-поле firmware.
+Умолчание остаётся load sections. [Контракт](../modules/stm32-gdbtest/docs/IMAGES.md),
+[реальная проверка](FULL_IMAGE_CRC.md).

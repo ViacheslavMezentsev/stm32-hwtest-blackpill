@@ -39,7 +39,7 @@
 - Проектные сценарии Tests/scenarios, @case/ожидания/контракты — profiles/<MCU>/Tests.
   Не переносить app-specific логику в ядро. API/CLI/contracts/macros описаны в модуле.
   CLI приложения: python -B tools/gdbtest.py. Host ядра: python -B tools/test_module_host.py
-  (53 теста в отдельных build/module-host копиях). CMake attach здесь без SELF_TESTS.
+  (65 тестов в отдельных build/module-host копиях). CMake attach здесь без SELF_TESTS.
 - Manifest привязывает ELF и target.toml после линковки; после смены toolchain чистая
   сборка. Runtime metadata, build manifest и ELF/HAL preflight — разные доказательства.
   Source review hashes не обновлять без анализа HAL. F1/F4 RCC различаются const.
@@ -106,5 +106,12 @@
   Не выводить безопасность по одному успешному запуску или single-step.
 
 - ELF load sections: LMA, Flash bounds до сервера, BIN gap-fill 0xFF.
-  image_verified не означает проверку gaps/full-image CRC. Модуль docs/IMAGES.md;
+  В режиме секций image_verified не означает проверку gaps/full-image CRC. Модуль docs/IMAGES.md;
   текущий протокол docs/ELF_LOAD_REGIONS.md: host53, F411/OpenOCD22 и F103/J-Link22.
+
+- Опциональный full-image: profiles/f411ce и f103c8/full-image.toml, первые16KiB,
+  fillFF. CLI --image-policy или абсолютный STM32_GDBTEST_IMAGE_POLICY; по умолчанию
+  остаются секции. CRC считается на ПК по readback, не MCU peripheral.
+  Контейнер program.elf грузить вместе с symbol-file исходного firmware.elf.
+  Host65, A5/FF/verify-only/restore и GPIO после реальной записи проверены на двух
+  стендах. Снимать env image policy для обычного режима; docs/FULL_IMAGE_CRC.md.

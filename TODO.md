@@ -6,8 +6,11 @@
 
 ## Ближайшие шаги
 
+- [ ] Развить full-image: offline экспорт/VS Code, CRC-поле и сравнение с MCU CRC,
+  проверка ST GDB Server и политика соседних Flash-разделов (docs/FULL_IMAGE_CRC.md).
+
 - [x] Завершить аппаратные опыты К1921; вернуться к F411CE/ST-Link и F103C8/J-Link.
-- [ ] Ввести отдельный режим полного образа: диапазон, fill/pad, одинаковая загрузка
+- [x] Ввести отдельный режим полного образа: диапазон, fill/pad, одинаковая загрузка
   debug/programming, сплошной readback и согласованный CRC-контракт (docs/ELF_LOAD_REGIONS.md).
 
 - [x] Воспроизвести errata К1921ВГ015 на from_chars: xPack 13/14, CloudBEAR 14.1.0.7,

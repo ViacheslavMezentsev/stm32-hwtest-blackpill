@@ -10,6 +10,7 @@
 | Текущее состояние и точный объём проверки | [стенд](STATUS.md), [модуль](../modules/stm32-gdbtest/docs/STATUS.md) |
 | Эксперимент переноса на RISC-V | [К1921ВГ015 PoC](K1921VG015_POC.md), [пример](../examples/k1921vg015-poc/README.md) |
 | Проверка errata и библиотек RISC-V | [from_chars / К1921ВГ015](K1921VG015_ERRATA.md) |
+| Полный образ / CRC по readback | [проверка на стендах](FULL_IMAGE_CRC.md), [политика модуля](../modules/stm32-gdbtest/docs/IMAGES.md) |
 | ELF load sections и полный образ/CRC | [протокол](ELF_LOAD_REGIONS.md), [контракт модуля](../modules/stm32-gdbtest/docs/IMAGES.md) |
 | API/CLI/CMake, миграция namespace | [модуль: API](../modules/stm32-gdbtest/docs/API.md) |
 | Ручное и агентное написание тестов | [модуль: TEST_AUTHORING](../modules/stm32-gdbtest/docs/TEST_AUTHORING.md) |
