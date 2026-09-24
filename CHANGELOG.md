@@ -7,6 +7,12 @@
 
 ### Changed
 
+- F411CE/ST-Link: новая identity/Flash политика подтверждена аппаратно, OpenOCD
+  и ST server strict 24/24 PASS, DEV_ID/Flash совпадают; live Sleep PASS.
+- Отдельный опыт check_f411_macros.py подтвердил вычисление HAL-предикатов
+  GPIOC/ADC1/SPI1 из ELF через GDB. Описаны контекст макросов, именованные маски
+  и независимые проверки регистров; штатные сценарии пока не переписывались.
+
 - Второй экземпляр F401CC: DEV_ID0x423/Flash256K, штатный OpenOCD 24/24 PASS.
   ST server/strict после USB-сбоя и переподключения также 24/24 PASS, live Sleep PASS.
   Неудачный прогон (9 ERROR до сервера) сохранён, результаты отделены от первой платы.

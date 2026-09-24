@@ -297,3 +297,8 @@ strict останавливает до Flash. Затем читается зав
 DEV_ID совпадает (0x410), ёмкость128 KiB против профиля64 KiB предупреждает,
 не расширяя выбранную карту памяти. Проверенные комбинации и ограничения:
 [TARGET_IDENTITY](TARGET_IDENTITY.md).
+
+F411CE/ST-Link также проверен с новой identity/Flash политикой: OpenOCD/ST server
+strict24/24 PASS. Эксперимент function-like HAL macros подтверждён отдельным
+сценарием; включение macro contracts в offline preflight остаётся планом.
+[Методика](STM32_TESTING_METHODS.md#hal-макросы-в-gdb-проверка-на-f411ce).

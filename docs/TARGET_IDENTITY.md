@@ -136,3 +136,22 @@ BluePill/J-Link не трогали.
 live-retry/result.json;
 полные журналы находятся по путям из summary. Первый полный успешный OpenOCD
 прогон подтверждает стандартный f401cc на экземпляре с ожидаемым DEV_ID.
+
+## F411CE после переключения ST-Link (2026-09-24)
+
+Подтверждённая владельцем F411CE/ST-Link, обычный f411ce-check-hw, strict:
+OpenOCD **24/24 PASS**, ST GDB Server **24/24 PASS**. В каждом наборе 22 HW,
+248 проверок и два host CTest (35 unittest). DEV_ID0x431 и Flash512 KiB совпадают;
+предупреждений нет. Новая Flash guard теперь аппаратно проверена на всех трёх
+активных профилях. Наборы не проверяют всю ёмкость памяти.
+
+ELF SHA-256: `dedd1d59c9fadd1ce32c715016260344eb2b33da5c1f92ee14032810672b3009`,
+образ12220 байт уже совпал с Flash; запись не потребовалась. ADC: 3300mV,
+26838m°C (OpenOCD) / 27155m°C (ST), FACTORY. После ST live OpenOCD/strict PASS:
+Sleep29/30, tick+1413ms, S_HALT не наблюдался, SLEEPDEEP=0. Плата оставлена
+работающей; BluePill/J-Link не использовалась.
+
+Отдельный опыт чтения HAL-макросов через GDB на этом же ELF — PASS;
+методика и ограничения: [STM32_TESTING_METHODS](STM32_TESTING_METHODS.md#hal-макросы-в-gdb-проверка-на-f411ce).
+Он не добавлен к числу штатных сценариев. Локальные данные:
+build/f411ce-debug-hwtest/hwtest/runs, build/f411ce-macros, build/f411ce-identity-live.

@@ -3,9 +3,8 @@
 ## Ближайшие этапы и требуемые стенды
 
 Перед каждым аппаратным набором объявляются плата, отладчик, сервер и соединения.
-У ST-Link сейчас **второй экземпляр F401CC**, DEV_ID0x423/Flash256K. OpenOCD
-24/24 PASS; ST server/strict после переподключения USB тоже 24/24 PASS,
-live Sleep подтверждён; см. docs/TARGET_IDENTITY.md.
+У ST-Link сейчас **F411CE**, DEV_ID0x431/Flash512K; новая политика проверена
+через OpenOCD и ST server, оба strict 24/24 PASS. См. docs/TARGET_IDENTITY.md.
 **BluePill F103 + J-Link** остаётся подключённой. UART/VCOM не требуется.
 Физическое переключение отладчиков — только после подтверждения владельца.
 
@@ -33,7 +32,9 @@ H503 остаётся отложенным до сообщения владел�
 
 - [x] Сделать f401cc штатным профилем: общая warn/strict политика DEV_ID, Flash capacity guard, JSON/JUnit warnings. OpenOCD/ST server 24/24, live Sleep PASS.
 - [x] Проверить новую политику/Flash на F103/J-Link: 24/24, strict boot PASS; DEV_ID совпал, Flash128K при профиле64K предупреждает.
-- [ ] Проверить новую политику/чтение Flash на F411 после согласованной замены платы у ST-Link.
+- [x] Проверить новую политику/Flash на F411: OpenOCD и ST server strict 24/24, DEV_ID0x431/Flash512K совпадают; live Sleep PASS.
+- [x] Подтвердить HAL function-like макросы через GDB на F411, сохранить отдельный опыт.
+- [ ] Перевести clock-enable проверки на HAL-предикаты, заменить численные mask/shift на CMSIS там, где уместно; добавить macro preflight с явным исходным контекстом.
 
 - [x] По запросу владельца проверить f401cc «как есть» с отдельным identity override: три init PASS, boot/clock timeout, найдены дубли setup/loop.
 - [x] Удалить дубли setup/loop в USER CODE f401cc: 22/22 HW PASS, два host CTest PASS; ADC channel16 даёт правдоподобную температуру, live Sleep PASS.
