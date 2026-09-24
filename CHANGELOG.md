@@ -7,6 +7,9 @@
 
 ### Added
 
+- F401_PROFILE_AUDIT.md: аудит пользовательского F401CC, отличия вариантов WeAct,
+  исправления CubeMX и недостающие части интеграции; профиль пока не готов к HWTEST.
+
 - F411: семь HAL-контрактов, собственный reviewed-source hash RCC, const-указатели
   в общем preflight; offline-регрессия F1/F4 включает отрицательный const-вариант.
 - BlackPill/ST-Link: по 24/24 CTest через OpenOCD и ST GDB Server на одном ELF,
