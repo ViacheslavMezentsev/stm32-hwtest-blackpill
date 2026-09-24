@@ -46,3 +46,5 @@
 - F411/ST-Link: OpenOCD 0.12.0 и ST server 7.14.0 дали 24/24 на одном ELF; timeout/recovery проверены. Для ST выбирать blackpill-stlink.local.toml, для OpenOCD — blackpill.local.toml. Локальный serial обновлён под подключённый ST-Link, не переносить его в Git.
 
 - Имена профилей теперь f103c8/f401cc/f411ce/h503cb. Для F411 presets имеют префикс f411ce-, старые build не переиспользовать. F401CC собран/offline проверен, HW ожидает подтверждения переключения ST-Link. ADC temperature channel16 (F411 channel18), DEV_ID0x423 для F401xB/C, Flash256K/RAM64K. См. docs/PROFILE_MIGRATION.md. Обновление stm32-cmake-yml запрошено, fetch дважды не прошёл; gitlink сохранён.
+
+- Текущий ST-Link: владелец заменил плату и подтвердил маркировку STM32F401CCU6, но OpenOCD читает IDCODE0x10006431 и FLASHSIZE256K; CubeProgrammer владельца подтверждает. Прошивки/сценариев на этом экземпляре ещё не было. Это расхождение требует отдельной экспериментальной конфигурации, не ослаблять identity f401cc и не выбирать f411ce с 512K автоматически. BluePill/J-Link остаётся подключённой. Актуальный статус и план: docs/PROFILE_MIGRATION.md; эти сведения заменяют прежнее описание F411 у ST-Link.
