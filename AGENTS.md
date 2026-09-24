@@ -39,7 +39,7 @@
 - Проектные сценарии Tests/scenarios, @case/ожидания/контракты — profiles/<MCU>/Tests.
   Не переносить app-specific логику в ядро. API/CLI/contracts/macros описаны в модуле.
   CLI приложения: python -B tools/gdbtest.py. Host ядра: python -B tools/test_module_host.py
-  (44 теста в отдельных build/module-host копиях). CMake attach здесь без SELF_TESTS.
+  (53 теста в отдельных build/module-host копиях). CMake attach здесь без SELF_TESTS.
 - Manifest привязывает ELF и target.toml после линковки; после смены toolchain чистая
   сборка. Runtime metadata, build manifest и ELF/HAL preflight — разные доказательства.
   Source review hashes не обновлять без анализа HAL. F1/F4 RCC различаются const.
@@ -56,8 +56,8 @@
 
 ## Стенды и доказательства
 
-- Для последнего опыта владелец подтвердил К1921ВГ015 + J-Link EDU v11, полный JTAG.
-  STM32-стенды в этом этапе не использовались; не выбирать прежний F103/J-Link автоматически.
+- Текущие стенды подтверждены владельцем: F411CE + ST-Link/SWD и F103C8 + J-Link/SWD.
+  Опыты К1921ВГ015 завершены, его стенд разобран; не запускать его HW-команды.
   Перед каждым HW набором назвать плату/MCU, отладчик, backend и соединения, явно
   сказать оставить или изменить стенд. При подтверждённом текущем стенде повторное
   разрешение не нужно; смена требует ответа владельца. USB не подтверждает разводку.
@@ -104,3 +104,7 @@
   CloudBEAR требует полного march для multilib; ключ приложения не исправляет архивы.
   HW series восстанавливает blink; OBSERVED не означает отсутствие ошибок.
   Не выводить безопасность по одному успешному запуску или single-step.
+
+- ELF load sections: LMA, Flash bounds до сервера, BIN gap-fill 0xFF.
+  image_verified не означает проверку gaps/full-image CRC. Модуль docs/IMAGES.md;
+  текущий протокол docs/ELF_LOAD_REGIONS.md: host53, F411/OpenOCD22 и F103/J-Link22.
