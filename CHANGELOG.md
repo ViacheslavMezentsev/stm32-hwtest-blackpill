@@ -7,6 +7,10 @@
 
 ### Changed
 
+- Второй экземпляр F401CC: DEV_ID0x423/Flash256K, штатный OpenOCD 24/24 PASS.
+  ST server/strict после USB-сбоя и переподключения также 24/24 PASS, live Sleep PASS.
+  Неудачный прогон (9 ERROR до сервера) сохранён, результаты отделены от первой платы.
+
 - BluePill F103C8/J-Link: новая identity/Flash политика проверена аппаратно,
   24/24 CTest PASS. DEV_ID0x410 совпадает, Flash-регистр сообщает 128 KiB при
   профиле64 KiB: warning без расширения linker. Strict boot PASS; после сервера

@@ -14,7 +14,8 @@
 > Обновление имён и новый f401cc: [PROFILE_MIGRATION](PROFILE_MIGRATION.md).
 > F401CC — штатный профиль: 24/24 CTest через OpenOCD и ST server на текущем
 > экземпляре (маркировка F401CC, DEV_ID0x431). Общая политика warn/strict и проверка
-> Flash: [TARGET_IDENTITY](TARGET_IDENTITY.md). Результаты на DEV_ID0x423 ещё ожидаются.
+> Flash: [TARGET_IDENTITY](TARGET_IDENTITY.md). Второй экземпляр с DEV_ID0x423 также прошёл OpenOCD 24/24;
+> ST server/strict после переподключения USB тоже 24/24 PASS, live Sleep PASS.
 
 ## 1. Назначение и текущий масштаб
 
