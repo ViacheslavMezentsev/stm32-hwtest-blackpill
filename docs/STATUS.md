@@ -20,11 +20,12 @@ H503 приостановлен: генерация сохранена, проф
 Для каждого аппаратного запуска явно выбирать profile и локальный stand TOML.
 Перед сменой платы/отладчика/проводки согласовать замену. UART/VCOM не подключён.
 
-## F429ZI: подготовка без платы
+## F429ZI через встроенный ST-Link/V2
 
 [STM32F429I-DISCO](../profiles/f429zi/README.md): сборка GCC13/CubeF4 V1.28.3,
 Flash 12744 B, SRAM 1896 B, CCM 0. Подготовлены 22 сценария / 10 контрактов;
-traceability и offline ELF/HAL preflight PASS. Аппаратные тесты не запускались.
+traceability и offline ELF/HAL preflight PASS. Через OpenOCD выполнены 22/22 HW,
+весь CTest 25/25, LD3 подтверждён. [Протокол](F429_OPENOCD_VALIDATION.md).
 
 ## F030R8 и граница User/Platform
 

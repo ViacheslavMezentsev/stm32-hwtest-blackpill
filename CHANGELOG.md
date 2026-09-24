@@ -7,6 +7,9 @@
 
 ### Added
 
+- STM32F429I-DISCO/ST-Link V2/OpenOCD: 22/22 аппаратных сценария и 3/3 host
+  проверки PASS, DEV_ID0x419/Flash2MiB, LD3 подтверждён; протокол F429_OPENOCD_VALIDATION.md.
+
 - Профиль f429zi для старой STM32F429I-DISCO: сборка, Platform, 22 сценария,
   10 HAL-контрактов и шаблон OpenOCD. Traceability/offline PASS, HW ожидается.
   RTC исправлен на 127/249 в IOC и генерации; TIM2 7999/99 подтверждён.

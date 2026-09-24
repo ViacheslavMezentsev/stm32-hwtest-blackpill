@@ -128,5 +128,5 @@
 - F429ZI: STM32F429I-DISCO (старый ST-Link/V2), IOC template DISC1 сохранён.
   PG13/LD3 active-high, PLL SYSCLK64/AHB8 → HCLK8, APB1/2=8 МГц, ADC4 МГц.
   TIM2 7999/99, RTC127/249, ADC IN18/17; factory30/110°C. Сборка/offline PASS,
-  22 HW сценария пока не запускались. Перед HW дождаться подтверждения подключения;
+  22/22 HW PASS, LD3 подтверждён. Стенд подключён и подтверждён владельцем;
   stand disco-f429zi.local.toml, OpenOCD. DMA-буфер только SRAM, не CCM.

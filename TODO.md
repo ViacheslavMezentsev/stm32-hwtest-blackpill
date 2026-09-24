@@ -7,7 +7,7 @@
 ## Ближайшие шаги
 
 - [x] F429ZI DISCO: сверить IOC, добавить Platform/сборку/22 сценария и 10 контрактов; offline PASS.
-- [ ] F429ZI: согласовать подключение встроенного ST-Link, проверить identity/boot/LD3, затем ADC/DMA/TIM2/RTC/Sleep и инъекции.
+- [x] F429ZI: встроенный ST-Link/OpenOCD, identity/boot/LD3, ADC/DMA/TIM2/RTC/Sleep и инъекции: 22/22 HW, LD3 подтверждён.
 - [ ] F429ZI: отдельно спланировать SDRAM/FMC, LCD/LTDC/DMA2D и ограничения DMA/CCM; текущая минимальная прошивка их не включает.
 
 - [x] Проверить исправленную генерацию F030R8, подключить offline-сборку и
