@@ -6,6 +6,11 @@
 
 ## Ближайшие шаги
 
+- [x] Воспроизвести errata К1921ВГ015 на from_chars: xPack 13/14, CloudBEAR 14.1.0.7,
+  дизассемблирование, nop/RAM-контроли; протокол docs/K1921VG015_ERRATA.md.
+- [ ] Для переносимого ядра учитывать hashes/multilib библиотек, linker placement
+  и errata MCU; проверять готовые архивы отдельно от флагов приложения.
+
 - [x] Bare-metal PoC К1921ВГ015/J-Link EDU v11/JTAG: blink, Target API, conditional BP,
   Flash regions, FAIL, timeout/recovery и повторный PASS; видимый LED подтверждён.
 - [ ] По результатам PoC описать интерфейсы toolchain/transport, MCU identity/memory

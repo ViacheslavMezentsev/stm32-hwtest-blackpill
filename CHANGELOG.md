@@ -7,6 +7,10 @@
 
 ### Added
 
+- Диагностический пример errata К1921ВГ015: from_chars в xPack 13/14 и CloudBEAR
+  14.1.0.7 с -mfix-cloudbear-0001, nop/RAM-контроли и точные битовые результаты.
+  Протокол K1921VG015_ERRATA.md содержит варианты обхода и границы доказательства.
+
 - Bare-metal пример К1921ВГ015 (RV32, PC0 blink) с read-only внешним SDK, presets и
   экспериментальным GDB-Python lifecycle через J-Link EDU v11/JTAG.
 - Переиспользованы неизменённые Target API и блокировки stm32-gdbtest: 23 проверки

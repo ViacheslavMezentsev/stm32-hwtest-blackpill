@@ -98,3 +98,9 @@
   generic trap_entry как fault trap. Полный runner/schema/IRQ/force_return/low-power
   пока не портированы; протокол docs/K1921VG015_POC.md. У серверного процесса должен
   быть доступ к определениям K1921VG015 в пользовательском окружении SEGGER.
+
+- Диагностика errata К1921 — examples/k1921vg015-errata; намеренно отдельный
+  измерительный firmware, обычный blink не менять. Протокол K1921VG015_ERRATA.md.
+  CloudBEAR требует полного march для multilib; ключ приложения не исправляет архивы.
+  HW series восстанавливает blink; OBSERVED не означает отсутствие ошибок.
+  Не выводить безопасность по одному успешному запуску или single-step.

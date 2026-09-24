@@ -1,0 +1,85 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "gcc13",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/../../build/k1921-errata-gcc13",
+      "toolchainFile": "${sourceDir}/cmake/riscv-gcc.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "RISCV_TOOLCHAIN_ROOT": "$env{USERPROFILE}/xpack-riscv-none-elf-gcc-13.3.0-2"
+      }
+    },
+    {
+      "name": "gcc14",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/../../build/k1921-errata-gcc14",
+      "toolchainFile": "${sourceDir}/cmake/riscv-gcc.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "RISCV_TOOLCHAIN_ROOT": "$env{USERPROFILE}/xpack-riscv-none-elf-gcc-14.2.0-3"
+      }
+    },
+    {
+      "name": "cloudbear14",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/../../build/k1921-errata-cloudbear14",
+      "toolchainFile": "${sourceDir}/cmake/riscv-gcc.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "RISCV_TOOLCHAIN_ROOT": "$env{USERPROFILE}/riscv_gnu_toolchain_elf-14.1.0.7/riscv-gnu-toolchain-elf",
+        "RISCV_PREFIX": "riscv64-unknown-elf",
+        "CLOUDBEAR_FIX": true,
+        "RISCV_ARCH": "rv32imfc_zicsr_zifencei_zba_zbb_zbc_zbs"
+      }
+    },
+    {
+      "name": "gcc14-ram",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/../../build/k1921-errata-gcc14-ram",
+      "toolchainFile": "${sourceDir}/cmake/riscv-gcc.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "RISCV_TOOLCHAIN_ROOT": "$env{USERPROFILE}/xpack-riscv-none-elf-gcc-14.2.0-3",
+        "FROM_CHARS_RODATA_RAM": true
+      }
+    },
+    {
+      "name": "cloudbear14-ram",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/../../build/k1921-errata-cloudbear14-ram",
+      "toolchainFile": "${sourceDir}/cmake/riscv-gcc.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "RISCV_TOOLCHAIN_ROOT": "$env{USERPROFILE}/riscv_gnu_toolchain_elf-14.1.0.7/riscv-gnu-toolchain-elf",
+        "RISCV_PREFIX": "riscv64-unknown-elf",
+        "CLOUDBEAR_FIX": true,
+        "RISCV_ARCH": "rv32imfc_zicsr_zifencei_zba_zbb_zbc_zbs",
+        "FROM_CHARS_RODATA_RAM": true
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "gcc13",
+      "configurePreset": "gcc13"
+    },
+    {
+      "name": "gcc14",
+      "configurePreset": "gcc14"
+    },
+    {
+      "name": "cloudbear14",
+      "configurePreset": "cloudbear14"
+    },
+    {
+      "name": "gcc14-ram",
+      "configurePreset": "gcc14-ram"
+    },
+    {
+      "name": "cloudbear14-ram",
+      "configurePreset": "cloudbear14-ram"
+    }
+  ]
+}
