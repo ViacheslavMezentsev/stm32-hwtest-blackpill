@@ -7,6 +7,10 @@
 
 ### Added
 
+- Профиль f429zi для старой STM32F429I-DISCO: сборка, Platform, 22 сценария,
+  10 HAL-контрактов и шаблон OpenOCD. Traceability/offline PASS, HW ожидается.
+  RTC исправлен на 127/249 в IOC и генерации; TIM2 7999/99 подтверждён.
+
 - NUCLEO-F030R8/J-Link STLink/SWD: прошли 17/17 сценариев, LD2 подтверждён;
   обновлён подмодуль (mapping F030/J-Link), добавлены шаблон и протокол
   F030_JLINK_VALIDATION.md. Host65 и повторный pinned boot/offline — PASS.

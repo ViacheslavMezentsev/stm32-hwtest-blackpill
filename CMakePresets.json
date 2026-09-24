@@ -108,6 +108,23 @@
       "cacheVariables": {
         "ENABLE_HW_TESTING": true
       }
+    },
+    {
+      "name": "f429zi-debug",
+      "inherits": "base",
+      "displayName": "Discovery F429ZI Debug",
+      "cacheVariables": {
+        "STM32_YML_PROFILE": "f429zi",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ENABLE_HW_TESTING": false
+      }
+    },
+    {
+      "name": "f429zi-debug-hwtest",
+      "inherits": "f429zi-debug",
+      "cacheVariables": {
+        "ENABLE_HW_TESTING": true
+      }
     }
   ],
   "buildPresets": [
@@ -175,6 +192,14 @@
     {
       "name": "f030r8-debug-hwtest",
       "configurePreset": "f030r8-debug-hwtest"
+    },
+    {
+      "name": "f429zi-debug",
+      "configurePreset": "f429zi-debug"
+    },
+    {
+      "name": "f429zi-debug-hwtest",
+      "configurePreset": "f429zi-debug-hwtest"
     }
   ],
   "testPresets": [

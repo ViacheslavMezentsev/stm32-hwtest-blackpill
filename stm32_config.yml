@@ -54,3 +54,12 @@ profiles:
     sources: [profiles/f030r8/Core, User, profiles/f030r8/Platform, profiles/f030r8/Core/Src/system_stm32f0xx.c, profiles/f030r8/startup_stm32f030x8.s]
     include_directories: [profiles/f030r8/Core/Inc, User/Inc]
     linker_script: profiles/f030r8/STM32F030xx_FLASH.ld
+  f429zi:
+    ioc_file: profiles/f429zi/stm32-hwtest-disco.ioc
+    project_name: stm32-hwtest-disco
+    mcu: STM32F429ZIT6
+    cubefw_package: V1.28.3
+    hal_components: [CORTEX, FLASH, RCCEx, GPIO, PWR, ADCEx, DMA, RTCEx, TIMEx]
+    sources: [profiles/f429zi/Core, User, profiles/f429zi/Platform, profiles/f429zi/Core/Src/system_stm32f4xx.c, profiles/f429zi/startup_stm32f429xx.s]
+    include_directories: [profiles/f429zi/Core/Inc, User/Inc]
+    linker_script: profiles/f429zi/STM32F429xx_FLASH.ld

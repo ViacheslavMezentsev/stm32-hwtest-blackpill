@@ -1,0 +1,242 @@
+{
+  "schema": 1,
+  "contracts": {
+    "rcc_error": {
+      "functions": {
+        "HAL_RCC_OscConfig": {
+          "returns": "HAL_StatusTypeDef",
+          "arguments": [
+            {
+              "name": "RCC_OscInitStruct",
+              "type": "const RCC_OscInitTypeDef *"
+            }
+          ]
+        },
+        "Error_Handler": {
+          "returns": "void",
+          "arguments": []
+        }
+      },
+      "enums": {
+        "HAL_StatusTypeDef": {
+          "HAL_OK": 0,
+          "HAL_ERROR": 1,
+          "HAL_BUSY": 2,
+          "HAL_TIMEOUT": 3
+        }
+      },
+      "type_context": "HAL_RCC_OscConfig"
+    },
+    "rcc_osc_null": {
+      "functions": {
+        "HAL_RCC_OscConfig": {
+          "returns": "HAL_StatusTypeDef",
+          "arguments": [
+            {
+              "name": "RCC_OscInitStruct",
+              "type": "const RCC_OscInitTypeDef *"
+            }
+          ]
+        },
+        "Error_Handler": {
+          "returns": "void",
+          "arguments": []
+        }
+      },
+      "enums": {
+        "HAL_StatusTypeDef": {
+          "HAL_OK": 0,
+          "HAL_ERROR": 1,
+          "HAL_BUSY": 2,
+          "HAL_TIMEOUT": 3
+        }
+      },
+      "source_reviews": [
+        {
+          "file": "STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c",
+          "sha256": "f3ac468e2f415adb74281107c0dec1448008950b64a7bb11c14cbe3ee1a936de",
+          "reason": "Reviewed Cube F4 V1.28.3 RCC: OscConfig/ClockConfig accept const pointers and return HAL_ERROR on NULL before dereference/assert. Re-review on change."
+        }
+      ],
+      "type_context": "HAL_RCC_OscConfig"
+    },
+    "rcc_clock_null": {
+      "functions": {
+        "HAL_RCC_ClockConfig": {
+          "returns": "HAL_StatusTypeDef",
+          "arguments": [
+            {
+              "name": "RCC_ClkInitStruct",
+              "type": "const RCC_ClkInitTypeDef *"
+            },
+            {
+              "name": "FLatency",
+              "type": "uint32_t"
+            }
+          ]
+        },
+        "Error_Handler": {
+          "returns": "void",
+          "arguments": []
+        }
+      },
+      "enums": {
+        "HAL_StatusTypeDef": {
+          "HAL_OK": 0,
+          "HAL_ERROR": 1,
+          "HAL_BUSY": 2,
+          "HAL_TIMEOUT": 3
+        }
+      },
+      "source_reviews": [
+        {
+          "file": "STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c",
+          "sha256": "f3ac468e2f415adb74281107c0dec1448008950b64a7bb11c14cbe3ee1a936de",
+          "reason": "Reviewed Cube F4 V1.28.3 RCC: OscConfig/ClockConfig accept const pointers and return HAL_ERROR on NULL before dereference/assert. Re-review on change."
+        }
+      ],
+      "type_context": "HAL_RCC_ClockConfig"
+    },
+    "adc_start_error": {
+      "functions": {
+        "HAL_ADC_Start_DMA": {
+          "returns": "HAL_StatusTypeDef",
+          "arguments": [
+            {
+              "name": "hadc",
+              "type": "ADC_HandleTypeDef *"
+            },
+            {
+              "name": "pData",
+              "type": "uint32_t *"
+            },
+            {
+              "name": "Length",
+              "type": "uint32_t"
+            }
+          ]
+        },
+        "Error_Handler": {
+          "returns": "void",
+          "arguments": []
+        }
+      },
+      "enums": {
+        "HAL_StatusTypeDef": {
+          "HAL_OK": 0,
+          "HAL_ERROR": 1,
+          "HAL_BUSY": 2,
+          "HAL_TIMEOUT": 3
+        }
+      },
+      "type_context": "HAL_ADC_Start_DMA"
+    },
+    "adc_dma_timeout": {
+      "functions": {
+        "HAL_ADC_ConvCpltCallback": {
+          "returns": "void",
+          "arguments": [
+            {
+              "name": "adc",
+              "type": "ADC_HandleTypeDef *"
+            }
+          ]
+        },
+        "Error_Handler": {
+          "returns": "void",
+          "arguments": []
+        }
+      },
+      "type_context": "HAL_ADC_ConvCpltCallback"
+    },
+    "gpio_arguments": {
+      "functions": {
+        "HAL_GPIO_Init": {
+          "returns": "void",
+          "arguments": [
+            {
+              "name": "GPIOx",
+              "type": "GPIO_TypeDef *"
+            },
+            {
+              "name": "GPIO_Init",
+              "type": "GPIO_InitTypeDef *"
+            }
+          ]
+        }
+      },
+      "fields": {
+        "GPIO_InitTypeDef": {
+          "Pin": "uint32_t",
+          "Mode": "uint32_t",
+          "Pull": "uint32_t",
+          "Speed": "uint32_t"
+        }
+      },
+      "type_context": "HAL_GPIO_Init"
+    },
+    "gpio_filtered_call": {
+      "functions": {
+        "HAL_GPIO_TogglePin": {
+          "returns": "void",
+          "arguments": [
+            {
+              "name": "GPIOx",
+              "type": "GPIO_TypeDef *"
+            },
+            {
+              "name": "GPIO_Pin",
+              "type": "uint16_t"
+            }
+          ]
+        }
+      },
+      "type_context": "HAL_GPIO_TogglePin"
+    },
+    "clock_macros": {
+      "macros": {
+        "context": "platform_adc_start",
+        "expressions": [
+          "RCC_CFGR_SWS_Msk",
+          "RCC_CFGR_SWS_Pos",
+          "RCC_CFGR_HPRE_Msk",
+          "RCC_CFGR_HPRE_Pos",
+          "RCC_CFGR_PPRE1_Msk",
+          "RCC_CFGR_PPRE1_Pos",
+          "RCC_CFGR_PPRE2_Msk",
+          "RCC_CFGR_PPRE2_Pos",
+          "__HAL_RCC_ADC1_IS_CLK_ENABLED()",
+          "__HAL_RCC_TIM2_IS_CLK_ENABLED()",
+          "__HAL_RCC_DMA2_IS_CLK_ENABLED()"
+        ]
+      }
+    },
+    "gpio_macros": {
+      "macros": {
+        "context": "platform_adc_start",
+        "expressions": [
+          "__HAL_RCC_GPIOG_IS_CLK_ENABLED()",
+          "GPIO_MODER_MODER13_Msk",
+          "GPIO_MODER_MODER13_Pos",
+          "GPIO_OTYPER_OT13_Msk",
+          "GPIO_OTYPER_OT13_Pos",
+          "GPIO_PUPDR_PUPD13_Msk",
+          "GPIO_PUPDR_PUPD13_Pos",
+          "GPIO_OSPEEDR_OSPEED13_Msk",
+          "GPIO_OSPEEDR_OSPEED13_Pos",
+          "GPIO_ODR_OD13_Msk",
+          "GPIO_ODR_OD13_Pos"
+        ]
+      }
+    },
+    "tim_init_macros": {
+      "macros": {
+        "context": "platform_adc_prepare",
+        "expressions": [
+          "__HAL_TIM_GET_AUTORELOAD(&htim2)",
+          "TIM_CR1_CEN"
+        ]
+      }
+    }
+  }
+}

@@ -124,3 +124,9 @@
   Nucleo подключена к встроенному J-Link STLink: явно выбирать
   Tests/stands/nucleo-f030r8-jlink.local.toml; LD2 подтверждён, MCU running.
   Не путать с BluePill J-Link; firmware отладчика не менять. Offline: tools/check_profile_offline.py --session build/.../hwtest/session.json.
+
+- F429ZI: STM32F429I-DISCO (старый ST-Link/V2), IOC template DISC1 сохранён.
+  PG13/LD3 active-high, PLL SYSCLK64/AHB8 → HCLK8, APB1/2=8 МГц, ADC4 МГц.
+  TIM2 7999/99, RTC127/249, ADC IN18/17; factory30/110°C. Сборка/offline PASS,
+  22 HW сценария пока не запускались. Перед HW дождаться подтверждения подключения;
+  stand disco-f429zi.local.toml, OpenOCD. DMA-буфер только SRAM, не CCM.
