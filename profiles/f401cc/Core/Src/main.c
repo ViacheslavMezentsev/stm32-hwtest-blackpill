@@ -105,10 +105,8 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   setup();
-  setup();
   while (1)
   {
-    loop();
     loop();
     /* USER CODE END WHILE */
 

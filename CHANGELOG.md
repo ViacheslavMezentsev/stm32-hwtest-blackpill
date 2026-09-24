@@ -5,6 +5,14 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Удалены повторные setup()/loop() в USER CODE профиля f401cc. Второй setup
+  приводил в Error_Handler при повторном запуске TIM2. На текущем экземпляре
+  с маркировкой F401CC/DEV_ID0x431: 22/22 HW PASS через OpenOCD с явным override,
+  два host CTest PASS, live Sleep PASS. ADC: 3,289 В / 27,1 °C; профиль и ожидания
+  не ослаблены. Подробности: docs/F401_MARKING_EXPERIMENT.md.
+
 ### Added
 
 - Эксперимент неизменённого f401cc на маркированном F401CC с DEV_ID0x431:
