@@ -45,3 +45,9 @@ TOML через `--stand`, `HWTEST_STAND` или CMake cache. Такой зап�
 
 Границы CMake API, оставшиеся зависимости и план:
 [MODULE_EXTRACTION](../../docs/MODULE_EXTRACTION.md).
+
+
+Перенос исходников в отдельные каталоги с пробелами также проверен: сборка,
+CTest3/3 и timeout/recovery работают при запрете записи в dependency через Windows
+ACL. Воспроизведение из корня репозитория — Tests/experiments/check_readonly_consumer.ps1;
+подробности и границы доказательства в CONSUMER_VALIDATION по ссылке выше.

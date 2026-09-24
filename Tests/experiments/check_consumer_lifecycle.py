@@ -1,32 +1,43 @@
 """Explicit F411/OpenOCD experiment; restores the main application in finally."""
 import argparse
+import hashlib
+import os
+import subprocess
 import json
 from pathlib import Path
 import sys
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT))
-from hwtest.build_manifest import digest, load_verified
-from hwtest.collect import collect
-from hwtest.openocd import load_stand
-from hwtest.runner import local_directory, run
 
 
 def inventory(directory):
-    return {p.relative_to(directory).as_posix(): (digest(p), p.stat().st_mtime_ns)
+    return {p.relative_to(directory).as_posix(): (hashlib.sha256(p.read_bytes()).hexdigest(), p.stat().st_mtime_ns)
             for p in directory.rglob("*") if p.is_file()}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stand", required=True, type=Path)
+    parser.add_argument("--consumer-root", type=Path, default=ROOT / "examples/minimal-consumer")
+    parser.add_argument("--module-root", type=Path, default=ROOT)
+    parser.add_argument("--ctest", action="store_true", help="Also exercise generated CTest HW registration")
     args = parser.parse_args()
+    consumer_root, module_root = args.consumer_root.resolve(), args.module_root.resolve()
+    if not all(path.is_relative_to(ROOT) for path in (consumer_root, module_root)):
+        raise ValueError("Experiment copies must remain inside this repository")
+    sys.path.insert(0, str(module_root))
+    from hwtest.build_manifest import digest, load_verified
+    from hwtest.collect import collect
+    from hwtest.openocd import load_stand
+    from hwtest.runner import local_directory, run
+    import hwtest.runner
+    assert Path(hwtest.runner.__file__).resolve() == module_root / "hwtest/runner.py"
+
     stand_path = args.stand.resolve()
     stand = load_stand(stand_path)
     if stand["flash"] != "if-different":
         raise ValueError("Experiment needs if-different to restore the main firmware")
-    consumer_root = ROOT / "examples/minimal-consumer"
     consumer = json.loads((consumer_root / "build/debug/hwtest/session.json").read_text())
     original = json.loads((ROOT / "build/f411ce-debug-hwtest/hwtest/session.json").read_text())
     # Validate BOTH restore artifacts before any hardware access.
@@ -36,7 +47,7 @@ def main():
     summary = dict(status="ERROR", consumer_elf=digest(consumer["elf"]),
                    original_elf=digest(original["elf"]), stages={})
     cases = collect(consumer["tests"])
-    baseline = inventory(ROOT / "hwtest")
+    baseline = inventory(module_root / "hwtest")
     infrastructure = {name: inventory(ROOT / "build" / name)
                       for name in ("hwtest-tmp", "probe-locks")}
 
@@ -55,6 +66,16 @@ def main():
         return rc, report, path.parent
 
     try:
+        if args.ctest:
+            env = os.environ.copy()
+            env.update(HWTEST_STAND=str(stand_path), HWTEST_IDENTITY_POLICY="strict",
+                       PYTHONDONTWRITEBYTECODE="1", TEMP=str(directory), TMP=str(directory))
+            with (directory / "ctest.log").open("wb") as log:
+                ctest = subprocess.run(["ctest", "--test-dir", str(consumer_root / "build/debug"),
+                    "--output-on-failure"], cwd=consumer_root, env=env, timeout=90,
+                    stdout=log, stderr=subprocess.STDOUT)
+            summary["ctest_returncode"] = ctest.returncode
+            assert ctest.returncode == 0, "Consumer CTest failed; see ctest.log"
         rc, report, _ = execute("consumer", consumer, cases[0])
         assert rc == 0 and report["image_verified"] and report["teardown"] == "reset_run", report
         # Local private copy: never modify the user's stand or expose its serial in Git.
@@ -81,7 +102,7 @@ def stall(target):
         assert report.get("teardown") == "reset_run (host recovery)", report
         rc, report, _ = execute("after_recovery", consumer, cases[0], verify_stand)
         assert rc == 0 and report["flashed"] is False, report
-        summary["module_unchanged"] = inventory(ROOT / "hwtest") == baseline
+        summary["module_unchanged"] = inventory(module_root / "hwtest") == baseline
         summary["parent_runtime_dirs_unchanged"] = all(
             inventory(ROOT / "build" / name) == before for name, before in infrastructure.items())
         assert summary["module_unchanged"] and summary["parent_runtime_dirs_unchanged"]

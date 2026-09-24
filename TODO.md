@@ -15,7 +15,7 @@
 3. **F103 + ST-Link**: после согласованной смены проводки повторить новые manifest/HAL
    механизмы через OpenOCD/ST server. Старые результаты этого не доказывают.
 4. До смены проводки можно продолжать выделение модуля и расширение контрактов на
-   действующих F411/ST-Link и F103/J-Link. Build/offline и HW lifecycle потребителя проверены; следующий шаг — перенос/read-only dependency.
+   действующих F411/ST-Link и F103/J-Link. Build/offline и HW lifecycle потребителя проверены; перенос/read-only dependency проверены; следующий шаг — межпроектный lock.
 5. Stop/watchpoints/наблюдение без halt планировать отдельными наборами.
 
 | Плата | ST-Link / OpenOCD | ST-Link / ST server | J-Link / J-Link server |
@@ -128,6 +128,6 @@ H503 остаётся отложенным до сообщения владел�
 - [x] Разделить корни модуля/потребителя; исключить обязательный YAML и Tests основного проекта.
 - [x] Собрать examples/minimal-consumer; проверить manifest/imports/output isolation и offline macro contracts.
 - [x] Проверить потребителя на F411CE + ST-Link/OpenOCD: Flash/verify-only/timeout/recovery; восстановить основную прошивку, HW_BOOT/HW_BLINK и live Sleep PASS.
-- [ ] Проверить перенос checkout и отсутствие записей в dependency при HW/recovery.
+- [x] Проверить перенос исходного дерева и Windows ACL read-only dependency: build/offline, CTest3/3, HW/recovery PASS. Git clone/install ещё не проверен.
 - [ ] Решить межпроектную блокировку отладчика; закрепить публичные API и namespace.
 - [ ] Отделить модуль, проверить имя перед публикацией; см. docs/MODULE_EXTRACTION.md.

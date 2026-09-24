@@ -7,6 +7,11 @@
 
 ### Changed
 
+- Проверены перенесённые исходники модуля/потребителя в путях с пробелами под
+  Windows ACL Deny Write/Delete: build/offline, CTest3/3 и HW timeout/recovery PASS.
+  Добавлен check_readonly_consumer.ps1; lifecycle experiment принимает пути копий
+  и опцию CTest. ACL и основная прошивка восстановлены, HW_BOOT/HW_BLINK PASS.
+
 - Минимальный consumer аппаратно проверен на F411CE/ST-Link/OpenOCD: Flash,
   verify-only, намеренный Python timeout и host recovery, повторный PASS.
   Добавлен воспроизводимый check_consumer_lifecycle.py с восстановлением основной
