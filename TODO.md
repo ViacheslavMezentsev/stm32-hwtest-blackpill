@@ -6,6 +6,13 @@
 
 ## Ближайшие шаги
 
+- [x] Bare-metal PoC К1921ВГ015/J-Link EDU v11/JTAG: blink, Target API, conditional BP,
+  Flash regions, FAIL, timeout/recovery и повторный PASS; видимый LED подтверждён.
+- [ ] По результатам PoC описать интерфейсы toolchain/transport, MCU identity/memory
+  и архитектурной диагностики; затем перенести поддержку в общий production lifecycle.
+- [ ] В модуле заменить сплошное сравнение BIN на load regions для ELF с промежутками;
+  сохранить отрицательные проверки границ и регрессию STM32.
+
 - [x] Подключить закреплённый Git-подмодуль и удалить дубли инфраструктуры.
 - [x] Проверить host44, три MCU build/offline, F411/OpenOCD24/24, F103/J-Link24/24,
   read-only consumer3/3, timeout/recovery, восстановление и live Sleep.

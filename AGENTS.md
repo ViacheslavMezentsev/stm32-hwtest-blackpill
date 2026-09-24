@@ -56,7 +56,8 @@
 
 ## Стенды и доказательства
 
-- Сейчас подключены F411CE BlackPill + ST-Link и F103C8 BluePill + J-Link, оба SWD.
+- Для последнего опыта владелец подтвердил К1921ВГ015 + J-Link EDU v11, полный JTAG.
+  STM32-стенды в этом этапе не использовались; не выбирать прежний F103/J-Link автоматически.
   Перед каждым HW набором назвать плату/MCU, отладчик, backend и соединения, явно
   сказать оставить или изменить стенд. При подтверждённом текущем стенде повторное
   разрешение не нужно; смена требует ответа владельца. USB не подтверждает разводку.
@@ -86,3 +87,14 @@
   аппаратные ошибки/отчёты, текущие ELF/manifest и Git checkout сохранять.
 
 - README — краткое пользовательское введение (зачем/что/как/зависимости/ссылки). Точные результаты, версии и ограничения поддерживать в docs/STATUS.md; хронологию — в CHANGELOG и протоколах. Не превращать README в журнал текущей работы.
+
+- К1921 PoC — examples/k1921vg015-poc, внешний NIIET_DEVICE_DIR только читать;
+  build/k1921vg015-poc, explicit Tests/stands/k1921-jlink.local.toml. Собран GCC13.3.0-2,
+  GDB15.1/Python3.12.2 (-py3), -Og -g3. Не менять production STM32 guards ради запуска PoC.
+  CHIPID0xDEADBEE1 по RM p300, Flash1MiB по разделу7 — документированная граница,
+  не заводской размер. Проверка по ELF load regions, включая .data LMA; gaps не сравнивать.
+  Host4, offline PASS, HW23checks PASS, negative FAIL, timeout ERROR+recovery0, repeatPASS;
+  LED подтверждён владельцем, собственный blink оставлен running. Не использовать
+  generic trap_entry как fault trap. Полный runner/schema/IRQ/force_return/low-power
+  пока не портированы; протокол docs/K1921VG015_POC.md. У серверного процесса должен
+  быть доступ к определениям K1921VG015 в пользовательском окружении SEGGER.

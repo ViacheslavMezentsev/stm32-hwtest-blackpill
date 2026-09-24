@@ -15,11 +15,19 @@
 с различными DEV_ID; [результаты и ограничения](TARGET_IDENTITY.md).
 H503 приостановлен: генерация сохранена, профиль ещё не включён в сборку.
 
-Текущие подключённые стенды: F411CE + ST-Link/SWD и F103C8 + J-Link/SWD.
+Последний подтверждённый для текущего опыта стенд: К1921ВГ015 + J-Link EDU v11/JTAG.
+Ранее проверенные STM32-стенды: F411CE + ST-Link/SWD и F103C8 + J-Link/SWD;
+в опыте К1921 они не использовались.
 Для каждого аппаратного запуска явно выбирать profile и локальный stand TOML.
 Перед сменой платы/отладчика/проводки согласовать замену. UART/VCOM не подключён.
 
 ## Что проверено
+
+Отдельный [PoC К1921ВГ015](K1921VG015_POC.md): bare-metal blink PC0, RISC-V GDB-Python,
+неизменённый Target API, пять Flash load sections, 23 проверки поведения, намеренный
+FAIL, timeout/recovery и повторный PASS. Видимое мигание подтверждено владельцем.
+Пример оставлен на плате работающим. Это экспериментальный lifecycle, не поддержка
+К1921 production runner/schema stm32-gdbtest. Выявлено ограничение сравнения sparse ELF.
 
 Общий `User/` выполняет LED blink, ADC temperature/VREFINT через DMA, TIM2 IRQ,
 RTC alarm и Sleep/WFI с SysTick. Адаптация MCU — `profiles/<MCU>/Platform`.

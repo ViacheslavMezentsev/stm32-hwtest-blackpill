@@ -1,0 +1,4 @@
+[probe]
+serial = "REPLACE_WITH_EXPLICIT_JLINK_USB_SERIAL"
+executable = "C:/Program Files/SEGGER/JLink/JLinkGDBServerCL.exe"
+speed_khz = 1000
