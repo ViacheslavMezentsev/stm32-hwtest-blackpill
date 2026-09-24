@@ -9,12 +9,12 @@ HWTEST выполняет сценарии по явно выбранному п
 По умолчанию `warn`: несовпадение DEV_ID выдаёт WARNING, затем тест продолжается.
 `strict` завершает сценарий как ERROR до сравнения/записи Flash. Ошибка чтения
 регистра остаётся ERROR в любом режиме. Выбор: CLI `--identity-policy`, затем
-переменная `HWTEST_IDENTITY_POLICY`, затем `warn`. Пример строгого набора:
+переменная `STM32_GDBTEST_IDENTITY_POLICY`, затем `warn`. Пример строгого набора:
 
 ```powershell
-$env:HWTEST_IDENTITY_POLICY = 'strict'
+$env:STM32_GDBTEST_IDENTITY_POLICY = 'strict'
 cmake --build --preset f401cc-check-hw
-Remove-Item Env:HWTEST_IDENTITY_POLICY
+Remove-Item Env:STM32_GDBTEST_IDENTITY_POLICY
 ```
 
 JSON/JUnit сохраняют `identity` (policy, expected, observed, raw, mask, выбранные
@@ -52,10 +52,10 @@ warning не доказывает совместимость карты памя
 ```powershell
 cmake --preset f401cc-debug-hwtest
 cmake --build --preset f401cc-debug-hwtest
-$env:HWTEST_STAND = (Resolve-Path Tests/stands/blackpill.local.toml).Path
+$env:STM32_GDBTEST_STAND = (Resolve-Path Tests/stands/blackpill.local.toml).Path
 cmake --build --preset f401cc-check-hw
 # Тот же ST-Link/SWD, другой backend:
-$env:HWTEST_STAND = (Resolve-Path Tests/stands/blackpill-stlink.local.toml).Path
+$env:STM32_GDBTEST_STAND = (Resolve-Path Tests/stands/blackpill-stlink.local.toml).Path
 cmake --build --preset f401cc-check-hw
 ```
 

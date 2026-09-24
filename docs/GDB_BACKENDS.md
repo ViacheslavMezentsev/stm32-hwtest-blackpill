@@ -2,7 +2,7 @@
 
 Общие тесты работают через GDB-Python и RSP. Backend задаёт запуск сервера,
 готовность, reset/halt, завершение и recovery; он не меняет ожидания периферии.
-Реализация выбора — `hwtest/backends.py`. J-Link V8.32 проверен на BluePill:
+Реализация выбора — `stm32_gdbtest/backends.py`. J-Link V8.32 проверен на BluePill:
 [настройка, результаты и Commander](JLINK.md).
 
 ## Запуск ST-LINK на BluePill
@@ -15,18 +15,18 @@
 Один тест:
 
 ```powershell
-python -B hwtest/cli.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/bluepill-stlink.local.toml
+python -B stm32_gdbtest/cli.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/bluepill-stlink.local.toml
 ```
 
 Полный набор (переменная только в текущем PowerShell; сохранить предыдущее значение):
 
 ```powershell
-$previousStand = $env:HWTEST_STAND
+$previousStand = $env:STM32_GDBTEST_STAND
 try {
-    $env:HWTEST_STAND = (Resolve-Path Tests/stands/bluepill-stlink.local.toml).Path
+    $env:STM32_GDBTEST_STAND = (Resolve-Path Tests/stands/bluepill-stlink.local.toml).Path
     cmake --build --preset f103c8-check-hw
 } finally {
-    $env:HWTEST_STAND = $previousStand
+    $env:STM32_GDBTEST_STAND = $previousStand
 }
 ```
 
@@ -104,6 +104,6 @@ Option bytes, mass erase и обновление firmware отладчика н�
 [Доказательства и ограничения](STM32_TESTING_METHODS.md#f411ce-hal-контракты-и-два-сервера-st-link-2026-09-24).
 Для ST используйте копию `Tests/stands/blackpill-stlink.example.toml` в
 `blackpill-stlink.local.toml` с локальными путями и serial. Для OpenOCD —
-`blackpill.local.toml`. Выбирать файл явно через HWTEST_STAND; аппаратный профиль
+`blackpill.local.toml`. Выбирать файл явно через STM32_GDBTEST_STAND; аппаратный профиль
 задаётся preset debug-hwtest. Два отладчика могут быть подключены одновременно,
 но каждый запуск адресует только явно выбранный serial и MCU-профиль.

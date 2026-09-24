@@ -4,7 +4,7 @@
 
 Проверена Debug-прошивка GCC 13.3.1 на WeAct BlackPill v3 (STM32F411CEU6),
 подключённой к WeAct ST-Link v2 по SWD. Это этап проверки платы и инструментов,
-а не готовая реализация всей архитектуры `HWTEST_ARCHITECTURE.md`.
+а не готовая реализация всей архитектуры `STM32_GDBTEST_ARCHITECTURE.md`.
 Release и GCC 14/15 пока проверены только сборкой.
 
 Перед реализацией изучены `../buck-boost-course/99_BOARD_TEST/CMakeLists.txt`,

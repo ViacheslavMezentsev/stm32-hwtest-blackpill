@@ -11,14 +11,14 @@ import unittest
 import uuid
 from unittest.mock import patch
 
-from hwtest.processes import probe_lock, probe_mutex_name, _kernel_api
+from stm32_gdbtest.processes import probe_lock, probe_mutex_name, _kernel_api
 
 ROOT = Path(__file__).resolve().parents[2]
 OWNER = """
 import sys, time
 from pathlib import Path
 sys.path.insert(0, sys.argv[1])
-from hwtest.processes import probe_lock
+from stm32_gdbtest.processes import probe_lock
 with probe_lock(Path(sys.argv[2]), sys.argv[3], 'openocd'):
     Path(sys.argv[4]).write_text('ready')
     time.sleep(30)
@@ -38,7 +38,7 @@ class ProbeLockTests(unittest.TestCase):
     def owner(self):
         # The holder imports an independent copy, not this process's module object.
         module = self.root / "module copy"
-        shutil.copytree(ROOT / "hwtest", module / "hwtest", ignore=shutil.ignore_patterns("__pycache__"))
+        shutil.copytree(ROOT / "stm32_gdbtest", module / "stm32_gdbtest", ignore=shutil.ignore_patterns("__pycache__"))
         ready = self.root / "ready"
         process = subprocess.Popen([sys.executable, "-B", "-c", OWNER, str(module),
             str(self.root / "project A"), self.serial, str(ready)], cwd=self.root,
@@ -64,12 +64,12 @@ class ProbeLockTests(unittest.TestCase):
                 with probe_lock(self.root / "project B", self.serial.lower(), backend):
                     self.fail("Second owner entered")
         self.assertFalse((self.root / "project B").exists())
-        from hwtest.runner import run
+        from stm32_gdbtest.runner import run
         session = dict(root=str(self.root), out=str(self.root / "reports"),
                        stand="mock.toml", profile="mock-profile.toml")
-        with patch("hwtest.runner.load_stand", return_value=dict(backend="stlink", serial=self.serial)), \
-                patch("hwtest.runner.load_profile", return_value={}), \
-                patch("hwtest.runner.execute") as execute:
+        with patch("stm32_gdbtest.runner.load_stand", return_value=dict(backend="stlink", serial=self.serial)), \
+                patch("stm32_gdbtest.runner.load_profile", return_value={}), \
+                patch("stm32_gdbtest.runner.execute") as execute:
             self.assertEqual(run(session, dict(id="HW_LOCKED", timeout_s=10)), 2)
             execute.assert_not_called()
         report = json.loads(next((self.root / "reports").glob("*/result.json")).read_text())

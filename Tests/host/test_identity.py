@@ -1,5 +1,5 @@
 import unittest
-from hwtest.identity import check_target
+from stm32_gdbtest.identity import check_target
 
 
 class IdentityTests(unittest.TestCase):

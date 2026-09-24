@@ -1,6 +1,6 @@
 """Deliberate failures, excluded from normal CTest collection (Tests/board only)."""
 
-from hwtest import case
+from stm32_gdbtest import case
 
 
 @case("HW_BAD_FIELD")

@@ -4,9 +4,9 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from hwtest.collect import collect
-from hwtest.contracts import select_contracts
-from hwtest.runner import ROOT, execute
+from stm32_gdbtest.collect import collect
+from stm32_gdbtest.contracts import select_contracts
+from stm32_gdbtest.runner import ROOT, execute
 
 
 class ContractTests(unittest.TestCase):
@@ -63,7 +63,7 @@ class ContractTests(unittest.TestCase):
         def fail_preflight(*args, **kwargs):
             (out / "contract-result.json").write_text(json.dumps(dict(status="ERROR", errors=["wrong signature"])))
             return type("Process", (), {"returncode": 2})()
-        with patch("hwtest.runner.subprocess.run", side_effect=fail_preflight) as run, patch("hwtest.runner.subprocess.Popen") as popen:
+        with patch("stm32_gdbtest.runner.subprocess.run", side_effect=fail_preflight) as run, patch("stm32_gdbtest.runner.subprocess.Popen") as popen:
             execute(session, {"contracts": ["rcc_error"]}, {}, out, report, 10, {})
         self.assertEqual(run.call_count, 1)
         popen.assert_not_called()

@@ -11,10 +11,10 @@ module_root = Path(sys.argv[2]).resolve()
 root = Path(session["root"]).resolve()
 sys.path.insert(0, str(module_root))
 sys.path.insert(1, str(root))
-from hwtest.build_manifest import digest, load_verified
-from hwtest.collect import collect
-from hwtest.contracts import select_contracts
-from hwtest.runner import local_directory
+from stm32_gdbtest.build_manifest import digest, load_verified
+from stm32_gdbtest.collect import collect
+from stm32_gdbtest.contracts import select_contracts
+from stm32_gdbtest.runner import local_directory
 
 manifest = load_verified(session["build_manifest"], digest(session["elf"]), session["profile"])
 assert {unit["source"] for unit in manifest["units"]} == {"src/main.c", "src/startup.c"}
@@ -40,7 +40,7 @@ selected = select_contracts(Path(session["profile"]).parent / "Tests/contracts.j
                             cases[0]["contracts"], manifest)
 env = os.environ.copy()
 env.update(TMP=str(output), TEMP=str(output), PYTHONDONTWRITEBYTECODE="1",
-           HWTEST_CONTRACT_REQUEST=str(request_path))
+           STM32_GDBTEST_CONTRACT_REQUEST=str(request_path))
 env.pop("PYTHONHOME", None)
 env.pop("PYTHONPATH", None)
 for negative in (False, True):
@@ -50,7 +50,7 @@ for negative in (False, True):
     request_path.write_text(json.dumps(dict(elf=session["elf"], selected=selected,
                                             result=str(result_path))), encoding="utf-8")
     process = subprocess.run([session["gdb"], "-q", "-nx", "-batch", "-iex", "set auto-load off", session["elf"],
-                              "-ex", "source " + (module_root / "hwtest/contract_preflight.py").as_posix()],
+                              "-ex", "source " + (module_root / "stm32_gdbtest/contract_preflight.py").as_posix()],
                              cwd=root, env=env, timeout=30, capture_output=True, text=True)
     (output / ("negative.log" if negative else "positive.log")).write_text(
         process.stdout + process.stderr, encoding="utf-8")

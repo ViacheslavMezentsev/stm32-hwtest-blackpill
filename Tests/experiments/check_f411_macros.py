@@ -25,7 +25,7 @@ def macro_expressions(t):
     # A missing macro is a compatibility error, not a silently false predicate.
     missing_rejected = False
     try:
-        gdb.parse_and_eval("__HWTEST_INTENTIONALLY_MISSING_MACRO__()")
+        gdb.parse_and_eval("__STM32_GDBTEST_INTENTIONALLY_MISSING_MACRO__()")
     except gdb.error:
         missing_rejected = True
     t.check("missing macro rejected", missing_rejected, True)
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     root = Path(__file__).resolve().parents[2]
     sys.path.insert(0, str(root))
-    from hwtest.runner import run
+    from stm32_gdbtest.runner import run
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stand", type=Path, required=True)

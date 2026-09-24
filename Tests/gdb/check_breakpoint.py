@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 import gdb
-from hwtest.target import Target
+from stm32_gdbtest.target import Target
 gdb.execute("set breakpoint pending off")
 t = Target({"checks": []}, {"breakpoint_limit": 6})
 try:

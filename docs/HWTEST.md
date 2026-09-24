@@ -32,9 +32,9 @@ Copy-Item Tests/stands/blackpill.example.toml Tests/stands/blackpill.local.toml
 Сравнение включает начальные данные `.data` по их загрузочному адресу во Flash.
 Реализация предполагает обычный связный образ F411 с началом Flash `0x08000000`.
 
-Путь стенда выбирается при запуске: `--stand` → `HWTEST_STAND` в окружении →
-`HWTEST_STAND` из CMake session.json. Смена стенда через окружение не требует пересборки.
-Другие исполняемые файлы GDB выбираются CMake-параметром `HWTEST_GDB`.
+Путь стенда выбирается при запуске: `--stand` → `STM32_GDBTEST_STAND` в окружении →
+`STM32_GDBTEST_STAND` из CMake session.json. Смена стенда через окружение не требует пересборки.
+Другие исполняемые файлы GDB выбираются CMake-параметром `STM32_GDBTEST_GDB`.
 
 ## Команды
 
@@ -54,7 +54,7 @@ ctest --preset f411ce-host
 # Отдельная проверка:
 ctest --preset f411ce-hw -R '^hw.HW_CLOCK$'
 # Host CLI, например с другим локальным стендом:
-python -B hwtest/cli.py run --session build/f411ce-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/blackpill.local.toml
+python -B stm32_gdbtest/cli.py run --session build/f411ce-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/blackpill.local.toml
 ```
 
 Прямой `ctest` не собирает прошивку. Для цикла «изменить → собрать → проверить»
@@ -65,16 +65,16 @@ python -B hwtest/cli.py run --session build/f411ce-debug-hwtest/hwtest/session.j
 
 | Файл | Ответственность |
 | --- | --- |
-| hwtest/cmake/HwTest.cmake | session.json, регистрация CTest, цель check-hw |
-| hwtest/collect.py | AST-сбор `@case` без импорта тестов; сверка ID требований |
-| hwtest/runner.py | снимок ELF, GDB/backend, сроки ожидания, восстановление |
-| hwtest/backends.py | запуск, готовность, reset и finish OpenOCD/ST-LINK/J-Link |
-| hwtest/processes.py | блокировка отладчика и завершение созданных деревьев процессов |
-| hwtest/openocd.py | TOML стенда, аргументы сервера по профилю |
-| hwtest/profile.py | проверка схемы target.toml |
-| hwtest/agent.py | подключение, проверка/загрузка образа, запуск теста, диагностика |
-| hwtest/target.py | breakpoint events, проверки, чтение значений и fault injection |
-| hwtest/reports.py | JSON/JUnit и различение FAIL/ERROR |
+| stm32_gdbtest/cmake/STM32GDBTest.cmake | session.json, регистрация CTest, цель check-hw |
+| stm32_gdbtest/collect.py | AST-сбор `@case` без импорта тестов; сверка ID требований |
+| stm32_gdbtest/runner.py | снимок ELF, GDB/backend, сроки ожидания, восстановление |
+| stm32_gdbtest/backends.py | запуск, готовность, reset и finish OpenOCD/ST-LINK/J-Link |
+| stm32_gdbtest/processes.py | блокировка отладчика и завершение созданных деревьев процессов |
+| stm32_gdbtest/openocd.py | TOML стенда, аргументы сервера по профилю |
+| stm32_gdbtest/profile.py | проверка схемы target.toml |
+| stm32_gdbtest/agent.py | подключение, проверка/загрузка образа, запуск теста, диагностика |
+| stm32_gdbtest/target.py | breakpoint events, проверки, чтение значений и fault injection |
+| stm32_gdbtest/reports.py | JSON/JUnit и различение FAIL/ERROR |
 | profiles/f411ce/Tests/board/test_blackpill.py | пять базовых сценариев поведения прошивки |
 | profiles/f411ce/Tests/board/test_peripheral_methods.py | четыре сценария проверки контрактов и инъекций |
 | profiles/f411ce/Tests/requirements.md | проверяемые требования с такими же ID |

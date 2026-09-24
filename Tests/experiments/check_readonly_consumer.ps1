@@ -8,10 +8,10 @@ $dependency = Join-Path $runRoot 'module checkout'
 $consumer = Join-Path $runRoot 'consumer project'
 New-Item -ItemType Directory -Path $dependency, $consumer -Force | Out-Null
 # Copy tracked source paths only, excluding caches, local stands and build products.
-$tracked = & git -C $repo ls-files hwtest examples/minimal-consumer
+$tracked = & git -C $repo ls-files stm32_gdbtest examples/minimal-consumer
 if ($LASTEXITCODE -ne 0) { throw 'git ls-files failed' }
 foreach ($relative in $tracked) {
-    if ($relative.StartsWith('hwtest/')) {
+    if ($relative.StartsWith('stm32_gdbtest/')) {
         $destination = Join-Path $dependency $relative
     } else {
         $destination = Join-Path $consumer $relative.Substring('examples/minimal-consumer/'.Length)
@@ -55,7 +55,7 @@ try {
     # Use presets from the relocated consumer; no parent project CMake is involved.
     Push-Location $consumer
     try {
-        & cmake --preset debug "-DHWTEST_SOURCE_DIR=$dependency" *> (Join-Path $runRoot 'configure.log')
+        & cmake --preset debug "-DSTM32_GDBTEST_SOURCE_DIR=$dependency" *> (Join-Path $runRoot 'configure.log')
         if ($LASTEXITCODE -ne 0) { throw 'Configure failed; see configure.log' }
         & cmake --build --preset debug *> (Join-Path $runRoot 'build.log')
         if ($LASTEXITCODE -ne 0) { throw 'Build failed; see build.log' }

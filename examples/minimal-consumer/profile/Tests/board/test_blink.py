@@ -1,4 +1,4 @@
-from hwtest import case
+from stm32_gdbtest import case
 from consumer_support import CLOCK_ENABLED
 
 

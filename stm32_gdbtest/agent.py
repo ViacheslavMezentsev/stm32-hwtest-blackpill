@@ -12,13 +12,13 @@ import gdb
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from hwtest.target import Target, CheckFailed
-from hwtest.compatibility import inspect_gdb_api, require_gdb_api
-from hwtest.identity import check_target
+from stm32_gdbtest.target import Target, CheckFailed
+from stm32_gdbtest.compatibility import inspect_gdb_api, require_gdb_api
+from stm32_gdbtest.identity import check_target
 
 
 def main():
-    session = json.loads(Path(os.environ["HWTEST_RUN"]).read_text(encoding="utf-8"))
+    session = json.loads(Path(os.environ["STM32_GDBTEST_RUN"]).read_text(encoding="utf-8"))
     sys.path.insert(1, str(Path(session.get("root", ROOT)).resolve()))
     profile = session["profile"]
     report = {"id": session["test"]["id"], "status": "ERROR", "checks": [],

@@ -15,7 +15,7 @@ import gdb
 
 checks = []
 report = {"status": "ERROR", "checks": checks}
-result_path = Path(os.environ["HWTEST_RESULT"])
+result_path = Path(os.environ["STM32_GDBTEST_RESULT"])
 
 
 def check(name, actual, expected, failure=AssertionError):
@@ -62,9 +62,9 @@ try:
     elf = Path(gdb.current_progspace().filename)
     report["elf_sha256"] = hashlib.sha256(elf.read_bytes()).hexdigest()
     # The host generates this BIN from the same ELF immediately before the run.
-    binary = Path(os.environ["HWTEST_IMAGE"]).read_bytes()
+    binary = Path(os.environ["STM32_GDBTEST_IMAGE"]).read_bytes()
     report["bin_sha256"] = hashlib.sha256(binary).hexdigest()
-    gdb.execute("target extended-remote " + os.environ["HWTEST_ENDPOINT"])
+    gdb.execute("target extended-remote " + os.environ["STM32_GDBTEST_ENDPOINT"])
     connected = True
     gdb.execute("monitor halt")
     actual_flash = bytes(gdb.selected_inferior().read_memory(0x08000000, len(binary)))

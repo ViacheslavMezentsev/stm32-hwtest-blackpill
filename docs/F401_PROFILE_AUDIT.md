@@ -95,4 +95,4 @@ ADC и DMA по текущему статическому анализу мен�
 Успешная сборка будет разрешением перейти к проверке на плате, но не утверждением
 аппаратной совместимости. BluePill/J-Link при замене F411 не требуется отключать.
 Ограничения и текущая матрица: [COMPATIBILITY](COMPATIBILITY.md),
-[HWTEST_ARCHITECTURE_V2](HWTEST_ARCHITECTURE_V2.md), [TODO](../TODO.md).
+[STM32_GDBTEST_ARCHITECTURE_V2](STM32_GDBTEST_ARCHITECTURE_V2.md), [TODO](../TODO.md).

@@ -1,7 +1,7 @@
 # Минимальный потребитель HWTEST
 
 Самостоятельный CMake-проект для STM32F411CEU6 / BlackPill с LED PC13.
-Подключает исходный HWTEST через `HWTEST_SOURCE_DIR`, без родительского CMake,
+Подключает исходный HWTEST через `STM32_GDBTEST_SOURCE_DIR`, без родительского CMake,
 `stm32-cmake-yml`, YAML, общего User и сценариев основного приложения.
 Модуль пока не опубликован; рабочее имя будущего модуля — **stm32-gdbtest**.
 
@@ -37,7 +37,7 @@ Startup минимален: core vectors, data/bss; периферийные IRQ
 Результаты и команда воспроизведения: [CONSUMER_VALIDATION](../../docs/CONSUMER_VALIDATION.md).
 
 Stand по умолчанию пустой. Для HW запуска нужно явно выбрать локальный
-TOML через `--stand`, `HWTEST_STAND` или CMake cache. Такой запуск может прошить
+TOML через `--stand`, `STM32_GDBTEST_STAND` или CMake cache. Такой запуск может прошить
 этот ELF вместо основного приложения; после проверки требуется восстановить его.
 `ctest --preset offline` исключает HW; обычный CTest и `check-hw` включают его.
 Обновлённые runner координируют доступ к одному отладчику между проектами
@@ -53,3 +53,6 @@ TOML через `--stand`, `HWTEST_STAND` или CMake cache. Такой зап�
 CTest3/3 и timeout/recovery работают при запрете записи в dependency через Windows
 ACL. Воспроизведение из корня репозитория — Tests/experiments/check_readonly_consumer.ps1;
 подробности и границы доказательства в CONSUMER_VALIDATION по ссылке выше.
+
+Текущий namespace и контракт подключения: [STM32_GDBTEST_API](../../docs/STM32_GDBTEST_API.md).
+После обновления повторить configure/build, старые HWTEST_* cache/env заменить по инструкции миграции.

@@ -7,6 +7,14 @@
 
 ### Changed
 
+- Namespace hwtest перенесён в stm32_gdbtest: imports, CLI python -m stm32_gdbtest,
+  STM32GDBTest.cmake/stm32_gdbtest_attach и префикс STM32_GDBTEST_. Версия
+  исходного прототипа0.1.0.dev0/API_VERSION1; API/миграция описаны в STM32_GDBTEST_API.md.
+  Старые aliases отсутствуют; старые stand/identity env вызывают явный отказ.
+- Сохранены schemas/ID/пресеты/каталоги отчётов и mutex namespace. Три MCU build/offline
+  PASS, host44 PASS; F411/OpenOCD и F103/J-Link24/24, read-only consumer3/3,
+  timeout/recovery/restore PASS. C/C++ firmware не менялась. Упаковка ещё впереди.
+
 - Межпроектный Windows mutex для отладчика в одной Windows-сессии; ST-Link общий
   для OpenOCD/ST server, J-Link отдельный. Занятость/WAIT_ABANDONED дают ERROR
   до подключения; legacy lock сохранён. Observe_sleep использует тот же механизм.

@@ -1,5 +1,5 @@
 """Configuration checks only: no claims about conversions, IRQ timing or RTC alarms."""
-from hwtest import case
+from stm32_gdbtest import case
 
 
 @case("HW_ADC_DMA_INIT", labels=("adc", "dma", "init"))

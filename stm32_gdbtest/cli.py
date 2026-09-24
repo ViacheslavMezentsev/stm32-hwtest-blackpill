@@ -8,11 +8,13 @@ import sys
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from hwtest.collect import collect, trace
+from stm32_gdbtest import __version__
+from stm32_gdbtest.collect import collect, trace
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog="stm32-gdbtest")
+    parser.add_argument("--version", action="version", version="%(prog)s " + __version__)
     subs = parser.add_subparsers(dest="command", required=True)
     gather = subs.add_parser("collect")
     gather.add_argument("--tests", type=Path, required=True)
@@ -31,10 +33,10 @@ def main():
     if args.command == "collect":
         tests = collect(args.tests)
         if args.cmake:
-            from hwtest.runner import local_directory
+            from stm32_gdbtest.runner import local_directory
             local_directory(args.cmake.resolve().parent, args.workspace)
             args.cmake.write_text("\n".join(
-                f"hwtest_register({t['id']} {t['timeout_s']} \"{';'.join(t['labels'])}\")"
+                f"stm32_gdbtest_register({t['id']} {t['timeout_s']} \"{';'.join(t['labels'])}\")"
                 for t in tests) + "\n", encoding="utf-8")
         else:
             print(json.dumps(tests, indent=2))
@@ -43,7 +45,7 @@ def main():
         trace(collect(args.tests), args.requirements)
         print("Requirement IDs and tests match")
         return 0
-    from hwtest.runner import run
+    from stm32_gdbtest.runner import run
     session = json.loads(args.session.read_text(encoding="utf-8"))
     tests = {t["id"]: t for t in collect(session["tests"])}
     return run(session, tests[args.test], args.stand, args.timeout, args.identity_policy)

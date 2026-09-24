@@ -2,7 +2,7 @@
 
 Это развиваемая основа будущей отдельной системы hwtest. Здесь фиксируем методы,
 эксперименты, границы доказательства и решения для общего API. Архитектурное
-предложение находится в [HWTEST_ARCHITECTURE.md](HWTEST_ARCHITECTURE.md), команды
+предложение находится в [STM32_GDBTEST_ARCHITECTURE.md](STM32_GDBTEST_ARCHITECTURE.md), команды
 текущей реализации — в [HWTEST.md](HWTEST.md). Наличие метода в этом документе
 не означает его реализации или проверки на всех STM32.
 
@@ -222,11 +222,11 @@ $session.out = Join-Path (Resolve-Path build/method-negative).Path 'runs'
 $json = $session | ConvertTo-Json
 $destination = Join-Path (Resolve-Path build/method-negative).Path 'session.json'
 [IO.File]::WriteAllText($destination, $json, [Text.UTF8Encoding]::new($false))
-python -B hwtest/cli.py run --session build/method-negative/session.json --test HW_BAD_FIELD
+python -B stm32_gdbtest/cli.py run --session build/method-negative/session.json --test HW_BAD_FIELD
 # Ожидается exit 1, FAIL, имя поля Mode.
-python -B hwtest/cli.py run --session build/method-negative/session.json --test HW_FALSE_CONDITION --timeout 2
+python -B stm32_gdbtest/cli.py run --session build/method-negative/session.json --test HW_FALSE_CONDITION --timeout 2
 # Ожидается exit 2, ERROR, host recovery.
-python -B hwtest/cli.py run --session build/method-negative/session.json --test HW_INVALID_CONDITION
+python -B stm32_gdbtest/cli.py run --session build/method-negative/session.json --test HW_INVALID_CONDITION
 # Ожидается exit 2, ERROR, неизвестный символ.
 ctest --preset f411ce-hw -R '^hw.HW_BLINK$'
 # После отрицательных контролей штатный тест должен пройти.
@@ -252,7 +252,7 @@ reset/halt → reset/run. Разделение путей модуля и про
 1. На опытах уточнять API ожидания события/возврата, операций с полями и инъекций;
    сохранять отрицательные контроли, не скрывать gdb.error за false.
 2. Вынести перечисленные зависимости в проверяемый профиль цели и параметры
-   hwtest_attach; разделить корень модуля, проекта и каталог артефактов.
+   stm32_gdbtest_attach; разделить корень модуля, проекта и каталог артефактов.
 3. Проверить один сценарий IRQ и один DMA/таймерный сценарий с явным учётом halt/freeze;
    для этого сначала определить полезное поведение прошивки, затем её тесты.
 4. Проверить отдельный проект-потребитель внутри этого workspace, затем второе семейство

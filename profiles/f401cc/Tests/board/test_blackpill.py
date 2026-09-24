@@ -1,4 +1,4 @@
-from hwtest import case
+from stm32_gdbtest import case
 from Tests.scenarios import board as scenarios
 from profiles.f401cc.Tests.expectations import EXPECTED
 

@@ -61,7 +61,7 @@ def main():
     result = out / "result.json"
     image = out / "image.bin"
     env = os.environ.copy()
-    env.update(HWTEST_RESULT=str(result), HWTEST_IMAGE=str(image))
+    env.update(STM32_GDBTEST_RESULT=str(result), STM32_GDBTEST_IMAGE=str(image))
     server = client = None
     ready = False
     report = {"status": "ERROR", "checks": []}
@@ -75,7 +75,7 @@ def main():
         with socket.socket() as port_socket:
             port_socket.bind(("127.0.0.1", 0))
             port = port_socket.getsockname()[1]
-        env["HWTEST_ENDPOINT"] = f"127.0.0.1:{port}"
+        env["STM32_GDBTEST_ENDPOINT"] = f"127.0.0.1:{port}"
         server_cmd = [args.openocd, "-f", "interface/stlink.cfg", "-f", "target/stm32f4x.cfg",
                       "-c", f"adapter serial {args.serial}", "-c", "adapter speed 1000",
                       "-c", f"gdb_port {port}", "-c", "tcl_port disabled", "-c", "telnet_port disabled"]
@@ -112,7 +112,7 @@ def main():
                 # Recover even if the agent timed out or failed before its finally block.
                 with (out / "recovery.log").open("wb") as recovery_log:
                     subprocess.run(gdb_base + ["-ex", "set confirm off", "-ex",
-                                   "target extended-remote " + env["HWTEST_ENDPOINT"],
+                                   "target extended-remote " + env["STM32_GDBTEST_ENDPOINT"],
                                    "-ex", "monitor reset run", "-ex", "disconnect"],
                                    stdout=recovery_log, stderr=subprocess.STDOUT, check=True,
                                    timeout=10, creationflags=flags)

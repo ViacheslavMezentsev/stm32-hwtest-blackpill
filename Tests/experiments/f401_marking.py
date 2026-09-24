@@ -10,8 +10,8 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from hwtest.collect import collect
-from hwtest.runner import run
+from stm32_gdbtest.collect import collect
+from stm32_gdbtest.runner import run
 
 
 def main():

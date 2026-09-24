@@ -7,14 +7,14 @@ import xml.etree.ElementTree as ET
 from unittest.mock import patch
 from types import SimpleNamespace
 
-from hwtest.collect import collect, trace
-from hwtest.processes import probe_lock
-from hwtest.openocd import load_stand, server_command
-from hwtest.profile import load_profile
-from hwtest.reports import write_reports
-from hwtest.runner import ROOT, run
-from hwtest.compatibility import REQUIRED_GDB_API, inspect_gdb_api, require_gdb_api, runtime_manifest
-from hwtest.backends import load_stand as load_backend_stand, server_spec
+from stm32_gdbtest.collect import collect, trace
+from stm32_gdbtest.processes import probe_lock
+from stm32_gdbtest.openocd import load_stand, server_command
+from stm32_gdbtest.profile import load_profile
+from stm32_gdbtest.reports import write_reports
+from stm32_gdbtest.runner import ROOT, run
+from stm32_gdbtest.compatibility import REQUIRED_GDB_API, inspect_gdb_api, require_gdb_api, runtime_manifest
+from stm32_gdbtest.backends import load_stand as load_backend_stand, server_spec
 
 
 class HostTests(unittest.TestCase):
@@ -26,12 +26,12 @@ class HostTests(unittest.TestCase):
         self.directory = Path(self.temp.name)
 
     def test_consumer_session_scopes_reports_and_rejects_escape(self):
-        from hwtest.runner import local_directory
+        from stm32_gdbtest.runner import local_directory
         consumer = self.directory / "consumer"
         consumer.mkdir()
         session = dict(root=str(consumer), out=str(consumer / "build/runs"), stand="")
         test = dict(id="HW_CONSUMER", timeout_s=10)
-        with patch.dict(os.environ, {}, clear=True), patch("hwtest.runner.execute") as process:
+        with patch.dict(os.environ, {}, clear=True), patch("stm32_gdbtest.runner.execute") as process:
             self.assertNotEqual(run(session, test), 0)
             process.assert_not_called()
         reports = list(consumer.glob("build/runs/*/result.json"))
@@ -41,6 +41,15 @@ class HostTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             local_directory(escaped, consumer)
         self.assertFalse(escaped.exists())
+
+    def test_legacy_stand_environment_is_not_silently_ignored(self):
+        session = dict(root=str(self.directory), out=str(self.directory / "reports"))
+        with patch.dict(os.environ, {"HWTEST_STAND": "old.toml"}), \
+                patch("stm32_gdbtest.runner.load_stand") as load:
+            self.assertEqual(run(session, dict(id="HW_LEGACY", timeout_s=10)), 2)
+            load.assert_not_called()
+        report = json.loads(next((self.directory / "reports").glob("*/result.json")).read_text())
+        self.assertIn("Rename legacy environment", report["error"])
 
     def test_collection_does_not_execute_code(self):
         (self.directory / "test_one.py").write_text(
@@ -96,7 +105,7 @@ class HostTests(unittest.TestCase):
     def test_stlink_requires_programmer_and_rejects_unknown_settings(self):
         stand = self.directory / "stand.toml"
         content = '[probe]\nbackend="stlink"\nserial="TEST"\n'
-        with patch("hwtest.backends.shutil.which", return_value="server.exe"):
+        with patch("stm32_gdbtest.backends.shutil.which", return_value="server.exe"):
             stand.write_text(content)
             with self.assertRaisesRegex(ValueError, "programmer_dir"):
                 load_backend_stand(stand)
@@ -128,7 +137,7 @@ class HostTests(unittest.TestCase):
 
     def test_jlink_requires_serial_and_known_device_mapping(self):
         path = self.directory / "stand.toml"
-        with patch("hwtest.backends.shutil.which", return_value="JLinkGDBServerCL.exe"):
+        with patch("stm32_gdbtest.backends.shutil.which", return_value="JLinkGDBServerCL.exe"):
             for serial in ("0", "1", "nickname", "001234"):
                 path.write_text('[probe]\nbackend="jlink"\nserial="' + serial + '"\n')
                 with self.assertRaisesRegex(ValueError, "explicit decimal"):
@@ -215,7 +224,7 @@ class HostTests(unittest.TestCase):
 
     def test_missing_stand_is_error_with_reports(self):
         session = dict(out=str(self.directory), stand=str(self.directory / "absent.toml"))
-        with patch.dict(os.environ, {"HWTEST_STAND": ""}):
+        with patch.dict(os.environ, {"STM32_GDBTEST_STAND": ""}):
             code = run(session, {"id": "HW_ONE", "timeout_s": 1})
         self.assertEqual(code, 2)
         report = json.loads(next(self.directory.glob("*/result.json")).read_text())

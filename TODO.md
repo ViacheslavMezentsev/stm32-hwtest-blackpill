@@ -15,7 +15,7 @@
 3. **F103 + ST-Link**: после согласованной смены проводки повторить новые manifest/HAL
    механизмы через OpenOCD/ST server. Старые результаты этого не доказывают.
 4. До смены проводки можно продолжать выделение модуля и расширение контрактов на
-   действующих F411/ST-Link и F103/J-Link. Build/offline и HW lifecycle потребителя проверены; перенос/read-only dependency проверены; межпроектный mutex реализован; следующий шаг — публичный API/namespace.
+   действующих F411/ST-Link и F103/J-Link. Build/offline и HW lifecycle потребителя проверены; перенос/read-only dependency проверены; межпроектный mutex реализован; API/namespace перенесены; следующий шаг — состав и упаковка отдельного модуля.
 5. Stop/watchpoints/наблюдение без halt планировать отдельными наборами.
 
 | Плата | ST-Link / OpenOCD | ST-Link / ST server | J-Link / J-Link server |
@@ -130,6 +130,7 @@ H503 остаётся отложенным до сообщения владел�
 - [x] Проверить потребителя на F411CE + ST-Link/OpenOCD: Flash/verify-only/timeout/recovery; восстановить основную прошивку, HW_BOOT/HW_BLINK и live Sleep PASS.
 - [x] Проверить перенос исходного дерева и Windows ACL read-only dependency: build/offline, CTest3/3, HW/recovery PASS. Git clone/install ещё не проверен.
 - [x] Межпроектная блокировка в одной Windows-сессии: named mutex, общая identity ST-Link для OpenOCD/ST server; host и HW regression PASS.
-- [ ] Закрепить публичные API/namespace и описать миграцию hwtest → stm32_gdbtest.
+- [x] Описать API прототипа0.1.0.dev0/API_VERSION1; перенести imports/CLI/CMake/env в stm32_gdbtest и описать миграцию.
+- [ ] Подготовить состав поставки/лицензию и упаковку с console entry point; проверить локальную установку.
 - [ ] Исследовать надзор/Job Object для дочерних серверов при аварийном завершении host; mutex не гарантирует их остановку.
 - [ ] Отделить модуль, проверить имя перед публикацией; см. docs/MODULE_EXTRACTION.md.

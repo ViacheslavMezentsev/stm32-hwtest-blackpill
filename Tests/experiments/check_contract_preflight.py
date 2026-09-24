@@ -9,8 +9,8 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from hwtest.build_manifest import digest, load_verified
-from hwtest.contracts import select_contracts
+from stm32_gdbtest.build_manifest import digest, load_verified
+from stm32_gdbtest.contracts import select_contracts
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--session", type=Path, required=True)
@@ -49,9 +49,9 @@ for name in ("missing_macro", "missing_macro_context", "wrong_macro_scope", "une
     data = deepcopy(selected)
     macros = data["contracts"]["clock_macros"]["macros"]
     if name == "missing_macro":
-        macros["expressions"].append("__HWTEST_MISSING_MACRO__()")
+        macros["expressions"].append("__STM32_GDBTEST_MISSING_MACRO__()")
     elif name == "missing_macro_context":
-        macros["context"] = "HWTEST_MISSING_CONTEXT"
+        macros["context"] = "STM32_GDBTEST_MISSING_CONTEXT"
     elif name == "wrong_macro_scope":
         macros["context"] = ("adc_convert_typical" if "f103c8" in session["profile"]
                              else "adc_convert_factory")
@@ -65,12 +65,12 @@ for name, data in variants.items():
     request = out / (name + "-request.json")
     request.write_text(json.dumps(dict(elf=str(elf), result=str(result), selected=data)))
     env = os.environ.copy()
-    env.update(HWTEST_CONTRACT_REQUEST=str(request), PYTHONDONTWRITEBYTECODE="1", TEMP=str(out), TMP=str(out))
+    env.update(STM32_GDBTEST_CONTRACT_REQUEST=str(request), PYTHONDONTWRITEBYTECODE="1", TEMP=str(out), TMP=str(out))
     env.pop("PYTHONHOME", None)
     env.pop("PYTHONPATH", None)
     with (out / (name + ".log")).open("wb") as log:
         proc = subprocess.run([session["gdb"], "-nx", "-q", "-batch", "-iex", "set auto-load off",
-            str(elf), "-x", str(ROOT / "hwtest/contract_preflight.py")], timeout=15, env=env,
+            str(elf), "-x", str(ROOT / "stm32_gdbtest/contract_preflight.py")], timeout=15, env=env,
             stdout=log, stderr=subprocess.STDOUT, creationflags=subprocess.CREATE_NO_WINDOW)
     report = json.loads(result.read_text())
     expected = "PASS" if name == "positive" else "ERROR"

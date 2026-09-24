@@ -27,12 +27,12 @@ def main():
     if not all(path.is_relative_to(ROOT) for path in (consumer_root, module_root)):
         raise ValueError("Experiment copies must remain inside this repository")
     sys.path.insert(0, str(module_root))
-    from hwtest.build_manifest import digest, load_verified
-    from hwtest.collect import collect
-    from hwtest.openocd import load_stand
-    from hwtest.runner import local_directory, run
-    import hwtest.runner
-    assert Path(hwtest.runner.__file__).resolve() == module_root / "hwtest/runner.py"
+    from stm32_gdbtest.build_manifest import digest, load_verified
+    from stm32_gdbtest.collect import collect
+    from stm32_gdbtest.openocd import load_stand
+    from stm32_gdbtest.runner import local_directory, run
+    import stm32_gdbtest.runner
+    assert Path(stm32_gdbtest.runner.__file__).resolve() == module_root / "stm32_gdbtest/runner.py"
 
     stand_path = args.stand.resolve()
     stand = load_stand(stand_path)
@@ -47,7 +47,7 @@ def main():
     summary = dict(status="ERROR", consumer_elf=digest(consumer["elf"]),
                    original_elf=digest(original["elf"]), stages={})
     cases = collect(consumer["tests"])
-    baseline = inventory(module_root / "hwtest")
+    baseline = inventory(module_root / "stm32_gdbtest")
     infrastructure = {name: inventory(ROOT / "build" / name)
                       for name in ("hwtest-tmp", "probe-locks")}
 
@@ -68,7 +68,7 @@ def main():
     try:
         if args.ctest:
             env = os.environ.copy()
-            env.update(HWTEST_STAND=str(stand_path), HWTEST_IDENTITY_POLICY="strict",
+            env.update(STM32_GDBTEST_STAND=str(stand_path), STM32_GDBTEST_IDENTITY_POLICY="strict",
                        PYTHONDONTWRITEBYTECODE="1", TEMP=str(directory), TMP=str(directory))
             with (directory / "ctest.log").open("wb") as log:
                 ctest = subprocess.run(["ctest", "--test-dir", str(consumer_root / "build/debug"),
@@ -91,7 +91,7 @@ from pathlib import Path
 
 def stall(target):
     target.reach("app_loop")
-    request = json.loads(Path(os.environ["HWTEST_RUN"]).read_text())
+    request = json.loads(Path(os.environ["STM32_GDBTEST_RUN"]).read_text())
     Path(request["result"]).with_name("stall-entered.txt").write_text("at app_loop")
     time.sleep(60)
 ''', encoding="utf-8")
@@ -102,7 +102,7 @@ def stall(target):
         assert report.get("teardown") == "reset_run (host recovery)", report
         rc, report, _ = execute("after_recovery", consumer, cases[0], verify_stand)
         assert rc == 0 and report["flashed"] is False, report
-        summary["module_unchanged"] = inventory(module_root / "hwtest") == baseline
+        summary["module_unchanged"] = inventory(module_root / "stm32_gdbtest") == baseline
         summary["parent_runtime_dirs_unchanged"] = all(
             inventory(ROOT / "build" / name) == before for name, before in infrastructure.items())
         assert summary["module_unchanged"] and summary["parent_runtime_dirs_unchanged"]

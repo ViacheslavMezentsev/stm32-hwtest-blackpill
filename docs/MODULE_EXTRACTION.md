@@ -1,8 +1,8 @@
 # Подготовка самостоятельного модуля
 
 Статус: рабочее имя **stm32-gdbtest** согласовано владельцем. Проверен первый
-проект-потребитель (build/offline и F411/ST-Link/OpenOCD lifecycle); пакет не опубликован, imports/CLI/CMake ещё
-не переименованы. Это подготовка отделения, не завершённая поставка модуля.
+проект-потребитель (build/offline и F411/ST-Link/OpenOCD lifecycle); пакет не опубликован. Python/CLI/CMake переведены на namespace stm32_gdbtest;
+[API и миграция](STM32_GDBTEST_API.md), версия прототипа0.1.0.dev0. Это подготовка отделения, не завершённая поставка модуля.
 
 ## Функциональная граница
 
@@ -17,13 +17,13 @@ Python API. Сначала нужен минимальный проект-пот
 
 Рабочее имя **stm32-gdbtest** отражает STM32 и запуск через GDB-Python.
 Python остаётся механизмом реализации, отдельно удлинять название до gdbpy-test
-не требуется. Предлагаемые публичные имена для будущей миграции:
+не требуется. Имена текущей интеграции и будущей поставки:
 
-| Поверхность | Предложение, пока не API |
+| Поверхность | Состояние |
 | --- | --- |
 | Репозиторий / подмодуль | stm32-gdbtest / modules/stm32-gdbtest |
 | Python distribution / import | stm32-gdbtest / stm32_gdbtest |
-| CLI | stm32-gdbtest |
+| CLI | python -m stm32_gdbtest; console executable при упаковке |
 | CMake package / functions | STM32GDBTest / stm32_gdbtest_attach |
 | Environment prefix | STM32_GDBTEST_ |
 
@@ -37,7 +37,7 @@ Python остаётся механизмом реализации, отдель�
 
 - Завершить и описать контракт параметров profile/stand/session и macro preflight.
 - Build/offline, аппаратный lifecycle, перенос исходного дерева и read-only dependency проверены; межпроектное владение реализовано в одной Windows-сессии; закрепить публичный API.
-- Рабочее имя согласовано; переименовать package/CLI/CMake согласованно и описать миграцию после проверки границ.
+- Namespace package/CLI/CMake перенесён; API и миграция описаны в STM32_GDBTEST_API.md.
 - Закреплять модуль коммитом в Git submodule; тесты пользователя не хранить внутри зависимости.
 - Опубликовать матрицу реально проверенных MCU/HAL/GDB/backend и ограничения Windows.
 
@@ -48,18 +48,18 @@ Python остаётся механизмом реализации, отдель�
 [examples/minimal-consumer](../examples/minimal-consumer/README.md) — отдельный
 CMake project с собственными C/startup/linker, target.toml, requirements, contract
 registry, тестом и Python helper. STM32F411CE/CMSIS, без HAL и stm32-cmake-yml.
-Зависимость подключается путём `HWTEST_SOURCE_DIR`; сейчас путь ведёт в этот
+Зависимость подключается путём `STM32_GDBTEST_SOURCE_DIR`; сейчас путь ведёт в этот
 checkout. Перенос исходного дерева в отдельный каталог внутри репозитория и работа с
 Windows ACL read-only копией проверены. Установка пакета пока не проверялась.
 
-- `hwtest_attach(target PROFILE_DIR <absolute-path> [MANIFEST_INPUTS <files>]
-  [SELF_TESTS])`: пути к коду модуля определяются от файла HwTest.cmake;
+- `stm32_gdbtest_attach(target PROFILE_DIR <absolute-path> [MANIFEST_INPUTS <files>]
+  [SELF_TESTS])`: пути к коду модуля определяются от файла STM32GDBTest.cmake;
   `PROJECT_SOURCE_DIR` задаёт корень потребителя. Build должен быть внутри него.
 - Профиль содержит target.toml и Tests/{board,requirements.md,contracts.json}.
   Manifest больше не требует YAML; если YAML есть, он учитывается. Дополнительные
   конфиги/linker нужно перечислять в MANIFEST_INPUTS для hash и relink dependency.
 - Имя target передаётся manifest отдельно от имени ELF. Проектные helper доступны
-  агенту из корня потребителя; импорт hwtest сохраняет приоритет кода модуля.
+  агенту из корня потребителя; импорт stm32_gdbtest сохраняет приоритет кода модуля.
 - Session root определяет каталоги отчётов, temp, locks и cwd агента.
   Для старых sessions без root сохранён fallback на корень checkout модуля.
 - Stand выбирается явно; прежний board-specific default остался в корневом
@@ -81,7 +81,7 @@ HW_BOOT/HW_BLINK PASS. Наблюдаемых изменений файлов м
 ## Что ещё мешает самостоятельной поставке
 
 - Windows/Ninja и один firmware target, созданный в верхнем CMake-каталоге;
-  несколько hwtest_attach в одной сборке пока не поддерживаются.
+  несколько stm32_gdbtest_attach в одной сборке пока не поддерживаются.
 - Manifest по-прежнему требует Cube package metadata и CMSIS/HAL version macros;
   произвольные vendor trees, object libraries и prebuilt библиотеки не покрыты.
 - Межпроектное владение реализовано named mutex в одной Windows-сессии;
@@ -95,9 +95,9 @@ HW_BOOT/HW_BLINK PASS. Наблюдаемых изменений файлов м
 
 
 Дополнительное доказательство отделимости: CMake/CLI/runner/GDB agent работают
-из копии hwtest в пути с пробелами при ACL Deny Write/Delete. Четыре контрольные
+из копии stm32_gdbtest в пути с пробелами при ACL Deny Write/Delete. Четыре контрольные
 операции записи отклонены ОС; CTest3/3, timeout/recovery и восстановление приложения
 прошли. [Полный протокол](CONSUMER_VALIDATION.md#перенос-и-read-only-dependency-следующий-опыт).
 Общая блокировка теперь проверена на разных процессах/копиях и учитывает один
 ST-Link при разных backend. Границы сессии и аварийного завершения описаны в
-[DEBUGGER_OWNERSHIP](DEBUGGER_OWNERSHIP.md). Следующий этап — публичный API/namespace.
+[DEBUGGER_OWNERSHIP](DEBUGGER_OWNERSHIP.md). Следующий этап — упаковка и отдельный состав поставки.

@@ -5,7 +5,7 @@ import re
 import shutil
 import tomllib
 
-from hwtest import openocd
+from stm32_gdbtest import openocd
 
 
 def load_stand(path):

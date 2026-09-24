@@ -13,18 +13,18 @@ STM32F103C8T6 → имя SEGGER STM32F103C8. Другие MCU пока откл�
 а не подменяются «похожим» устройством.
 
 ```powershell
-python -B hwtest/cli.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/bluepill-jlink.local.toml
+python -B stm32_gdbtest/cli.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/bluepill-jlink.local.toml
 ```
 
 Полный набор:
 
 ```powershell
-$previousStand = $env:HWTEST_STAND
+$previousStand = $env:STM32_GDBTEST_STAND
 try {
-    $env:HWTEST_STAND = (Resolve-Path Tests/stands/bluepill-jlink.local.toml).Path
+    $env:STM32_GDBTEST_STAND = (Resolve-Path Tests/stands/bluepill-jlink.local.toml).Path
     cmake --build --preset f103c8-check-hw
 } finally {
-    $env:HWTEST_STAND = $previousStand
+    $env:STM32_GDBTEST_STAND = $previousStand
 }
 ```
 

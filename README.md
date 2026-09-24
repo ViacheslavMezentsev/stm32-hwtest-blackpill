@@ -144,8 +144,8 @@ define `STM32F411xE`, начальный SP `0x20020000`, reset-вектор в�
 
 ## Дальнейшая работа
 
-- Фактическая архитектура: [HWTEST_ARCHITECTURE_V2.md](docs/HWTEST_ARCHITECTURE_V2.md).
-- Исходный замысел: [HWTEST_ARCHITECTURE.md](docs/HWTEST_ARCHITECTURE.md).
+- Фактическая архитектура: [STM32_GDBTEST_ARCHITECTURE_V2.md](docs/STM32_GDBTEST_ARCHITECTURE_V2.md).
+- Исходный замысел: [STM32_GDBTEST_ARCHITECTURE.md](docs/STM32_GDBTEST_ARCHITECTURE.md).
 - План: [TODO.md](TODO.md); журнал: [CHANGELOG.md](CHANGELOG.md).
 - Правила: [AGENTS.md](AGENTS.md).
 - Перед реализацией GDB-Python изучены исходный BOARD_TEST и раздел 23.3 руководства GDB.
@@ -205,3 +205,6 @@ F401CC на текущей плате: 24/24 CTest через OpenOCD и ST GDB 
 проверки без платы. [Аппаратный lifecycle](docs/CONSUMER_VALIDATION.md) проверен
 на F411CE/ST-Link/OpenOCD, включая timeout/recovery и восстановление основной прошивки.
 Границы, результаты и следующие шаги: [MODULE_EXTRACTION](docs/MODULE_EXTRACTION.md).
+
+Публичный интерфейс прототипа0.1.0.dev0: [API и миграция stm32_gdbtest](docs/STM32_GDBTEST_API.md).
+CLI из корня checkout: `python -B -m stm32_gdbtest --help`.

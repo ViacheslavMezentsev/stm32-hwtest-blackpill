@@ -9,9 +9,9 @@ import traceback
 import gdb
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from hwtest.contracts import inspect_contracts
+from stm32_gdbtest.contracts import inspect_contracts
 
-request = json.loads(Path(os.environ["HWTEST_CONTRACT_REQUEST"]).read_text(encoding="utf-8"))
+request = json.loads(Path(os.environ["STM32_GDBTEST_CONTRACT_REQUEST"]).read_text(encoding="utf-8"))
 try:
     report = inspect_contracts(gdb, request["selected"])
 except BaseException:

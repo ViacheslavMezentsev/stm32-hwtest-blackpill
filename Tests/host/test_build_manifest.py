@@ -4,8 +4,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from hwtest.build_manifest import dependency_map, digest, label, load_verified, selected_flags, version_macros
-from hwtest.runner import ROOT, execute
+from stm32_gdbtest.build_manifest import dependency_map, digest, label, load_verified, selected_flags, version_macros
+from stm32_gdbtest.runner import ROOT, execute
 
 
 class BuildManifestTests(unittest.TestCase):
@@ -55,7 +55,7 @@ class BuildManifestTests(unittest.TestCase):
         session = dict(elf=str(self.elf), profile=str(self.profile), gdb="unused.exe",
                        build_manifest=str(self.manifest))
         report = {}
-        with patch("hwtest.runner.subprocess.run") as run, patch("hwtest.runner.subprocess.Popen") as popen:
+        with patch("stm32_gdbtest.runner.subprocess.run") as run, patch("stm32_gdbtest.runner.subprocess.Popen") as popen:
             execute(session, {}, {}, out, report, 10, {})
         run.assert_not_called()
         popen.assert_not_called()

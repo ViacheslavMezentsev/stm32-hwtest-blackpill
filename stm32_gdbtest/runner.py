@@ -11,13 +11,13 @@ import subprocess
 import time
 import traceback
 
-from hwtest.backends import load_stand, server_spec
-from hwtest.profile import load_profile
-from hwtest.processes import FLAGS, probe_lock, stop_tree
-from hwtest.reports import CODES, write_reports
-from hwtest.compatibility import runtime_manifest
-from hwtest.build_manifest import load_verified
-from hwtest.contracts import select_contracts
+from stm32_gdbtest.backends import load_stand, server_spec
+from stm32_gdbtest.profile import load_profile
+from stm32_gdbtest.processes import FLAGS, probe_lock, stop_tree
+from stm32_gdbtest.reports import CODES, write_reports
+from stm32_gdbtest.compatibility import runtime_manifest
+from stm32_gdbtest.build_manifest import load_verified
+from stm32_gdbtest.contracts import select_contracts
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,7 +38,10 @@ def run(session, test, stand_path=None, timeout=None, identity_policy=None):
     started = time.monotonic()
     report = {"id": test["id"], "status": "ERROR", "checks": [], "started_utc": stamp}
     try:
-        policy = identity_policy or os.environ.get("HWTEST_IDENTITY_POLICY", "warn")
+        legacy = [name for name in ("HWTEST_STAND", "HWTEST_IDENTITY_POLICY") if os.environ.get(name)]
+        if legacy:
+            raise ValueError("Rename legacy environment variables to STM32_GDBTEST_: " + ", ".join(legacy))
+        policy = identity_policy or os.environ.get("STM32_GDBTEST_IDENTITY_POLICY", "warn")
         if policy not in ("warn", "strict"):
             raise ValueError("Identity policy must be warn or strict")
         session = dict(session, identity_policy=policy)
@@ -48,9 +51,9 @@ def run(session, test, stand_path=None, timeout=None, identity_policy=None):
         limit = test["timeout_s"] if timeout is None else timeout
         if not math.isfinite(limit) or not 0 < limit <= 300:
             raise ValueError("Timeout must be positive and <= 300 seconds")
-        path = stand_path or os.environ.get("HWTEST_STAND") or session.get("stand")
+        path = stand_path or os.environ.get("STM32_GDBTEST_STAND") or session.get("stand")
         if not path:
-            raise RuntimeError("Select a local stand with HWTEST_STAND or --stand")
+            raise RuntimeError("Select a local stand with STM32_GDBTEST_STAND or --stand")
         stand = load_stand(path)
         report["backend"] = stand["backend"]
         profile = load_profile(session["profile"])
@@ -108,9 +111,9 @@ def execute(session, test, stand, out, report, timeout, profile):
             request = out / "contract-request.json"
             result = out / "contract-result.json"
             request.write_text(json.dumps(dict(elf=str(elf), result=str(result), selected=selected)), encoding="utf-8")
-            env["HWTEST_CONTRACT_REQUEST"] = str(request)
+            env["STM32_GDBTEST_CONTRACT_REQUEST"] = str(request)
             with (out / "contract-preflight.log").open("wb") as log:
-                preflight = subprocess.run(gdb_base + [str(elf), "-x", str(ROOT / "hwtest/contract_preflight.py")],
+                preflight = subprocess.run(gdb_base + [str(elf), "-x", str(ROOT / "stm32_gdbtest/contract_preflight.py")],
                     timeout=15, env=env, stdout=log, stderr=subprocess.STDOUT, creationflags=FLAGS)
             evidence = json.loads(result.read_text(encoding="utf-8"))
             report["contracts"].update(evidence)
@@ -141,7 +144,7 @@ def execute(session, test, stand, out, report, timeout, profile):
                         setup=backend.get("setup", []))
         run_file = out / "run.json"
         run_file.write_text(json.dumps(run_data), encoding="utf-8")
-        env["HWTEST_RUN"] = str(run_file)
+        env["STM32_GDBTEST_RUN"] = str(run_file)
         with (out / "server.log").open("wb") as server_log, (out / "gdb.log").open("wb") as gdb_log:
             server = subprocess.Popen(backend["command"], env=env, cwd=out,
                                       stdout=server_log, stderr=subprocess.STDOUT, creationflags=FLAGS)
@@ -155,7 +158,7 @@ def execute(session, test, stand, out, report, timeout, profile):
                 time.sleep(0.1)
             if not ready:
                 raise TimeoutError("GDB server startup timed out")
-            client = subprocess.Popen(gdb_base + [str(elf), "-x", str(ROOT / "hwtest/agent.py")],
+            client = subprocess.Popen(gdb_base + [str(elf), "-x", str(ROOT / "stm32_gdbtest/agent.py")],
                                       env=env, cwd=project_root, stdout=gdb_log, stderr=subprocess.STDOUT,
                                       creationflags=FLAGS)
             returncode = client.wait(timeout=timeout)

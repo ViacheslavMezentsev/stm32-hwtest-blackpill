@@ -9,17 +9,17 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from hwtest.openocd import load_stand, server_command
-from hwtest.processes import FLAGS, probe_lock
-from hwtest.profile import load_profile
-from hwtest.runner import local_directory
+from stm32_gdbtest.openocd import load_stand, server_command
+from stm32_gdbtest.processes import FLAGS, probe_lock
+from stm32_gdbtest.profile import load_profile
+from stm32_gdbtest.runner import local_directory
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--session", type=Path, required=True)
     parser.add_argument("--identity-policy", choices=("warn", "strict"),
-                        default=os.environ.get("HWTEST_IDENTITY_POLICY", "warn"))
+                        default=os.environ.get("STM32_GDBTEST_IDENTITY_POLICY", "warn"))
     parser.add_argument("--samples", type=int, default=30)
     parser.add_argument("--interval-ms", type=int, default=37)
     parser.add_argument("--out", type=Path, default=ROOT / "build/sleep-observation")

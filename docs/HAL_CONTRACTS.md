@@ -29,7 +29,7 @@ AST-сборщик читает имена без импорта тестово�
    identity/Flash/reset/breakpoint/teardown проверками. Результаты preflight включены
    в `result.json` и JUnit; отдельный журнал — `contract-preflight.log`.
 
-Общий механизм находится в `hwtest/contracts.py`; MCU/HAL ожидания — в профиле,
+Общий механизм находится в `stm32_gdbtest/contracts.py`; MCU/HAL ожидания — в профиле,
 проектные сценарии — в Tests/scenarios. Изменение контракта не требует пересборки
 прошивки: это ожидание теста, его выбранный снимок сохраняется отдельно от сборки.
 

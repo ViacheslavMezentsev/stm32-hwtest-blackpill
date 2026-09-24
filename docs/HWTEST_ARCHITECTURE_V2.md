@@ -5,7 +5,7 @@
 2026-09-24. Обозначение **v2 относится к документу**,
 а не к версии Python API или схем конфигурации: используемые versioned schemas пока имеют номер 1.
 
-[Исходный документ](HWTEST_ARCHITECTURE.md) сохраняется как описание замысла и
+[Исходный документ](STM32_GDBTEST_ARCHITECTURE.md) сохраняется как описание замысла и
 анализа BOARD_TEST. Его примеры — проектные скелеты; фактический интерфейс описан
 здесь и в документах по ссылкам. Ниже различаются три состояния:
 **реализовано**, **проверено на указанной комбинации**, **планируется**.
@@ -22,6 +22,8 @@
 > module/consumer paths разделены. [HW lifecycle F411/ST-Link/OpenOCD](CONSUMER_VALIDATION.md)
 > проверен с timeout/recovery и восстановлением основной прошивки. Перенос дерева
 > исходников/read-only ACL подтверждён, CTest3/3; [межпроектный mutex](DEBUGGER_OWNERSHIP.md) реализован в одной Windows-сессии.
+
+> Namespace перенесён: [публичный API прототипа и миграция](STM32_GDBTEST_API.md).
 
 ## 1. Назначение и текущий масштаб
 
@@ -47,7 +49,7 @@ Python внутри GDB — отдельная среда. Версия GCC не
 ```mermaid
 flowchart TD
     Y[stm32_config.yml и профиль CubeMX] --> FW[ELF и build manifest]
-    C[CMake hwtest_attach] --> S[session.json и CTest]
+    C[CMake stm32_gdbtest_attach] --> S[session.json и CTest]
     T[Python-сценарии и требования] --> S
     S --> R[Host runner]
     B[Локальный TOML стенда] --> R
@@ -67,14 +69,14 @@ flowchart TD
 | Слой | Реализованная ответственность | Основные файлы |
 | --- | --- | --- |
 | Сборка приложения | MCU-профиль, CubeFW, исходники, toolchain; stm32-cmake-yml остаётся системой сборки | `stm32_config.yml`, `profiles/`, `modules/` |
-| CMake-интеграция HWTEST | Сессия, AST-сбор тестов, CTest, manifest после линковки, цель check-hw | [HwTest.cmake](../hwtest/cmake/HwTest.cmake) |
-| Host-оркестратор | Владение отладчиком, снимки артефактов, preflight, процессы, таймауты, отчёты | [runner.py](../hwtest/runner.py), [processes.py](../hwtest/processes.py) |
-| Backend | Аргументы сервера, признак готовности, setup/reset/finish конкретного сервера | [backends.py](../hwtest/backends.py), [openocd.py](../hwtest/openocd.py) |
-| GDB-агент | GDB API checks, подключение, MCU identity, Flash verify/load, выполнение сценария и диагностика | [agent.py](../hwtest/agent.py) |
-| API сценария | Проверки, значения и поля, hardware breakpoints, инъекции | [target.py](../hwtest/target.py) |
+| CMake-интеграция HWTEST | Сессия, AST-сбор тестов, CTest, manifest после линковки, цель check-hw | [STM32GDBTest.cmake](../stm32_gdbtest/cmake/STM32GDBTest.cmake) |
+| Host-оркестратор | Владение отладчиком, снимки артефактов, preflight, процессы, таймауты, отчёты | [runner.py](../stm32_gdbtest/runner.py), [processes.py](../stm32_gdbtest/processes.py) |
+| Backend | Аргументы сервера, признак готовности, setup/reset/finish конкретного сервера | [backends.py](../stm32_gdbtest/backends.py), [openocd.py](../stm32_gdbtest/openocd.py) |
+| GDB-агент | GDB API checks, подключение, MCU identity, Flash verify/load, выполнение сценария и диагностика | [agent.py](../stm32_gdbtest/agent.py) |
+| API сценария | Проверки, значения и поля, hardware breakpoints, инъекции | [target.py](../stm32_gdbtest/target.py) |
 | Проектные тесты | Что именно должно делать приложение; ожидаемые MCU-различия | `Tests/scenarios/`, `profiles/<MCU>/Tests/` |
 
-`hwtest/` пока является обычным каталогом этого репозитория. В коде есть привязки
+`stm32_gdbtest/` пока является обычным каталогом этого репозитория. В коде есть привязки
 к корню проекта, размещению Tests, build и профилей. Backend также содержит явное
 отображение поддержанного J-Link device. До выделения подмодуля эти зависимости
 нужно превратить в документированные параметры или профильные данные.
@@ -94,7 +96,7 @@ flowchart TD
 | `build/<preset>/hwtest/session.json` | Генерируемые пути ELF, GDB, тестов, профиля, стенда, manifest и результатов |
 
 Выбор профиля сборки — `STM32_YML_PROFILE`; для каждого MCU и компилятора нужен
-отдельный build-каталог. Выбор стенда: `--stand`, затем `HWTEST_STAND`, затем поле
+отдельный build-каталог. Выбор стенда: `--stand`, затем `STM32_GDBTEST_STAND`, затем поле
 сессии. MCU-профиль и отладчик — разные измерения конфигурации. Автоматического
 выбора подключённой платы или подтверждения правильной разводки нет.
 
@@ -108,7 +110,7 @@ flowchart TD
 
 Используется явное подключение, соответствующее Level 1 исходной архитектуры:
 `ENABLE_HW_TESTING`, include файла HWTEST и вызов
-`hwtest_attach(${PROJECT_NAME} PROFILE_DIR "${BOARD_DIR}")` после создания firmware-цели.
+`stm32_gdbtest_attach(${PROJECT_NAME} PROFILE_DIR "${BOARD_DIR}")` после создания firmware-цели.
 Level 0 через `CMAKE_PROJECT_INCLUDE`/DEFER пока не реализован.
 
 Декоратор `@case` задаёт ID, timeout, labels и необязательный список contracts.
