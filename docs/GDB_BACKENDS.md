@@ -15,7 +15,7 @@
 Один тест:
 
 ```powershell
-python -B hwtest/cli.py run --session build/f103-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/bluepill-stlink.local.toml
+python -B hwtest/cli.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/bluepill-stlink.local.toml
 ```
 
 Полный набор (переменная только в текущем PowerShell; сохранить предыдущее значение):
@@ -24,7 +24,7 @@ python -B hwtest/cli.py run --session build/f103-debug-hwtest/hwtest/session.jso
 $previousStand = $env:HWTEST_STAND
 try {
     $env:HWTEST_STAND = (Resolve-Path Tests/stands/bluepill-stlink.local.toml).Path
-    cmake --build --preset f103-check-hw
+    cmake --build --preset f103c8-check-hw
 } finally {
     $env:HWTEST_STAND = $previousStand
 }
@@ -101,7 +101,7 @@ Option bytes, mass erase и обновление firmware отладчика н�
 
 Оба сервера проверены на BlackPill F411 + ST-Link: по 24/24 CTest на одном ELF,
 включая build manifest, семь HAL-контрактов, ADC/Sleep и timeout/recovery.
-[Доказательства и ограничения](STM32_TESTING_METHODS.md#f411-hal-контракты-и-два-сервера-st-link-2026-09-24).
+[Доказательства и ограничения](STM32_TESTING_METHODS.md#f411ce-hal-контракты-и-два-сервера-st-link-2026-09-24).
 Для ST используйте копию `Tests/stands/blackpill-stlink.example.toml` в
 `blackpill-stlink.local.toml` с локальными путями и serial. Для OpenOCD —
 `blackpill.local.toml`. Выбирать файл явно через HWTEST_STAND; аппаратный профиль

@@ -109,7 +109,7 @@ t.reach("Error_Handler")
 в `mutations` JSON. После каждого теста reset/run восстанавливает штатное состояние.
 Применимость к другим версиям HAL проверять по исходникам заново.
 
-Рабочие рецепты находятся в [test_peripheral_methods.py](../profiles/f411/Tests/board/test_peripheral_methods.py).
+Рабочие рецепты находятся в [test_peripheral_methods.py](../profiles/f411ce/Tests/board/test_peripheral_methods.py).
 Для ADC этот же шаблон может выбирать `hadc` + канал + ранг и проверять структуру
 на входе HAL, но реальное преобразование требует отдельного источника/эталона.
 Для SPI/UART проверка init должна дополняться передачей известных данных и проверкой
@@ -208,16 +208,16 @@ TogglePin с ODR13=0 и выбирает следующий с ODR13=1; посл
 Ни один сценарий не имитирует физическую неисправность HSI или аппаратный timeout.
 
 Совместный прогон: 11/11 CTest (9 аппаратных и 2 host, один из них содержит 9 unit tests).
-JSON/JUnit и SHA ELF находятся в `build/debug-hwtest/hwtest`, отрицательные опыты —
+JSON/JUnit и SHA ELF находятся в `build/f411ce-debug-hwtest/hwtest`, отрицательные опыты —
 `build/method-negative`. Артефакты локальные, в Git не включаются.
 
-Отрицательные примеры сохранены в [profiles/f411/Tests/experiments](../profiles/f411/Tests/experiments/test_api_negative.py)
+Отрицательные примеры сохранены в [profiles/f411ce/Tests/experiments](../profiles/f411ce/Tests/experiments/test_api_negative.py)
 и намеренно исключены из обычного CTest. Повторение из корня проекта после сборки:
 
 ```powershell
 New-Item -ItemType Directory -Force build/method-negative | Out-Null
-$session = Get-Content build/debug-hwtest/hwtest/session.json -Raw | ConvertFrom-Json
-$session.tests = (Resolve-Path profiles/f411/Tests/experiments).Path
+$session = Get-Content build/f411ce-debug-hwtest/hwtest/session.json -Raw | ConvertFrom-Json
+$session.tests = (Resolve-Path profiles/f411ce/Tests/experiments).Path
 $session.out = Join-Path (Resolve-Path build/method-negative).Path 'runs'
 $json = $session | ConvertTo-Json
 $destination = Join-Path (Resolve-Path build/method-negative).Path 'session.json'
@@ -228,7 +228,7 @@ python -B hwtest/cli.py run --session build/method-negative/session.json --test 
 # Ожидается exit 2, ERROR, host recovery.
 python -B hwtest/cli.py run --session build/method-negative/session.json --test HW_INVALID_CONDITION
 # Ожидается exit 2, ERROR, неизвестный символ.
-ctest --preset hw -R '^hw.HW_BLINK$'
+ctest --preset f411ce-hw -R '^hw.HW_BLINK$'
 # После отрицательных контролей штатный тест должен пройти.
 ```
 
@@ -468,8 +468,8 @@ Stop остаётся следующим отдельным опытом: опр
 ## План совместимости и H503
 
 Переносимость разделена на GDB API, backend отладчика, MCU/HAL, плату и приложение:
-[контракт совместимости](COMPATIBILITY.md). План h503 включён в
-[периферийную дорожную карту](PERIPHERAL_PLAN.md#будущий-профиль-h503-порядок-ввода).
+[контракт совместимости](COMPATIBILITY.md). План h503cb включён в
+[периферийную дорожную карту](PERIPHERAL_PLAN.md#будущий-профиль-h503cb-порядок-ввода).
 Автоматический manifest/контрактный preflight ещё не реализован; H503 не собирался
 и не проверялся аппаратно. Исследование установленных заголовков H5 уже показало
 различия в калибровке ADC и температурных точках: общей версии API недостаточно.
@@ -625,7 +625,7 @@ ADC в двух прогонах: 3304/3302 мВ, 27232/27352 м°C, quality=FAC
 обновлены только игнорируемые локальные TOML. Наличие USB само по себе не считалось
 доказательством правильной платы. После исправления выполнены полные наборы заново.
 
-Локальные отчёты сравнения и recovery: `build/f411-backend-comparison/`;
+Локальные отчёты сравнения и recovery: `build/f411ce-backend-comparison/`;
 offline результаты разделены по профилю в `build/contract-validation/`.
 Логи и серийные номера не включаются в Git. Следующие непроверенные сочетания:
 F411/J-Link и регрессия новых механизмов F103/ST-Link; смену проводки согласовывать.

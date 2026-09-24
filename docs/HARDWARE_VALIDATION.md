@@ -34,12 +34,12 @@ Python-сценарии ADC 01_01/02/03 и примеры USART/SPI/clock из �
 Собрать и прошить (команда записи действительно заменяет прошивку):
 
 ```powershell
-cmake --preset debug
-cmake --build --preset debug
+cmake --preset f411ce-debug
+cmake --build --preset f411ce-debug
 $programmer = "$env:LOCALAPPDATA/Programs/STM32CubeCLT_1.22.0/STM32CubeProgrammer/bin/STM32_Programmer_CLI.exe"
 & $programmer -l stlink-only
 $probeSerial = '<серийный номер из списка>'
-& $programmer -c port=SWD "sn=$probeSerial" freq=1000 -w build/debug/stm32-hwtest-blackpill.elf -v -rst -run
+& $programmer -c port=SWD "sn=$probeSerial" freq=1000 -w build/f411ce-debug/stm32-hwtest-blackpill.elf -v -rst -run
 ```
 
 Запустить тест на уже прошитой плате:

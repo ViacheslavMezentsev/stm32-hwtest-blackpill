@@ -1,18 +1,18 @@
 cmake_minimum_required(VERSION 3.19)
 
-set(STM32_YML_PROFILE f411 CACHE STRING "MCU profile: f411 or f103")
-set_property(CACHE STM32_YML_PROFILE PROPERTY STRINGS f411 f103)
-if(NOT STM32_YML_PROFILE MATCHES "^(f411|f103)$")
-    message(FATAL_ERROR "Unknown MCU profile '${STM32_YML_PROFILE}'; choose f411 or f103")
+set(STM32_YML_PROFILE f411ce CACHE STRING "MCU profile: f411ce, f103c8 or f401cc")
+set_property(CACHE STM32_YML_PROFILE PROPERTY STRINGS f411ce f103c8 f401cc)
+if(NOT STM32_YML_PROFILE MATCHES "^(f411ce|f103c8|f401cc)$")
+    message(FATAL_ERROR "Unknown MCU profile '${STM32_YML_PROFILE}'; choose f411ce, f103c8 or f401cc")
 endif()
 if(DEFINED HWTEST_CONFIGURED_PROFILE AND NOT HWTEST_CONFIGURED_PROFILE STREQUAL STM32_YML_PROFILE)
     message(FATAL_ERROR "Use a separate build directory for each MCU profile")
 endif()
 set(HWTEST_CONFIGURED_PROFILE "${STM32_YML_PROFILE}" CACHE INTERNAL "Build directory MCU")
 set(BOARD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/profiles/${STM32_YML_PROFILE}")
-if(STM32_YML_PROFILE STREQUAL "f103" AND
+if(STM32_YML_PROFILE STREQUAL "f103c8" AND
    (NOT EXISTS "${BOARD_DIR}/stm32-hwtest-bluepill.ioc" OR NOT EXISTS "${BOARD_DIR}/Core/Src/main.c"))
-    message(FATAL_ERROR "F103 awaits profiles/f103/stm32-hwtest-bluepill.ioc and CubeMX Core/Src/main.c; see profiles/f103/README.md")
+    message(FATAL_ERROR "F103 awaits profiles/f103c8/stm32-hwtest-bluepill.ioc and CubeMX Core/Src/main.c; see profiles/f103c8/README.md")
 endif()
 
 # Используется набор скриптов для STM32: https://github.com/ObKo/stm32-cmake

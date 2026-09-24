@@ -65,9 +65,9 @@ Native тест компилирует тот же User/Src/adc_units.cpp без
 
 ```powershell
 Push-Location Tests/native
-cmake --preset host
-cmake --build --preset host
-ctest --preset host
+cmake --preset f411ce-host
+cmake --build --preset f411ce-host
+ctest --preset f411ce-host
 Pop-Location
 ```
 

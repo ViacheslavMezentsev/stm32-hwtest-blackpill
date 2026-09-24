@@ -6,12 +6,78 @@
       "label": "CMake: build",
       "command": "build",
       "targets": [
-        "stm32-hwtest-blackpill"
+        "all"
       ],
       "group": {
         "kind": "build",
         "isDefault": true
       },
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: configure f401cc",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--preset",
+        "f401cc-debug-hwtest"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: build f401cc",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "--preset",
+        "f401cc-debug-hwtest"
+      ],
+      "dependsOn": "CMake: configure f401cc",
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: configure f411ce",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--preset",
+        "f411ce-debug-hwtest"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: build f411ce",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "--preset",
+        "f411ce-debug-hwtest"
+      ],
+      "dependsOn": "CMake: configure f411ce",
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: configure f103c8",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--preset",
+        "f103c8-debug-hwtest"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: build f103c8",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "--preset",
+        "f103c8-debug-hwtest"
+      ],
+      "dependsOn": "CMake: configure f103c8",
       "problemMatcher": []
     }
   ]

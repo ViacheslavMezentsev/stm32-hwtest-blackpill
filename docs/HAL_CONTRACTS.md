@@ -72,8 +72,8 @@ ERROR без аппаратной неисправности. Макросы GPI
 После сборки выбранного профиля:
 
 ```powershell
-python -B Tests/experiments/check_contract_preflight.py --session build/f103-debug-hwtest/hwtest/session.json
-python -B Tests/experiments/check_contract_preflight.py --session build/debug-hwtest/hwtest/session.json
+python -B Tests/experiments/check_contract_preflight.py --session build/f103c8-debug-hwtest/hwtest/session.json
+python -B Tests/experiments/check_contract_preflight.py --session build/f411ce-debug-hwtest/hwtest/session.json
 ```
 
 Скрипт использует GDB и ELF сессии; отчёты — build/contract-validation/<profile>. Проверяет

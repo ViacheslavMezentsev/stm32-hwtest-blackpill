@@ -1,6 +1,6 @@
 # H503: настройка CubeMX и проверка генерации
 
-Проверен исходный `profiles/h503/stm32-hwtest-blackpill.ioc`: CubeMX 6.18.0,
+Проверен исходный `profiles/h503cb/stm32-hwtest-blackpill.ioc`: CubeMX 6.18.0,
 CubeH5 V1.7.0, STM32H503CBTx, LQFP48. Владелец подтвердил STM32H503CBT6;
 linker задаёт 128 KiB Flash и 32 KiB RAM. Это пока исходная генерация, не
 собранный и не проверенный аппаратно профиль hwtest.
@@ -36,7 +36,7 @@ linker задаёт 128 KiB Flash и 32 KiB RAM. Это пока исходна�
 поля HAL и обработчики, а не только состояние галочек.
 
 1. **Project Manager**: MCU STM32H503CBTx, пакет CubeH5 V1.7.0; не мигрировать
-   автоматически на другой пакет. Генерация внутри `profiles/h503`, отдельные
+   автоматически на другой пакет. Генерация внутри `profiles/h503cb`, отдельные
    `.c/.h` на периферию и Keep User Code. Текущий Makefile допустим для генерации;
    рабочую сборку позже подключаем через общий YAML и отдельный CMake preset.
 2. **System Core → DEBUG**: Serial Wire. **SYS**: timebase SysTick.
@@ -119,7 +119,7 @@ linker задаёт 128 KiB Flash и 32 KiB RAM. Это пока исходна�
 - ADC DMA handle и clock/init order корректны; ранги и длина не изменились.
 - RTC prescalers 127/249, календарь/Alarm A и NVIC действительно сгенерированы.
 - SWD, LED и частоты сохранены; CubeMX не добавил нежелательных внешних выводов.
-- Общая CMake/YAML-интеграция: сейчас h503 ещё отсутствует. Локальный
+- Общая CMake/YAML-интеграция: сейчас h503cb ещё отсутствует. Локальный
   `Core/CMakeLists.txt` пока не перечисляет adc.c, crc.c, rtc.c, tim.c;
   это отдельная работа интеграции, не ошибка настройки периферии CubeMX.
 - `main.c` уже вызывает init/setup/loop, но H503 Platform ещё нет. До сборки

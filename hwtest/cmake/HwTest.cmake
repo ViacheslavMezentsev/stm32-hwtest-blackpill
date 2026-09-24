@@ -35,7 +35,7 @@ function(hwtest_attach target)
             --elf "$<TARGET_FILE:${target}>" --profile "${HWTEST_PROFILE}"
             --out "${HWTEST_MANIFEST}" --ninja "${CMAKE_MAKE_PROGRAM}"
         BYPRODUCTS "${HWTEST_MANIFEST}" VERBATIM)
-    if(STM32_YML_PROFILE STREQUAL "f411")
+    if(STM32_YML_PROFILE MATCHES "^f4")
         set(stand_name blackpill)
     else()
         set(stand_name bluepill)

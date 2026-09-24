@@ -8,8 +8,8 @@
 
 | Плата и ревизия | MCU | Профиль | Пользовательский LED | Проект производителя |
 | --- | --- | --- | --- | --- |
-| WeAct BlackPill V3.1 | STM32F411CEU6 | `profiles/f411` | PC13 | [WeActStudio.MiniSTM32F4x1](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1) |
-| WeAct BluePill V1.1 | STM32F103C8T6 | `profiles/f103` | PB2 | [BluePill-Plus](https://github.com/WeActStudio/BluePill-Plus) |
+| WeAct BlackPill V3.1 | STM32F411CEU6 | `profiles/f411ce` | PC13 | [WeActStudio.MiniSTM32F4x1](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1) |
+| WeAct BluePill V1.1 | STM32F103C8T6 | `profiles/f103c8` | PB2 | [BluePill-Plus](https://github.com/WeActStudio/BluePill-Plus) |
 
 Ревизии указаны для используемых экземпляров со слов владельца. Имя BluePill
 само по себе не задаёт pinout: эта WeAct BluePill V1.1 использует PB2.
@@ -32,11 +32,11 @@ RCC/GPIO, переключение LED, ход SysTick и обработку о�
 
 ## Профили MCU
 
-- [profiles/f411](profiles/f411/README.md): действующий BlackPill, его IOC/Core/Platform и тесты.
-- [profiles/f103](profiles/f103/README.md): BluePill с пользовательским IOC и сгенерированной периферией; прошли 22 аппаратных теста и две host-проверки.
+- [profiles/f411ce](profiles/f411ce/README.md): действующий BlackPill, его IOC/Core/Platform и тесты.
+- [profiles/f103c8](profiles/f103c8/README.md): BluePill с пользовательским IOC и сгенерированной периферией; прошли 22 аппаратных теста и две host-проверки.
 
 Профиль выбирает `STM32_YML_PROFILE` через stm32-cmake-yml. Старые presets относятся
-к F411; `f103-debug` собирает F103; оба профиля используют общий прикладной цикл из `User/`.
+к F411; `f103c8-debug` собирает F103; оба профиля используют общий прикладной цикл из `User/`.
 Для разных MCU обязательны отдельные build-каталоги. Параметры GDB/OpenOCD находятся
 в `profiles/<MCU>/target.toml`; оба профиля проверены на своих платах через SWD.
 Предложения по ADC/DMA/TIM/RTC/PWR и настройки CubeMX: [план периферии](docs/PERIPHERAL_PLAN.md).
@@ -62,11 +62,11 @@ Presets передают `CMAKE_USER_HOME` из `USERPROFILE`.
 
 ```powershell
 git submodule update --init --recursive
-cmake --preset debug
-cmake --build --preset debug
+cmake --preset f411ce-debug
+cmake --build --preset f411ce-debug
 ```
 
-Другие пары configure/build presets: `release`, `debug-gcc14`, `debug-gcc15`.
+Другие пары configure/build presets: `f411ce-release`, `f411ce-debug-gcc14`, `f411ce-debug-gcc15`.
 Для GCC 14/15 ожидаются одноимённые каталоги xPack в папке пользователя.
 Каждый preset имеет собственный каталог `build/<preset>`.
 
@@ -96,7 +96,7 @@ RAM 128 КБ, резерв heap 512 байт и stack 1 КБ.
 ## VS Code
 
 1. Установить рекомендованные расширения.
-2. Выполнить `CMake: Select Configure Preset` → `debug`.
+2. Выполнить `CMake: Select Configure Preset` → `f411ce-debug`.
 3. Выполнить `CMake: Configure`, затем `CMake: Build`.
 4. После подключения платы выбрать `BlackPill / ST-Link / OpenOCD` и запустить отладку.
 
@@ -112,14 +112,14 @@ VCOM не используется для SWD-прошивки и не наст�
 Текущий подключённый стенд уже настроен локально.
 
 ```powershell
-cmake --preset debug-hwtest
-cmake --build --preset check-hw
+cmake --preset f411ce-debug-hwtest
+cmake --build --preset f411ce-check-hw
 ```
 
 Вторая команда собирает ELF и запускает CTest. Режим `flash = "if-different"`
 разрешает прошивку выбранного ELF при несовпадении Flash. Для проверки без записи
-используйте `flash = "verify-only"`. Отчёты: `build/debug-hwtest/hwtest/`.
-Только проверки инфраструктуры без платы: `ctest --preset host`.
+используйте `flash = "verify-only"`. Отчёты: `build/f411ce-debug-hwtest/hwtest/`.
+Только проверки инфраструктуры без платы: `ctest --preset f411ce-host`.
 
 ## Первоначальная проверка сборки (до расширения периферии)
 
@@ -140,7 +140,7 @@ define `STM32F411xE`, начальный SP `0x20020000`, reset-вектор в�
 `_lseek`: файловый ввод-вывод не реализован. Эти функции удалены сборщиком
 неиспользуемых секций и отсутствуют в конечном ELF; предупреждения не подавляются.
 Перед добавлением printf/UART потребуется реализация соответствующего retargeting.
-Сгенерированные CubeMX `profiles/f411/Core/Src/syscalls.c` и `sysmem.c` сейчас не включены в сборку.
+Сгенерированные CubeMX `profiles/f411ce/Core/Src/syscalls.c` и `sysmem.c` сейчас не включены в сборку.
 
 ## Дальнейшая работа
 
@@ -157,15 +157,15 @@ define `STM32F411xE`, начальный SP `0x20020000`, reset-вектор в�
 В `.vscode/launch.json` каждая конфигурация Cortex-Debug имеет свой `svdFile`:
 BlackPill — `resources/STM32F411.svd`, BluePill — `resources/STM32F103.svd`.
 Ручное комментирование в settings.json не требуется. Перед запуском выберите
-соответствующий CMake preset (`debug` / `f103-debug`): ELF по-прежнему берётся
+соответствующий CMake preset (`f411ce-debug` / `f103c8-debug`): ELF по-прежнему берётся
 из активной цели CMake. Отображение регистров в UI VS Code отдельно не проверялось.
 SVD описывает регистры семейства; наличие блока на конкретном MCU сверяется с reference manual.
 
 Пересчёт ADC, источники параметров, статус качества и отдельные численные проверки:
 [ADC units](docs/ADC_MEASUREMENTS.md).
 
-Планируемый третий профиль — **h503** для готовящейся платы STM32H503:
-[этапы и периферия](docs/PERIPHERAL_PLAN.md#будущий-профиль-h503-порядок-ввода).
+Планируемый третий профиль — **h503cb** для готовящейся платы STM32H503:
+[этапы и периферия](docs/PERIPHERAL_PLAN.md#будущий-профиль-h503cb-порядок-ввода).
 Получены IOC и генерация для подтверждённого владельцем STM32H503CBT6 (128 KiB Flash,
 32 KiB RAM), CubeH5 V1.7.0. В сборку профиль пока не включён.
 [Настройки CubeMX и результаты аудита](docs/H503_CUBEMX.md),
@@ -183,4 +183,6 @@ BluePill также проверена с прямым **J-Link GDB Server V8.32
 [запуск J-Link и приёмы Commander](docs/JLINK.md). При подключённом J-Link
 выбирать `bluepill-jlink.local.toml`; конфигурация по умолчанию не выбирает его автоматически.
 
-BlackPill F411 проверена через OpenOCD и ST-LINK GDB Server на одном ELF: по 24/24 CTest, включая ADC/Sleep, manifest, HAL-контракты и timeout/recovery. [Практические результаты](docs/STM32_TESTING_METHODS.md#f411-hal-контракты-и-два-сервера-st-link-2026-09-24).
+BlackPill F411 проверена через OpenOCD и ST-LINK GDB Server на одном ELF: по 24/24 CTest, включая ADC/Sleep, manifest, HAL-контракты и timeout/recovery. [Практические результаты](docs/STM32_TESTING_METHODS.md#f411ce-hal-контракты-и-два-сервера-st-link-2026-09-24).
+
+Профили переименованы в f103c8/f401cc/f411ce/h503cb; F401CC готов к первому аппаратному прогону. [Новые presets, результаты сборки и порядок подключения](docs/PROFILE_MIGRATION.md).

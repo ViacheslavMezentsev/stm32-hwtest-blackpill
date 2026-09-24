@@ -26,7 +26,7 @@ def stop(process):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--serial", required=True, help="ST-Link serial; kept out of source control")
-    parser.add_argument("--elf", type=Path, default=ROOT / "build/debug/stm32-hwtest-blackpill.elf")
+    parser.add_argument("--elf", type=Path, default=ROOT / "build/f411ce-debug/stm32-hwtest-blackpill.elf")
     parser.add_argument("--gdb", type=Path, default=Path.home() /
                         "xpack-arm-none-eabi-gcc-13.3.1-1.1/bin/arm-none-eabi-gdb-py3.exe")
     parser.add_argument("--openocd", default=shutil.which("openocd"))

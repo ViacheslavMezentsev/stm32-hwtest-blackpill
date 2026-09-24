@@ -19,11 +19,11 @@
         "CMAKE_EXPORT_COMPILE_COMMANDS": true,
         "CMAKE_C_FLAGS_DEBUG": "-Og -g3",
         "CMAKE_CXX_FLAGS_DEBUG": "-Og -g3",
-        "STM32_YML_PROFILE": "f411"
+        "STM32_YML_PROFILE": "f411ce"
       }
     },
     {
-      "name": "debug",
+      "name": "f411ce-debug",
       "inherits": "base",
       "displayName": "BlackPill Debug (GCC 13)",
       "cacheVariables": {
@@ -31,7 +31,7 @@
       }
     },
     {
-      "name": "release",
+      "name": "f411ce-release",
       "inherits": "base",
       "displayName": "BlackPill Release (GCC 13)",
       "cacheVariables": {
@@ -39,39 +39,54 @@
       }
     },
     {
-      "name": "debug-gcc14",
-      "inherits": "debug",
+      "name": "f411ce-debug-gcc14",
+      "inherits": "f411ce-debug",
       "cacheVariables": {
         "STM32_TOOLCHAIN_PATH": "$penv{USERPROFILE}/xpack-arm-none-eabi-gcc-14.2.1-1.1"
       }
     },
     {
-      "name": "debug-gcc15",
-      "inherits": "debug",
+      "name": "f411ce-debug-gcc15",
+      "inherits": "f411ce-debug",
       "cacheVariables": {
         "STM32_TOOLCHAIN_PATH": "$penv{USERPROFILE}/xpack-arm-none-eabi-gcc-15.2.1-1.1"
       }
     },
     {
-      "name": "debug-hwtest",
-      "inherits": "debug",
+      "name": "f411ce-debug-hwtest",
+      "inherits": "f411ce-debug",
       "displayName": "BlackPill Debug + HW tests",
       "cacheVariables": {
         "ENABLE_HW_TESTING": true
       }
     },
     {
-      "name": "f103-debug",
+      "name": "f103c8-debug",
       "inherits": "base",
       "displayName": "BluePill F103 Debug (GCC 13)",
       "cacheVariables": {
-        "STM32_YML_PROFILE": "f103",
+        "STM32_YML_PROFILE": "f103c8",
         "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
-      "name": "f103-debug-hwtest",
-      "inherits": "f103-debug",
+      "name": "f103c8-debug-hwtest",
+      "inherits": "f103c8-debug",
+      "cacheVariables": {
+        "ENABLE_HW_TESTING": true
+      }
+    },
+    {
+      "name": "f401cc-debug",
+      "inherits": "base",
+      "cacheVariables": {
+        "STM32_YML_PROFILE": "f401cc",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "f401cc-debug-hwtest",
+      "inherits": "f401cc-debug",
       "cacheVariables": {
         "ENABLE_HW_TESTING": true
       }
@@ -79,43 +94,58 @@
   ],
   "buildPresets": [
     {
-      "name": "debug",
-      "configurePreset": "debug"
+      "name": "f411ce-debug",
+      "configurePreset": "f411ce-debug"
     },
     {
-      "name": "release",
-      "configurePreset": "release"
+      "name": "f411ce-release",
+      "configurePreset": "f411ce-release"
     },
     {
-      "name": "debug-gcc14",
-      "configurePreset": "debug-gcc14"
+      "name": "f411ce-debug-gcc14",
+      "configurePreset": "f411ce-debug-gcc14"
     },
     {
-      "name": "debug-gcc15",
-      "configurePreset": "debug-gcc15"
+      "name": "f411ce-debug-gcc15",
+      "configurePreset": "f411ce-debug-gcc15"
     },
     {
-      "name": "debug-hwtest",
-      "configurePreset": "debug-hwtest"
+      "name": "f411ce-debug-hwtest",
+      "configurePreset": "f411ce-debug-hwtest"
     },
     {
-      "name": "check-hw",
-      "configurePreset": "debug-hwtest",
+      "name": "f411ce-check-hw",
+      "configurePreset": "f411ce-debug-hwtest",
       "targets": [
         "check-hw"
       ]
     },
     {
-      "name": "f103-debug",
-      "configurePreset": "f103-debug"
+      "name": "f103c8-debug",
+      "configurePreset": "f103c8-debug"
     },
     {
-      "name": "f103-debug-hwtest",
-      "configurePreset": "f103-debug-hwtest"
+      "name": "f103c8-debug-hwtest",
+      "configurePreset": "f103c8-debug-hwtest"
     },
     {
-      "name": "f103-check-hw",
-      "configurePreset": "f103-debug-hwtest",
+      "name": "f103c8-check-hw",
+      "configurePreset": "f103c8-debug-hwtest",
+      "targets": [
+        "check-hw"
+      ]
+    },
+    {
+      "name": "f401cc-debug",
+      "configurePreset": "f401cc-debug"
+    },
+    {
+      "name": "f401cc-debug-hwtest",
+      "configurePreset": "f401cc-debug-hwtest"
+    },
+    {
+      "name": "f401cc-check-hw",
+      "configurePreset": "f401cc-debug-hwtest",
       "targets": [
         "check-hw"
       ]
@@ -123,8 +153,8 @@
   ],
   "testPresets": [
     {
-      "name": "hw",
-      "configurePreset": "debug-hwtest",
+      "name": "f411ce-hw",
+      "configurePreset": "f411ce-debug-hwtest",
       "output": {
         "outputOnFailure": true
       },
@@ -133,8 +163,8 @@
       }
     },
     {
-      "name": "host",
-      "configurePreset": "debug-hwtest",
+      "name": "f411ce-host",
+      "configurePreset": "f411ce-debug-hwtest",
       "filter": {
         "include": {
           "label": "host"
@@ -145,8 +175,15 @@
       }
     },
     {
-      "name": "f103-hw",
-      "configurePreset": "f103-debug-hwtest",
+      "name": "f103c8-hw",
+      "configurePreset": "f103c8-debug-hwtest",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "f401cc-hw",
+      "configurePreset": "f401cc-debug-hwtest",
       "output": {
         "outputOnFailure": true
       }

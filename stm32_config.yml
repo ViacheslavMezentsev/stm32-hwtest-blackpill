@@ -22,19 +22,27 @@ validate_linker_script: true
 
 # Пути от корня проекта, не от каталога YAML/профиля.
 profiles:
-  f411:
-    ioc_file: profiles/f411/stm32-hwtest-blackpill.ioc
+  f411ce:
+    ioc_file: profiles/f411ce/stm32-hwtest-blackpill.ioc
     project_name: stm32-hwtest-blackpill
     mcu: STM32F411CEU6
     cubefw_package: V1.28.3
-    sources: [profiles/f411/Core, User, profiles/f411/Platform, profiles/f411/Core/Src/system_stm32f4xx.c, profiles/f411/startup_stm32f411xe.s]
-    include_directories: [profiles/f411/Core/Inc, User/Inc]
-    linker_script: profiles/f411/STM32F411xx_FLASH.ld
-  f103:
-    ioc_file: profiles/f103/stm32-hwtest-bluepill.ioc
+    sources: [profiles/f411ce/Core, User, profiles/f411ce/Platform, profiles/f411ce/Core/Src/system_stm32f4xx.c, profiles/f411ce/startup_stm32f411xe.s]
+    include_directories: [profiles/f411ce/Core/Inc, User/Inc]
+    linker_script: profiles/f411ce/STM32F411xx_FLASH.ld
+  f103c8:
+    ioc_file: profiles/f103c8/stm32-hwtest-bluepill.ioc
     project_name: stm32-hwtest-bluepill
     mcu: STM32F103C8T6
     cubefw_package: V1.8.7
-    sources: [profiles/f103/Core, User, profiles/f103/Platform, profiles/f103/Core/Src/system_stm32f1xx.c, profiles/f103/startup_stm32f103xb.s]
-    include_directories: [profiles/f103/Core/Inc, User/Inc]
-    linker_script: profiles/f103/STM32F103xx_FLASH.ld
+    sources: [profiles/f103c8/Core, User, profiles/f103c8/Platform, profiles/f103c8/Core/Src/system_stm32f1xx.c, profiles/f103c8/startup_stm32f103xb.s]
+    include_directories: [profiles/f103c8/Core/Inc, User/Inc]
+    linker_script: profiles/f103c8/STM32F103xx_FLASH.ld
+  f401cc:
+    ioc_file: profiles/f401cc/stm32-hwtest-blackpill.ioc
+    project_name: stm32-hwtest-f401cc
+    mcu: STM32F401CCU6
+    cubefw_package: V1.28.3
+    sources: [profiles/f401cc/Core, User, profiles/f401cc/Platform, profiles/f401cc/Core/Src/system_stm32f4xx.c, profiles/f401cc/startup_stm32f401xc.s]
+    include_directories: [profiles/f401cc/Core/Inc, User/Inc]
+    linker_script: profiles/f401cc/STM32F401xx_FLASH.ld

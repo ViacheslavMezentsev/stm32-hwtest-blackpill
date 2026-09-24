@@ -9,7 +9,7 @@ UART/VCOM не нужен. Прошивка не содержит тестово
 GDB 14.2.90.20240526-git с Python 3.11.4 и OpenOCD 0.12.0.
 Host Python >= 3.11 требуется для стандартного TOML-парсера.
 
-Код и тесты BlackPill находятся в profiles/f411. F103 находится в profiles/f103; на F103 прошли 22 аппаратных сценария; F411 ранее прошёл 17, новый пересчёт ожидает аппаратной проверки. См. [профили](PERIPHERAL_PLAN.md).
+Код и тесты BlackPill находятся в profiles/f411ce. F103 находится в profiles/f103c8; на F103 прошли 22 аппаратных сценария; F411 ранее прошёл 17, новый пересчёт ожидает аппаратной проверки. См. [профили](PERIPHERAL_PLAN.md).
 HWTEST получает target.toml через session.json и проверяет DBGMCU ID до прошивки.
 
 Это реализация Level 1 из архитектурного документа: явное подключение после
@@ -39,22 +39,22 @@ Copy-Item Tests/stands/blackpill.example.toml Tests/stands/blackpill.local.toml
 ## Команды
 
 ```powershell
-cmake --preset debug-hwtest
-cmake --build --preset check-hw
+cmake --preset f411ce-debug-hwtest
+cmake --build --preset f411ce-check-hw
 ```
 
 `check-hw` сначала собирает ELF, затем запускает все CTest-проверки и создаёт
-`build/debug-hwtest/hwtest/ctest-junit.xml`.
+`build/f411ce-debug-hwtest/hwtest/ctest-junit.xml`.
 
 ```powershell
 # Повторный прогон уже собранного проекта, до четырёх CTest jobs:
-ctest --preset hw
+ctest --preset f411ce-hw
 # Без платы:
-ctest --preset host
+ctest --preset f411ce-host
 # Отдельная проверка:
-ctest --preset hw -R '^hw.HW_CLOCK$'
+ctest --preset f411ce-hw -R '^hw.HW_CLOCK$'
 # Host CLI, например с другим локальным стендом:
-python -B hwtest/cli.py run --session build/debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/blackpill.local.toml
+python -B hwtest/cli.py run --session build/f411ce-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/blackpill.local.toml
 ```
 
 Прямой `ctest` не собирает прошивку. Для цикла «изменить → собрать → проверить»
@@ -75,13 +75,13 @@ python -B hwtest/cli.py run --session build/debug-hwtest/hwtest/session.json --t
 | hwtest/agent.py | подключение, проверка/загрузка образа, запуск теста, диагностика |
 | hwtest/target.py | breakpoint events, проверки, чтение значений и fault injection |
 | hwtest/reports.py | JSON/JUnit и различение FAIL/ERROR |
-| profiles/f411/Tests/board/test_blackpill.py | пять базовых сценариев поведения прошивки |
-| profiles/f411/Tests/board/test_peripheral_methods.py | четыре сценария проверки контрактов и инъекций |
-| profiles/f411/Tests/requirements.md | проверяемые требования с такими же ID |
+| profiles/f411ce/Tests/board/test_blackpill.py | пять базовых сценариев поведения прошивки |
+| profiles/f411ce/Tests/board/test_peripheral_methods.py | четыре сценария проверки контрактов и инъекций |
+| profiles/f411ce/Tests/requirements.md | проверяемые требования с такими же ID |
 
 ## Жизненный цикл и отчёты
 
-Каждый запуск создаёт уникальный каталог в `build/debug-hwtest/hwtest/runs`.
+Каждый запуск создаёт уникальный каталог в `build/f411ce-debug-hwtest/hwtest/runs`.
 В нём: копия `firmware.elf`, полученный из неё `image.bin`, `prepare.log`,
 `server.log`, `gdb.log`, `run.json`, `agent-result.json`, итоговые `result.json`
 и `junit.xml`; при аварийном восстановлении — `recovery.log`.
@@ -129,7 +129,7 @@ GDB API вызывается только из главного потока. П
 ## Проверка реализации
 
 - `check-hw`: 14/14 PASS — двенадцать аппаратных тестов, трассируемость и набор из девяти host-тестов.
-- `ctest --preset hw` с jobs=4: аппаратные проверки не пересекаются.
+- `ctest --preset f411ce-hw` с jobs=4: аппаратные проверки не пересекаются.
 - Намеренно неверное ожидание: FAIL/код 1, JUnit failure.
 - Перевод PC на fault-handler вместо ожидаемого loop: FAIL, причина остановки и регистры сохранены.
 - Несовпадающий ELF в verify-only: ERROR/код 2, запись не выполняется.
@@ -151,7 +151,7 @@ Fault-handler для негативного сценария достигалс�
 ## BluePill F103 и форматирование User
 
 Для BluePill используйте `Tests/stands/bluepill.local.toml`, configure preset
-`f103-debug-hwtest`, build preset `f103-check-hw`, test preset `f103-hw`.
+`f103c8-debug-hwtest`, build preset `f103c8-check-hw`, test preset `f103c8-hw`.
 Не запускайте F411 preset на BluePill. Тесты/требования раздельные, IDs локальны
 профилю; отчёты сохраняются в соответствующем build-каталоге.
 
@@ -201,9 +201,9 @@ BlackPill F411 — PC13. Отсутствие свечения не доказы
 ## Наблюдение Sleep после тестов
 
 ```powershell
-cmake --preset f103-debug-hwtest
-cmake --build --preset f103-check-hw
-python -B tools/observe_sleep.py --session build/f103-debug-hwtest/hwtest/session.json
+cmake --preset f103c8-debug-hwtest
+cmake --build --preset f103c8-check-hw
+python -B tools/observe_sleep.py --session build/f103c8-debug-hwtest/hwtest/session.json
 ```
 
 Наблюдатель не прошивает, не сбрасывает и не останавливает MCU. Он проверяет ID

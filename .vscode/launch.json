@@ -6,7 +6,7 @@
       "type": "cortex-debug",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "executable": "${command:cmake.launchTargetPath}",
+      "executable": "${workspaceFolder}/build/f411ce-debug-hwtest/stm32-hwtest-blackpill.elf",
       "servertype": "openocd",
       "device": "STM32F411CE",
       "interface": "swd",
@@ -14,7 +14,7 @@
         "interface/stlink.cfg",
         "target/stm32f4x.cfg"
       ],
-      "preLaunchTask": "CMake: build",
+      "preLaunchTask": "CMake: build f411ce",
       "runToEntryPoint": "main",
       "svdFile": "${workspaceFolder}/resources/STM32F411.svd"
     },
@@ -23,7 +23,7 @@
       "type": "cortex-debug",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "executable": "${command:cmake.launchTargetPath}",
+      "executable": "${workspaceFolder}/build/f103c8-debug-hwtest/stm32-hwtest-bluepill.elf",
       "servertype": "openocd",
       "device": "STM32F103C8",
       "interface": "swd",
@@ -31,9 +31,26 @@
         "interface/stlink.cfg",
         "target/stm32f1x.cfg"
       ],
-      "preLaunchTask": "CMake: build",
+      "preLaunchTask": "CMake: build f103c8",
       "runToEntryPoint": "main",
       "svdFile": "${workspaceFolder}/resources/STM32F103.svd"
+    },
+    {
+      "name": "BlackPill F401CC / ST-Link / OpenOCD",
+      "type": "cortex-debug",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/build/f401cc-debug-hwtest/stm32-hwtest-f401cc.elf",
+      "servertype": "openocd",
+      "device": "STM32F401CC",
+      "interface": "swd",
+      "configFiles": [
+        "interface/stlink.cfg",
+        "target/stm32f4x.cfg"
+      ],
+      "preLaunchTask": "CMake: build f401cc",
+      "runToEntryPoint": "main",
+      "svdFile": "${workspaceFolder}/resources/STM32F401.svd"
     }
   ]
 }
