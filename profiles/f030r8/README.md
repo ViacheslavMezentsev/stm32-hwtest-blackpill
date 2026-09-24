@@ -1,7 +1,8 @@
 # NUCLEO-F030R8 — подготовка профиля
 
 STM32F030R8T6, Cortex-M0, Flash 64 KiB, RAM 8 KiB. CubeF0 V1.11.6.
-Профиль включён в сборку, но ещё не в аппаратные тесты stm32-gdbtest.
+Профиль сборки и 17 аппаратных сценариев подготовлены для stm32-gdbtest.
+Сценарии ещё не выполнены на Nucleo.
 Плата не подключена; успешная сборка не подтверждает работу периферии.
 
 ## Сборка
@@ -12,8 +13,23 @@ cmake --build --preset f030r8-debug
 ```
 
 GCC 13.3.1, Debug -Og -g3, отдельный build/f030r8-debug.
-ENABLE_HW_TESTING=ON пока отклоняется явно: target/HAL contracts и диагностика
-Cortex-M0 требуют отдельной подготовки. Не использовать target от F103/F411.
+Для подготовки тестов без подключения платы:
+
+```powershell
+cmake --preset f030r8-debug-hwtest
+cmake --build --preset f030r8-debug-hwtest
+ctest --test-dir build/f030r8-debug-hwtest -R '^host.(traceability|profile_offline)$' --output-on-failure
+```
+
+host.profile_offline проверяет manifest/ELF, сбор сценариев, требования и все
+запрошенные HAL-контракты отдельным GDB без запуска сервера. Её можно вызвать
+напрямую: `python -B tools/check_profile_offline.py --session build/f030r8-debug-hwtest/hwtest/session.json`.
+Функции/макросы проверяются офлайн, семантика MMIO/IRQ требует платы.
+Запуск CTest без фильтра включает аппаратные сценарии — пока не выполнять.
+
+Конфигурация по умолчанию указывает на отсутствующий nucleo-f030r8.local.toml,
+а не на действующий BlackPill/BluePill. Шаблон: Tests/stands/nucleo-f030r8.example.toml.
+Не копировать serial другого ST-Link; встроенный отладчик выбирается явно.
 
 ## Проверенная генерация CubeMX
 
@@ -46,16 +62,38 @@ ADC калибруется перед первым запуском. VDDA выч
 точку и типовой наклон; это не точность двухточечной калибровки F411.
 Чистая арифметика проверяется в Tests/native.
 
-## Следующие шаги
+## Цель и диагностика Cortex-M0
 
-1. Добавить target.toml, карту памяти/identity F030 и отдельные contracts HAL.
-2. Параметризовать hadc/htim3 и регистры в Python-сценариях; не копировать
-   ожидания TIM2/ADC рангов F1/F4. Проверить диагностику Cortex-M0 и BP budget.
-3. Подготовить локальный stand для встроенного ST-Link/V2-1 с явным serial,
-   чтобы не выбрать подключённый ST-Link другой платы.
-4. После согласования подключения: identity/Flash/boot/GPIO, затем ADC/DMA,
-   TIM3/RTC и Sleep. Фактическую точность температуры проверять отдельно.
+По [RM0360, §26.4.1, §26.7](https://www.st.com/resource/en/reference_manual/dm00091010-stm32f030x4x6x8xc-and-stm32f070x6xb-advanced-armbased-32bit-mcus-stmicroelectronics.pdf):
+DBGMCU_IDCODE=0x40015800, DEV_ID=0x440, четыре hardware breakpoint.
+CMSIS stm32f030x8.h задаёт FLASHSIZE_BASE=0x1FFFF7CC (16-bit KiB).
+В target.toml задан HardFault_Handler и регистры pc/lr/sp/xPSR, CPUID/ICSR/SCR.
+Не читать CFSR/HFSR и не ставить BP на отсутствующие MemManage/BusFault/UsageFault.
+Один BP занят HardFault, для последовательного reach нужен ещё один.
+DEV_ID mismatch сохраняет общую политику warning; Flash ограничен 64 KiB.
+Наличие четырёх BP на конкретном стенде ещё предстоит подтвердить сервером.
 
-До этого этапа существующие стенды F411/ST-Link и F103/J-Link можно оставить.
-Nucleo не требует отдельной копии User или изменений ядра тестирования ради
-названия платы. Platform принадлежит этому приложению, а не stm32-gdbtest.
+## Проверки и границы
+
+- Собран firmware с post-link manifest; offline GDB: 17 сценариев / 9 контрактов PASS.
+- Traceability PASS; намеренно отсутствующий macro и неверный ELF hash manifest
+  дают ERROR без подключения. Проверка identity/размера на искусственных данных
+  проверяет адреса и границы профиля, а не установленный MCU.
+- Общие сценарии получают adc_handle/timer_handle/timer_enabled из EXPECTED.
+  F103/F401/F411 сохраняют прежние ID HW_TIM2_IRQ, F030 использует HW_TIM3_IRQ.
+- ADC/DMA runtime, TIM IRQ и Sleep/timer после параметризации повторены:
+  F411/ST-Link/OpenOCD 3/3, F103/J-Link 3/3. F030 HW пока PENDING.
+- Не перенесены NULL-инъекции RCC без отдельного source review HAL F0.
+  Нет утверждения о полном покрытии или точности физических измерений.
+
+## Подключение для первого запуска
+
+Теперь можно подключить NUCLEO-F030R8 через USB к её встроенному ST-Link/V2-1,
+со штатными SWD-перемычками CN2. Дополнительный внешний отладчик не нужен.
+Существующие F411/ST-Link и F103/J-Link можно оставить подключёнными.
+После подтверждения владельца определить serial Nucleo и записать локальный stand.
+Сначала identity/Flash/boot/GPIO, затем оставшиеся ADC/DMA/TIM3/RTC/Sleep.
+Не запускать GDB Server до подтверждения подключения и выбора serial.
+
+Platform принадлежит приложению. Для этих тестов ядро stm32-gdbtest менять
+не потребовалось; переносимость подтверждена пока только offline-проверкой.

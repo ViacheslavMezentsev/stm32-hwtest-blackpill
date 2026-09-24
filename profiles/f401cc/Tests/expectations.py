@@ -1,5 +1,5 @@
 """Profile expressions; numeric expected encodings remain independent of HAL."""
-EXPECTED = {'clock': [('HSI', '(RCC->CFGR & RCC_CFGR_SWS_Msk) >> RCC_CFGR_SWS_Pos', 0),
+EXPECTED = {'adc_handle': 'hadc1', 'timer_handle': 'htim2', 'timer_enabled': 'TIM2->CR1 & TIM_CR1_CEN', 'clock': [('HSI', '(RCC->CFGR & RCC_CFGR_SWS_Msk) >> RCC_CFGR_SWS_Pos', 0),
            ('AHB', '(RCC->CFGR & RCC_CFGR_HPRE_Msk) >> RCC_CFGR_HPRE_Pos', 8),
            ('APB1', '(RCC->CFGR & RCC_CFGR_PPRE1_Msk) >> RCC_CFGR_PPRE1_Pos', 4),
            ('APB2', '(RCC->CFGR & RCC_CFGR_PPRE2_Msk) >> RCC_CFGR_PPRE2_Pos', 0),

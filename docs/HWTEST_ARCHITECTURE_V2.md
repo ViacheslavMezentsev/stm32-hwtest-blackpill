@@ -56,7 +56,7 @@ Attach создаёт session/CTest и post-link manifest. Runner выбирае
 
 - `profiles/f103c8`, `f401cc`, `f411ce`: CubeMX/Platform, target.toml, Tests/contracts.json,
   Tests/board и требования. `h503cb` сохранён, интеграция приостановлена владельцем.
-- `profiles/f030r8`: offline-сборка Nucleo/Cortex-M0; target/contracts и HW ещё не подключены.
+- `profiles/f030r8`: Nucleo/Cortex-M0: target, 17 сценариев и contracts проверены offline; HW ожидается.
 - `User/`: общая firmware-логика без HAL. Platform реализует ADC/таймер/LED/Sleep,
   перенаправляет HAL callbacks в app_*; это API приложения, не API тестового модуля. `Tests/scenarios`: общие проектные сценарии.
 - `Tests/stands/*.local.toml`: локальная конфигурация, не часть Git.

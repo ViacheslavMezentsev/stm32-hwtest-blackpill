@@ -1,0 +1,7 @@
+# Dedicated onboard ST-Link/V2-1. Confirm Nucleo connection before use.
+[probe]
+backend = "openocd"
+serial = "REPLACE_WITH_NUCLEO_STLINK_SERIAL"
+executable = "openocd"
+speed_khz = 1000
+flash = "if-different"

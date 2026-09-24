@@ -36,6 +36,21 @@ Copy-Item Tests/stands/blackpill.example.toml Tests/stands/blackpill.local.toml
 `STM32_GDBTEST_STAND` из CMake session.json. Смена стенда через окружение не требует пересборки.
 Другие исполняемые файлы GDB выбираются CMake-параметром `STM32_GDBTEST_GDB`.
 
+## Проверка ELF без платы
+
+После сборки любого профиля с ENABLE_HW_TESTING:
+
+```powershell
+python -B tools/check_profile_offline.py --session build/f030r8-debug-hwtest/hwtest/session.json
+```
+
+Либо CTest `-R '^host.profile_offline$'`. Проверяются target schema, соответствие
+ELF/target build manifest, требования и все запрошенные HAL contracts в GDB.
+Сервер не запускается, stand не читается. Отчёты — hwtest/offline внутри build.
+Это инструмент стендового проекта, использующий закреплённые внутренние API
+модуля; при обновлении stm32-gdbtest его совместимость нужно повторно проверять.
+Не запускать две offline-проверки одного build одновременно: каталог отчёта общий.
+
 ## Команды
 
 ```powershell

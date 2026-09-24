@@ -7,6 +7,13 @@
 
 ### Added
 
+- F030R8: target Cortex-M0, 17 подготовленных сценариев / 9 контрактов,
+  preset с тестами и отдельный шаблон встроенного ST-Link. HW пока ожидается.
+- Общая offline-проверка профиля: manifest/ELF/требования/HAL preflight без сервера,
+  CTest host.profile_offline. Параметризованы ADC/TIM в общих сценариях;
+  затронутая регрессия F411/OpenOCD и F103/J-Link — по 3/3.
+
+
 - Offline-профиль NUCLEO-F030R8 (CubeF0 V1.11.6), preset f030r8-debug,
   PA5 LED и TIM3/ADC/RTC адаптер; инструкции и ограничения в README профиля.
 - Расчёт F030 по TS_CAL1 и VREFINT_CAL с типовым наклоном, отдельный quality=3

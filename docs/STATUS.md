@@ -25,7 +25,8 @@ H503 приостановлен: генерация сохранена, проф
 [NUCLEO-F030R8](../profiles/f030r8/README.md) добавлен как offline build:
 GCC13/CubeF0 V1.11.6, Flash 11348 B / 64 KiB, RAM 1888 B / 8 KiB
 (включая linker reserve heap/stack). Плата не подключена, HW не заявлен;
-ENABLE_HW_TESTING отклоняется до подготовки target/contracts/M0 диагностики.
+Подготовлены target Cortex-M0, 17 сценариев и 9 контрактов; offline-проверка PASS.
+Для запуска нужен отдельный локальный stand с serial встроенного ST-Link Nucleo.
 GDB без подключения нашёл app/Platform callbacks и LED/ADC macros в Platform.
 
 User теперь не включает HAL. Адаптеры четырёх профилей обслуживают ADC/DMA,
@@ -35,6 +36,11 @@ Native ADC: прежние формулы и F030 single-point, корректн
 F411CE/ST-Link/OpenOCD 22/22 и F103C8/J-Link 22/22; оба MCU оставлены running.
 Прогоны выполнены в режиме ELF load sections. Новые HW-проверки F401 и F030 ещё ожидаются.
 См. [наблюдение о контексте макросов](STM32_TESTING_METHODS.md#контекст-hal-макросов-после-отделения-platform).
+
+Текущий этап F030: общий offline checker прошёл на четырёх профилях, включая
+traceability и ELF contracts. Отрицательные absent macro/stale manifest отклонены.
+После параметризации hadc/TIM повторены F411/OpenOCD 3/3 и F103/J-Link 3/3;
+это выборочная регрессия поверх предыдущего полного прогона, F030 аппаратно не проверен.
 
 ## Что проверено
 

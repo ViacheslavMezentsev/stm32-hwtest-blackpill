@@ -10,7 +10,7 @@ def adc_dma_runtime(t):
 
 @case("HW_TIM2_IRQ", labels=("tim", "irq", "runtime"))
 def tim2_irq(t):
-    scenarios.tim2_irq(t, EXPECTED)
+    scenarios.timer_irq(t, EXPECTED)
 
 
 @case("HW_RTC_ALARM", timeout_s=30, labels=("rtc", "irq", "runtime"))

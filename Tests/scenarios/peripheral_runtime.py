@@ -3,7 +3,7 @@
 def adc_dma_runtime(t, expected):
     for sequence in (1, 2):
         t.reach("HAL_ADC_ConvCpltCallback")
-        t.check("ADC callback handle", t.value("adc"), t.value("&hadc1"))
+        t.check("ADC callback handle", t.value("adc"), t.value("&" + expected["adc_handle"]))
         t.check("DMA exhausted", t.value(expected["dma_remaining"]), 0)
         t.reach("loop")
         t.check("published sequence", t.value("app_state.adc_sequences"), sequence)
@@ -12,13 +12,13 @@ def adc_dma_runtime(t, expected):
             t.report.setdefault("adc_raw", []).append({"field": field, "raw": raw})
             t.check(field + " non-saturated", 0 < raw < 4095, True)
 
-def tim2_irq(t, expected):
+def timer_irq(t, expected):
     t.reach("HAL_TIM_PeriodElapsedCallback")
-    t.check("TIM callback handle", t.value("timer"), t.value("&htim2"))
+    t.check("TIM callback handle", t.value("timer"), t.value("&" + expected["timer_handle"]))
     before = t.value("app_state.timer_events")
     t.reach("HAL_TIM_PeriodElapsedCallback")
     t.check("TIM callback increment", t.value("app_state.timer_events"), before + 1)
-    t.check("TIM2 enabled", t.value("TIM2->CR1") & 1, 1)
+    t.check("timer enabled", t.value(expected["timer_enabled"]), 1)
 
 def rtc_alarm(t, expected):
     for count in (0, 1):

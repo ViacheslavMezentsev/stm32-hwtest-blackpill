@@ -21,7 +21,7 @@ def sleep_timer(t, expected):
     t.set_value("SysTick->CTRL", str(control & ~2))
     before = t.value("app_state.timer_events")
     t.reach("HAL_TIM_PeriodElapsedCallback")
-    t.check("TIM2 callback", t.value("timer"), t.value("&htim2"))
+    t.check("timer callback", t.value("timer"), t.value("&" + expected["timer_handle"]))
     t.check("ordinary Sleep selected", t.value("SCB->SCR") & 4, 0)
     t.set_value("SysTick->CTRL", str(control))
     t.reach("loop")
