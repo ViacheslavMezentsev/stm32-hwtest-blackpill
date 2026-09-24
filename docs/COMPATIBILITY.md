@@ -16,7 +16,7 @@ Cube/HAL/CMSIS, компилятора, GDB/Python, сервера и отлад
 GDB API; отсутствие обязательного API даёт ERROR до reset/Flash. Это проверка
 наличия, а не доказательство семантики или исправности аппаратуры.
 Build manifest schema 1 сохраняет сведения о сборке и проверяется до запуска сервера.
-Для семи сценариев F103 реализован ELF/HAL preflight до запуска сервера:
+Для семи сценариев каждого профиля F103/F411 реализован ELF/HAL preflight до запуска сервера:
 сигнатуры, аргументы, поля, enum и выбранные reviewed-source hashes.
 [Механизм и ограничения](HAL_CONTRACTS.md). Capability registry и полная проверка
 семантики HAL не реализованы; дальнейшие требования ниже остаются планом. H503 отложен.
@@ -128,7 +128,7 @@ manifest поддерживаются с явным unavailable; новые се
 
 ST backend проверен на BluePill; команды finish/reset сохраняются в backend_commands.
 Сам ST-сервер подключается к SWD при запуске до GDB preflight. Подробнее:
-[GDB_BACKENDS](GDB_BACKENDS.md). Новый offline ELF/HAL preflight выполняется до сервера; пока проверен на F103/J-Link.
+[GDB_BACKENDS](GDB_BACKENDS.md). Новый offline ELF/HAL preflight выполняется до сервера; проверен на F103/J-Link и F411/ST-Link (OpenOCD и ST server).
 
 J-Link V8.32 проверен на F103: отдельные setup/reset/finish, Flash breakpoints
 отключены. Фактическая версия firmware J-Link сохраняется отдельно от пакета;
@@ -173,3 +173,5 @@ flags и содержимое предсобранных runtime-библиот�
 Приёмка F103: CubeFW 1.8.7, HAL 1.1.10, CMSIS Device 4.3.5, CMSIS Core 5.1;
 31 объект, 123 входа. Расширение HAL-контрактов, версия Python-адаптера и effective macros
 остаются следующими этапами; наличие декларации версии не доказывает совместимость API.
+
+F411: Cube F4 1.28.3 / HAL 1.8.5 / CMSIS Device 2.6.11 / Core 5.6; RCC принимает const-указатели. Профиль адаптирован явно, отрицательная проверка квалификатора выполнена на F1/F4. Детали в [HAL_CONTRACTS](HAL_CONTRACTS.md).

@@ -9,7 +9,7 @@ def rcc_osc_null(t):
 ```
 
 AST-сборщик читает имена без импорта тестового кода. Определения находятся в
-`profiles/<MCU>/Tests/contracts.json`, schema 1. Сейчас заполнен только F103:
+`profiles/<MCU>/Tests/contracts.json`, schema 1. Сейчас заполнены F103 и F411:
 два GPIO-сценария, RCC force-return, два RCC NULL, ADC start-error и подавление
 ADC callback. Другие сценарии явно имеют `contracts.status=NOT_REQUESTED`.
 Это статус метаданных, не новый результат теста: протокол остаётся PASS/FAIL/ERROR.
@@ -46,7 +46,7 @@ ADC callback. Другие сценарии явно имеют `contracts.statu
 дал ложное несовпадение GPIO_TypeDef между C и C++ compilation units. Сравнение
 строковых имён не исправляет проблему: используется равенство GDB Type в нужном
 контексте. fields/enums используют явный type_context, независимо от порядка JSON.
-Поддерживаются именованные типы и указатели с написанием `Type *`; не реализован
+Поддерживаются именованные типы, `const Type` и указатели с написанием `Type *`; не реализован
 универсальный C/C++ parser для массивов, шаблонов и function pointers.
 
 ## NULL, ошибки и границы доказательства
@@ -69,15 +69,16 @@ ERROR без аппаратной неисправности. Макросы GPI
 
 ## Воспроизведение без платы
 
-После сборки F103:
+После сборки выбранного профиля:
 
 ```powershell
 python -B Tests/experiments/check_contract_preflight.py --session build/f103-debug-hwtest/hwtest/session.json
+python -B Tests/experiments/check_contract_preflight.py --session build/debug-hwtest/hwtest/session.json
 ```
 
-Скрипт использует GDB и ELF сессии; отчёты — build/contract-validation. Проверяет
-семь контрактов (80 проверок) и шесть отрицательных вариантов: отсутствующий
-символ, неверные return type/arity/argument name/field type/enum value. Все
+Скрипт использует GDB и ELF сессии; отчёты — build/contract-validation/<profile>. Проверяет
+семь контрактов (80 проверок) и семь отрицательных вариантов: отсутствующий
+символ, неверные return type/arity/argument name/field type/enum value и неверный const квалификатор адресуемого типа. Все
 отрицательные варианты должны дать ERROR без подключения. Это отдельная
 интеграционная проверка, не включённая автоматически в CTest host-набор.
 
@@ -87,4 +88,19 @@ python -B Tests/experiments/check_contract_preflight.py --session build/f103-deb
 После уточнения ordered arguments/type_context повторно прошли 7/7 затронутых HW-сценариев.
 Отдельно настоящий раннер с копией профиля отклонил неверную сигнатуру до сервера,
 а подменённый reviewed-source hash — до запуска GDB. MCU при этих отказах не затронут.
-F411/H503 и другие backend-комбинации для этого этапа ещё не проверены.
+H503 и F411/J-Link ещё не проверены. F411/ST-Link проверен через OpenOCD и ST server; результаты ниже.
+
+
+## Перенос на F411
+
+Cube F4 V1.28.3 содержит HAL 1.8.5, CMSIS Device 2.6.11 и Core 5.6.
+У RCC_OscConfig и RCC_ClockConfig аргумент — указатель на const-структуру,
+в отличие от F1 HAL 1.1.10. Профиль F411 явно требует `const RCC_…TypeDef *`;
+движок разрешает const через GDB Type.const(), не стирает квалификатор ради совпадения.
+Отрицательный offline-тест намеренно добавляет const для F103 и удаляет для F411:
+оба варианта должны дать ERROR. Неверное имя аргумента проверяется отдельно,
+с сохранением ожидаемого типа выбранного профиля.
+
+NULL-пути повторно изучены в исходнике F4: возврат HAL_ERROR до разыменования/assert.
+F411 contracts.json содержит собственный reviewed-source hash. Сигнатуры остальных
+пяти контрактов совпали; это проверено по ELF, а не выведено из сходства имён HAL.

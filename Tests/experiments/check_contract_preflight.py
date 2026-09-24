@@ -21,10 +21,10 @@ manifest = load_verified(session["build_manifest"], digest(elf), session["profil
 registry = Path(session["profile"]).parent / "Tests/contracts.json"
 names = list(json.loads(registry.read_text())["contracts"])
 selected = select_contracts(registry, names, manifest)
-out = ROOT / "build/contract-validation"
+out = ROOT / "build/contract-validation" / Path(session["profile"]).parent.name
 out.mkdir(parents=True, exist_ok=True)
 variants = {"positive": selected}
-for name in ("missing_symbol", "return_type", "arity", "argument_name", "field_type", "enum_value"):
+for name in ("missing_symbol", "return_type", "arity", "argument_name", "field_type", "enum_value", "pointee_const"):
     data = deepcopy(selected)
     contracts = data["contracts"]
     function = contracts["rcc_error"]["functions"]["HAL_RCC_OscConfig"]
@@ -35,7 +35,11 @@ for name in ("missing_symbol", "return_type", "arity", "argument_name", "field_t
     elif name == "arity":
         function["arguments"] = []
     elif name == "argument_name":
-        function["arguments"] = [{"name": "wrong_name", "type": "RCC_OscInitTypeDef *"}]
+        function["arguments"] = [{"name": "wrong_name", "type": function["arguments"][0]["type"]}]
+    elif name == "pointee_const":
+        argument = function["arguments"][0]
+        typename = argument["type"]
+        argument["type"] = typename[6:] if typename.startswith("const ") else "const " + typename
     elif name == "field_type":
         contracts["gpio_arguments"]["fields"]["GPIO_InitTypeDef"]["Pin"] = "uint16_t"
     else:

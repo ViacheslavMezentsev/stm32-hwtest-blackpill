@@ -182,3 +182,5 @@ LED/ревизию конкретной платы ещё сверяем; под
 BluePill также проверена с прямым **J-Link GDB Server V8.32** (24/24 CTest):
 [запуск J-Link и приёмы Commander](docs/JLINK.md). При подключённом J-Link
 выбирать `bluepill-jlink.local.toml`; конфигурация по умолчанию не выбирает его автоматически.
+
+BlackPill F411 проверена через OpenOCD и ST-LINK GDB Server на одном ELF: по 24/24 CTest, включая ADC/Sleep, manifest, HAL-контракты и timeout/recovery. [Практические результаты](docs/STM32_TESTING_METHODS.md#f411-hal-контракты-и-два-сервера-st-link-2026-09-24).

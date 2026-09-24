@@ -95,3 +95,15 @@ Option bytes, mass erase и обновление firmware отладчика н�
 Источники: справка `ST-LINK_gdbserver.exe --help` установленного CubeCLT,
 практические журналы в build/hwtest и
 [ST UM2576: ST-LINK GDB server](https://www.st.com.cn/resource/en/user_manual/um2576-stm32cubeide-stlink-gdb-server-stmicroelectronics.pdf).
+
+
+## F411: OpenOCD и ST server
+
+Оба сервера проверены на BlackPill F411 + ST-Link: по 24/24 CTest на одном ELF,
+включая build manifest, семь HAL-контрактов, ADC/Sleep и timeout/recovery.
+[Доказательства и ограничения](STM32_TESTING_METHODS.md#f411-hal-контракты-и-два-сервера-st-link-2026-09-24).
+Для ST используйте копию `Tests/stands/blackpill-stlink.example.toml` в
+`blackpill-stlink.local.toml` с локальными путями и serial. Для OpenOCD —
+`blackpill.local.toml`. Выбирать файл явно через HWTEST_STAND; аппаратный профиль
+задаётся preset debug-hwtest. Два отладчика могут быть подключены одновременно,
+но каждый запуск адресует только явно выбранный serial и MCU-профиль.

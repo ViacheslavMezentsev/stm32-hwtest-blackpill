@@ -50,6 +50,8 @@ def inspect_contracts(api, selected):
         # Resolve pointer spelling explicitly: lookup_type accepts names, not C expressions.
         if name.endswith(" *"):
             return ctype(name[:-2], block).pointer()
+        if name.startswith("const "):
+            return ctype(name[6:], block).const()
         return api.lookup_type(name, block).strip_typedefs()
 
     for name, spec in selected["contracts"].items():

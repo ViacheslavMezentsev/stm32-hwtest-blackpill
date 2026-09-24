@@ -18,12 +18,12 @@ def rtc_alarm(t):
     scenarios.rtc_alarm(t, EXPECTED)
 
 
-@case("HW_ADC_START_ERROR", labels=("adc", "injection"))
+@case("HW_ADC_START_ERROR", labels=("adc", "injection"), contracts=("adc_start_error",))
 def adc_start_error(t):
     scenarios.adc_start_error(t, EXPECTED)
 
 
-@case("HW_ADC_DMA_TIMEOUT", labels=("adc", "dma", "injection"))
+@case("HW_ADC_DMA_TIMEOUT", labels=("adc", "dma", "injection"), contracts=("adc_dma_timeout",))
 def adc_dma_timeout(t):
     scenarios.adc_dma_timeout(t, EXPECTED)
 
