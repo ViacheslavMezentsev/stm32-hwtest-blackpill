@@ -7,6 +7,15 @@
 
 ### Changed
 
+- Подготовлен состав отдельного Git-модуля: distribution/stm32-gdbtest с README,
+  CHANGELOG, TODO, AGENTS и инструкциями автору тестов/версионированием; MIT сохранена.
+- Host-тесты отделены от рабочих MCU-профилей через Tests/fixtures. Export tool
+  формирует новый снимок внутри build без Git init/network/push. Автономные host44,
+  минимальный consumer build/offline2/2, hashes/LICENSE/doc links PASS.
+- Согласован новый initial history и основной способ Git submodule; план MODULE_SPLIT_PLAN.md.
+  Предложены v0.1.0-rc.1 → v0.1.0, теги пока не созданы. Внешний host-контроллер
+  питания/кнопок/приборов отложен в TODO с синхронизацией и reconnect.
+
 - Namespace hwtest перенесён в stm32_gdbtest: imports, CLI python -m stm32_gdbtest,
   STM32GDBTest.cmake/stm32_gdbtest_attach и префикс STM32_GDBTEST_. Версия
   исходного прототипа0.1.0.dev0/API_VERSION1; API/миграция описаны в STM32_GDBTEST_API.md.
