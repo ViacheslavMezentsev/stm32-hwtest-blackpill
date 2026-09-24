@@ -9,7 +9,9 @@ IOC использует шаблон STM32F429I-DISC1: это метаданн�
 Источник: [UM1670](https://www.st.com/resource/en/user_manual/um1670-discovery-kit-with-stm32f429zi-mcu-stmicroelectronics.pdf).
 
 ST GDB Server также проверен: все 22 сценария получили PASS с переподключением USB
-после 18-го; запись/verify-only/recovery выполнены. [Подробности и сбой](../../docs/F429_STLINK_VALIDATION.md).
+после 18-го; запись/verify-only/recovery выполнены.
+Последующий полный ST прогон дал 22/22 PASS; в сериях OpenOCD тоже наблюдался
+USB-сбой. [Устойчивость повторных запусков](../../docs/F429_SERVER_STABILITY.md). [Подробности и сбой](../../docs/F429_STLINK_VALIDATION.md).
 
 ## Конфигурация
 

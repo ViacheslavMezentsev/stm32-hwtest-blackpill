@@ -132,6 +132,11 @@
   stand disco-f429zi.local.toml, OpenOCD. DMA-буфер только SRAM, не CCM.
 
 - F429/ST server7.14: 18 PASS, USB error до готовности сервера, после переподключения
-  ещё4 PASS; непрерывные22/22 только OpenOCD. ST Flash O0→Og/verify-only/timeout
+  ещё4 PASS; позже непрерывные22/22 и через ST. ST Flash O0→Og/verify-only/timeout
   recovery проверены, штатный Og восстановлен и running. ST stand явно
   disco-f429zi-stlink.local.toml. Причина USB-сбоя не установлена, firmware не менять.
+
+- F429 stability: ST boot24/24 без паузы и24/24 с2с; OpenOCD22 PASS, USB descriptor
+  ERROR на23-м, после reconnect полный ST22/22 PASS. Причина не локализована,
+  задержка не доказана как fix; серии останавливать на первом сбое.
+  docs/F429_SERVER_STABILITY.md; ядро/firmware не менять без отдельного опыта.

@@ -28,8 +28,10 @@ traceability и offline ELF/HAL preflight PASS. Через OpenOCD выполн�
 весь CTest 25/25, LD3 подтверждён. [Протокол](F429_OPENOCD_VALIDATION.md).
 
 ST GDB Server 7.14.0: 18 PASS + USB error, после переподключения оставшиеся 4 PASS;
-запись O0/Og, verify-only и timeout/recovery проверены. Непрерывные 22/22 пока
-подтверждены только для OpenOCD. [Протокол ST](F429_STLINK_VALIDATION.md).
+запись O0/Og, verify-only и timeout/recovery проверены. Последующий полный ST
+прогон дал непрерывные 22/22 PASS. В сериях boot: ST24/24 без паузы и24/24 с2с,
+OpenOCD22 PASS и USB ERROR на23-м. Причина не установлена, пауза не признана
+исправлением. [Протокол ST](F429_STLINK_VALIDATION.md), [устойчивость](F429_SERVER_STABILITY.md).
 
 ## F030R8 и граница User/Platform
 

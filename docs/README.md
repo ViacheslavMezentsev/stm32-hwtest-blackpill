@@ -22,6 +22,7 @@
 | Nucleo F030 / адаптация приложения | [профиль F030R8](../profiles/f030r8/README.md) и [аппаратный протокол](F030_JLINK_VALIDATION.md) — 17/17 через J-Link STLink |
 | Discovery F429ZI | [профиль и настройки](../profiles/f429zi/README.md) — [22/22 HW через OpenOCD](F429_OPENOCD_VALIDATION.md) |
 | Discovery F429 / ST server | [протокол, USB-сбой и восстановление](F429_STLINK_VALIDATION.md) |
+| Повторные запуски F429 | [сравнение ST/OpenOCD, USB и пауз](F429_SERVER_STABILITY.md) |
 | MCU, CubeMX, периферия | [PERIPHERAL_PLAN](PERIPHERAL_PLAN.md), [H503_CUBEMX](H503_CUBEMX.md), profiles/*/README.md |
 | Результаты и применение механизма | HAL_CONTRACTS, HAL_MACRO_GUIDE, GDB_BACKENDS, JLINK, TARGET_IDENTITY, DEBUGGER_OWNERSHIP в этой папке |
 | Измерения и отдельные опыты | [ADC_MEASUREMENTS](ADC_MEASUREMENTS.md), [CONSUMER_VALIDATION](CONSUMER_VALIDATION.md), [F401_MARKING_EXPERIMENT](F401_MARKING_EXPERIMENT.md), [HARDWARE_VALIDATION](HARDWARE_VALIDATION.md) |
