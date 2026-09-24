@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from hwtest.target import Target, CheckFailed
 from hwtest.compatibility import inspect_gdb_api, require_gdb_api
+from hwtest.identity import check_target
 
 
 def main():
@@ -41,11 +42,10 @@ def main():
         gdb.execute(session["reset_halt"])
         inferior = gdb.selected_inferior()
         report["flashed"] = False
-        identity = profile["identity"]
-        device_id = int.from_bytes(inferior.read_memory(identity["address"], 4), "little")
-        report["device_id"] = device_id & identity["mask"]
-        if report["device_id"] != identity["value"]:
-            raise RuntimeError("Connected MCU does not match the selected profile")
+        check_target(profile, inferior.read_memory, len(image),
+                     session.get("identity_policy", "warn"), report)
+        for warning in report.get("warnings", []):
+            print("WARNING: " + warning)
         matches = bytes(inferior.read_memory(profile["flash_start"], len(image))) == image
         if not matches and session["flash"] == "if-different":
             gdb.execute("load")

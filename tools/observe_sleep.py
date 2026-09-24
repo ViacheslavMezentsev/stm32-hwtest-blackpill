@@ -18,10 +18,14 @@ from hwtest.runner import local_directory
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--session", type=Path, required=True)
+    parser.add_argument("--identity-policy", choices=("warn", "strict"),
+                        default=os.environ.get("HWTEST_IDENTITY_POLICY", "warn"))
     parser.add_argument("--samples", type=int, default=30)
     parser.add_argument("--interval-ms", type=int, default=37)
     parser.add_argument("--out", type=Path, default=ROOT / "build/sleep-observation")
     args = parser.parse_args()
+    if args.identity_policy not in ("warn", "strict"):
+        parser.error("Identity policy must be warn or strict")
     if not 5 <= args.samples <= 100 or not 10 <= args.interval_ms <= 500:
         parser.error("samples must be 5..100; interval-ms must be 10..500")
     out = local_directory(args.out)
@@ -55,8 +59,15 @@ def main():
         if run.returncode:
             raise RuntimeError("OpenOCD failed; see openocd.log")
         identity_match = re.search(r"HWIDENT:(0x[0-9a-fA-F]+)", output)
-        if not identity_match or int(identity_match[1], 16) & identity["mask"] != identity["value"]:
-            raise RuntimeError("MCU identity differs from selected profile")
+        if not identity_match:
+            raise RuntimeError("MCU identity could not be read")
+        actual = int(identity_match[1], 16) & identity["mask"]
+        report["identity"] = dict(policy=args.identity_policy, expected=identity["value"],
+                                  observed=actual, matches=actual == identity["value"])
+        if actual != identity["value"]:
+            report["warnings"] = [f"DEV_ID mismatch: expected 0x{identity['value']:03X}, observed 0x{actual:03X}"]
+            if args.identity_policy == "strict":
+                raise RuntimeError("MCU identity differs from selected profile (strict)")
         pattern = r"HWSAMPLE:(0x[0-9a-fA-F]+),(0x[0-9a-fA-F]+),(0x[0-9a-fA-F]+),(0x[0-9a-fA-F]+)"
         samples = [dict(zip(("dhcsr", "scr", "tick", "dbgmcu_cr"), (int(x, 16) for x in values)))
                    for values in re.findall(pattern, output)]

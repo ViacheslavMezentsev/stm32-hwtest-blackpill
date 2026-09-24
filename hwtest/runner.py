@@ -31,12 +31,17 @@ def local_directory(path):
     return path
 
 
-def run(session, test, stand_path=None, timeout=None):
+def run(session, test, stand_path=None, timeout=None, identity_policy=None):
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")
     out = local_directory(Path(session["out"]) / f"{stamp}-{test['id']}-{os.getpid()}")
     started = time.monotonic()
     report = {"id": test["id"], "status": "ERROR", "checks": [], "started_utc": stamp}
     try:
+        policy = identity_policy or os.environ.get("HWTEST_IDENTITY_POLICY", "warn")
+        if policy not in ("warn", "strict"):
+            raise ValueError("Identity policy must be warn or strict")
+        session = dict(session, identity_policy=policy)
+        report["identity_policy"] = policy
         if os.name != "nt":
             raise RuntimeError("This MVP supports Windows only")
         limit = test["timeout_s"] if timeout is None else timeout
@@ -61,6 +66,8 @@ def run(session, test, stand_path=None, timeout=None):
     report["compatibility"] = runtime_manifest(report, server_log)
     report["duration_s"] = round(time.monotonic() - started, 3)
     write_reports(out, report)
+    for warning in report.get("warnings", []):
+        print("WARNING: " + warning)
     print(f"{report['status']} {test['id']}: {out / 'result.json'}")
     if report["status"] != "PASS":
         print(report.get("error", "") + report.get("teardown_error", ""))
@@ -126,6 +133,7 @@ def execute(session, test, stand, out, report, timeout, profile):
         report["backend_commands"] = dict(reset_halt=backend["reset_halt"], finish=backend["finish"],
                                           setup=backend.get("setup", []))
         run_data = dict(test=test, elf=str(elf), image=str(image), result=str(agent_result),
+                        identity_policy=session.get("identity_policy", "warn"),
                         endpoint=endpoint, flash=stand["flash"], profile=profile,
                         reset_halt=backend["reset_halt"], finish=backend["finish"],
                         setup=backend.get("setup", []))

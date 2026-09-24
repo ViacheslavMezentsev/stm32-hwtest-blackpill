@@ -5,6 +5,7 @@ mcu = "STM32F103C8T6"
 openocd_target = "target/stm32f1x.cfg"
 flash_start = 0x08000000
 flash_size = 65536
+flash_size_address = 0x1FFFF7E0
 breakpoint_limit = 6
 fault_handlers = ["HardFault_Handler", "MemManage_Handler", "BusFault_Handler", "UsageFault_Handler"]
 core_registers = ["pc", "lr", "sp", "xPSR"]

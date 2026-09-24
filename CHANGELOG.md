@@ -5,6 +5,17 @@
 
 ## [Unreleased]
 
+### Changed
+
+- F401CC переведён на штатные presets: DEV_ID mismatch по умолчанию WARNING,
+  выбранный профиль сохраняется. Общий strict через CLI/env, identity/warnings
+  в JSON/JUnit; экспериментальный скрипт теперь только legacy-обёртка.
+- Перед Flash проверяется 16-битный заводской размер памяти и граница профиля;
+  адреса добавлены для F103/F401/F411. Неверный размер/переполнение остаются ERROR.
+- F401CC: 24/24 CTest через OpenOCD и ST GDB Server на одном ELF, строгий отказ
+  до Flash, live Sleep после ST detach. Host: 35 unittest, включая новую политику.
+  Документация: docs/TARGET_IDENTITY.md.
+
 ### Fixed
 
 - Удалены повторные setup()/loop() в USER CODE профиля f401cc. Второй setup

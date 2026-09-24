@@ -10,7 +10,7 @@ def load_profile(path):
     required = {"schema", "name", "mcu", "openocd_target", "flash_start", "flash_size",
                 "breakpoint_limit", "fault_handlers", "core_registers", "reset_halt",
                 "reset_run", "identity", "diagnostic_registers"}
-    if set(data) != required or type(data["schema"]) is not int or data["schema"] != 1:
+    if not required <= set(data) or set(data) - required - {"flash_size_address"} or type(data["schema"]) is not int or data["schema"] != 1:
         raise ValueError("Invalid target profile schema or keys")
     for key in ("name", "mcu"):
         if not isinstance(data[key], str) or not re.fullmatch(r"[A-Za-z0-9]+", data[key]):
@@ -43,4 +43,8 @@ def load_profile(path):
             not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", k) or type(v) is not int
             or not 0 <= v <= 0xFFFFFFFC or v % 4 for k, v in registers.items()):
         raise ValueError("Invalid diagnostic registers")
+    if "flash_size_address" in data:
+        address = data["flash_size_address"]
+        if type(address) is not int or not 0 < address <= 0xFFFFFFFE or address % 2:
+            raise ValueError("Invalid Flash size register address")
     return data

@@ -4,6 +4,7 @@ mcu = "STM32F401CCU6"
 openocd_target = "target/stm32f4x.cfg"
 flash_start = 0x08000000
 flash_size = 262144
+flash_size_address = 0x1FFF7A22
 breakpoint_limit = 6
 fault_handlers = ["HardFault_Handler", "MemManage_Handler", "BusFault_Handler", "UsageFault_Handler"]
 core_registers = ["pc", "lr", "sp", "xPSR"]

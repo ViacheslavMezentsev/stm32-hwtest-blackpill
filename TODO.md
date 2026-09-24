@@ -31,9 +31,12 @@ H503 остаётся отложенным до сообщения владел�
 
 ## Общая дорожная карта
 
+- [x] Сделать f401cc штатным профилем: общая warn/strict политика DEV_ID, Flash capacity guard, JSON/JUnit warnings. OpenOCD/ST server 24/24, live Sleep PASS.
+- [ ] Проверить новую политику/чтение Flash на F103 и F411 при согласованном переключении стендов.
+
 - [x] По запросу владельца проверить f401cc «как есть» с отдельным identity override: три init PASS, boot/clock timeout, найдены дубли setup/loop.
 - [x] Удалить дубли setup/loop в USER CODE f401cc: 22/22 HW PASS, два host CTest PASS; ADC channel16 даёт правдоподобную температуру, live Sleep PASS.
-- [ ] Проверить VDDA/температуру по внешнему эталону на текущем экземпляре; затем ST server и явное описание board-specific identity в стенде.
+- [ ] Проверить VDDA/температуру по внешнему эталону на текущем экземпляре; оценить погрешность и условия измерения.
 
 - [x] Провести аудит добавленной генерации F401CC; выявить PC13 EXTI и отсутствие TIM2 IRQ. См. docs/F401_PROFILE_AUDIT.md.
 - [x] F401CC: исправления CubeMX получены; сборка/Platform/Tests и offline-проверки готовы.

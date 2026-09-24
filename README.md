@@ -186,3 +186,11 @@ BluePill также проверена с прямым **J-Link GDB Server V8.32
 BlackPill F411 проверена через OpenOCD и ST-LINK GDB Server на одном ELF: по 24/24 CTest, включая ADC/Sleep, manifest, HAL-контракты и timeout/recovery. [Практические результаты](docs/STM32_TESTING_METHODS.md#f411ce-hal-контракты-и-два-сервера-st-link-2026-09-24).
 
 Профили переименованы в f103c8/f401cc/f411ce/h503cb; F401CC готов к первому аппаратному прогону. [Новые presets, результаты сборки и порядок подключения](docs/PROFILE_MIGRATION.md).
+
+## Идентификация MCU и штатный F401CC
+
+Профили f103c8, f401cc и f411ce запускаются обычными presets. При расхождении
+DEV_ID по умолчанию выводится предупреждение и сохраняется выбранный target.
+Строгий режим, проверка размера Flash и команды: [TARGET_IDENTITY](docs/TARGET_IDENTITY.md).
+F401CC на текущей плате: 24/24 CTest через OpenOCD и ST GDB Server; отдельный
+экспериментальный скрипт больше не требуется.

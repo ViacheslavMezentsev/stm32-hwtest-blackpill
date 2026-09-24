@@ -152,7 +152,8 @@ class HostTests(unittest.TestCase):
         path = self.directory / "target.toml"
         for old, new in (("flash_size", "flash_szie"), ('schema = 1', 'schema = 2'),
                          ('breakpoint_limit = 6', 'breakpoint_limit = 4'),
-                         ('flash_size = 524288', 'flash_size = -1')):
+                         ('flash_size = 524288', 'flash_size = -1'),
+                         ('flash_size_address = 0x1FFF7A22', 'flash_size_address = 3')):
             path.write_text(source.replace(old, new))
             with self.assertRaises(ValueError):
                 load_profile(path)
@@ -182,6 +183,8 @@ class HostTests(unittest.TestCase):
         for status, tag in (("PASS", None), ("FAIL", "failure"), ("ERROR", "error")):
             report = dict(id="HW_ONE", status=status, duration_s=1.25, error='expected <x> & "y"')
             report["compatibility"] = runtime_manifest(report)
+            report["warnings"] = ["DEV_ID mismatch 0x423 -> 0x431"]
+            report["identity"] = dict(policy="warn", matches=False)
             write_reports(self.directory, report)
             root = ET.parse(self.directory / "junit.xml").getroot()
             case = root.find("testcase")
@@ -191,6 +194,7 @@ class HostTests(unittest.TestCase):
                 self.assertIn(report["error"], case.find(tag).text)
             self.assertEqual(json.loads((self.directory / "result.json").read_text()), report)
             self.assertEqual(json.loads(case.find("system-out").text)["compatibility"], report["compatibility"])
+            self.assertEqual(json.loads(case.find("system-out").text)["warnings"], report["warnings"])
 
     def test_missing_stand_is_error_with_reports(self):
         session = dict(out=str(self.directory), stand=str(self.directory / "absent.toml"))
