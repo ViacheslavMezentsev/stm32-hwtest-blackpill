@@ -1,15 +1,15 @@
-# Минимальный HWTEST для BlackPill и BluePill
+# Запуск stm32-gdbtest в стендовом проекте
 
 ## Границы реализации
 
-Поддерживается Windows и один выбранный SWD-стенд: F411/F103 через OpenOCD,
-F103 также проверен через ST-LINK GDB Server 7.14.0 и J-Link GDB Server V8.32.
+Поддерживается Windows и один выбранный SWD-стенд: F411/F103/F401 через OpenOCD
+и ST-LINK GDB Server 7.14.0; F103 — также через J-Link GDB Server V8.32.
 [Выбор сервера и различия](GDB_BACKENDS.md).
 UART/VCOM не нужен. Прошивка не содержит тестового кода. Проверен Debug на GCC 13.3.1,
 GDB 14.2.90.20240526-git с Python 3.11.4 и OpenOCD 0.12.0.
 Host Python >= 3.11 требуется для стандартного TOML-парсера.
 
-Код и тесты BlackPill находятся в profiles/f411ce. F103 находится в profiles/f103c8; на F103 прошли 22 аппаратных сценария; F411 ранее прошёл 17, новый пересчёт ожидает аппаратной проверки. См. [профили](PERIPHERAL_PLAN.md).
+Код и тесты BlackPill находятся в profiles/f411ce. F103 находится в profiles/f103c8; на F103/J-Link и F411/OpenOCD после отделения модуля прошли по 22 HW + 2 host CTest. См. [профили](PERIPHERAL_PLAN.md).
 HWTEST получает target.toml через session.json и проверяет DBGMCU ID до прошивки.
 
 Это реализация Level 1 из архитектурного документа: явное подключение после
@@ -61,23 +61,14 @@ python -B tools/gdbtest.py run --session build/f411ce-debug-hwtest/hwtest/sessio
 используйте `check-hw`. Новые `test_*.py` и изменения метаданных учитываются при
 следующей конфигурации/сборке CMake.
 
-## Слои
+## Разделение проектов
 
-| Файл | Ответственность |
-| --- | --- |
-| stm32_gdbtest/cmake/STM32GDBTest.cmake | session.json, регистрация CTest, цель check-hw |
-| stm32_gdbtest/collect.py | AST-сбор `@case` без импорта тестов; сверка ID требований |
-| stm32_gdbtest/runner.py | снимок ELF, GDB/backend, сроки ожидания, восстановление |
-| stm32_gdbtest/backends.py | запуск, готовность, reset и finish OpenOCD/ST-LINK/J-Link |
-| stm32_gdbtest/processes.py | блокировка отладчика и завершение созданных деревьев процессов |
-| stm32_gdbtest/openocd.py | TOML стенда, аргументы сервера по профилю |
-| stm32_gdbtest/profile.py | проверка схемы target.toml |
-| stm32_gdbtest/agent.py | подключение, проверка/загрузка образа, запуск теста, диагностика |
-| stm32_gdbtest/target.py | breakpoint events, проверки, чтение значений и fault injection |
-| stm32_gdbtest/reports.py | JSON/JUnit и различение FAIL/ERROR |
-| profiles/f411ce/Tests/board/test_blackpill.py | пять базовых сценариев поведения прошивки |
-| profiles/f411ce/Tests/board/test_peripheral_methods.py | четыре сценария проверки контрактов и инъекций |
-| profiles/f411ce/Tests/requirements.md | проверяемые требования с такими же ID |
+Runner/agent/Target/backend/CMake находятся в отдельном закреплённом подмодуле.
+Описание [API](../modules/stm32-gdbtest/docs/API.md),
+[backend](../modules/stm32-gdbtest/docs/BACKENDS.md) и
+[контрактов](../modules/stm32-gdbtest/docs/CONTRACTS.md) ведётся там.
+Здесь остаются `profiles/<MCU>/Tests`, `Tests/scenarios`, локальные стенды,
+CLI-обёртка `tools/gdbtest.py` и протоколы аппаратных опытов.
 
 ## Жизненный цикл и отчёты
 
@@ -101,8 +92,8 @@ CFSR/HFSR и backtrace, когда связь ещё доступна.
 
 CTest `RESOURCE_LOCK` сериализует аппаратные тесты даже при `-j`.
 Файловая блокировка в `build/probe-locks` дополнительно защищает от второго запуска
-из этого checkout, включая старый smoke-раннер. Она не координирует другие checkout
-или сторонние отладчики. Нельзя одновременно запускать VS Code debug и hwtest.
+из этого checkout, включая старый smoke-раннер. Named mutex модуля дополнительно координирует участвующие
+проекты в одной Windows-сессии; сторонние vendor tools им не управляются. Нельзя одновременно запускать VS Code debug и hwtest.
 
 Таймаут GDB — из `@case(timeout_s=...)` (20 секунд по умолчанию), ограничивает
 подключение/проверку/прошивку/исполнение вместе. У подготовки, старта сервера и

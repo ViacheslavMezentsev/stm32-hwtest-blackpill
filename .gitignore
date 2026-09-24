@@ -15,3 +15,5 @@ __pycache__/
 
 /examples/minimal-consumer/build/
 /examples/minimal-consumer/CMakeUserPresets.json
+
+/.work/

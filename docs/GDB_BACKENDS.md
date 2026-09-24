@@ -1,8 +1,11 @@
 # Серверы GDB: OpenOCD, ST-LINK и J-Link
 
+Общие правила серверов и диалекты перенесены в [stm32-gdbtest](../modules/stm32-gdbtest/docs/BACKENDS.md).
+Здесь — настройка наших стендов и аппаратные результаты.
+
 Общие тесты работают через GDB-Python и RSP. Backend задаёт запуск сервера,
 готовность, reset/halt, завершение и recovery; он не меняет ожидания периферии.
-Реализация выбора — `stm32_gdbtest/backends.py`. J-Link V8.32 проверен на BluePill:
+Реализация выбора находится в отдельном модуле. J-Link V8.32 проверен на BluePill:
 [настройка, результаты и Commander](JLINK.md).
 
 ## Запуск ST-LINK на BluePill
@@ -33,39 +36,6 @@ try {
 Без переопределения остаётся существующий OpenOCD-стенд из session.json.
 Компилятор и GDB-Python не меняются при выборе сервера: проверен xPack GCC13
 с GDB 14.2.90.20240526-git / Python 3.11.4, а не GDB из поставки CubeCLT.
-
-## Проверенные различия
-
-| Операция | OpenOCD 0.12.0 | ST-LINK GDB Server 7.14.0 (CubeCLT 1.22.0) |
-| --- | --- | --- |
-| Выбор MCU | target/stm32f1x.cfg | Определение сервером ST; identity guard раннера сохраняется |
-| Запуск | ST-Link interface + target; localhost | SWD, attach `-g`, persistent `-e`, serial, CubeProgrammer path |
-| Готовность | Listening on port … for gdb connections | Waiting for debugger connection |
-| Подключение GDB | extended-remote | extended-remote |
-| Reset/halt | monitor reset halt | monitor reset |
-| Прошивка | GDB load, OpenOCD flash driver | GDB load, сервер вызывает CubeProgrammer |
-| Проверка образа | Чтение Flash до/после записи | То же; дополнительно включён серверный verify `-s` |
-| Завершение | monitor reset run; disconnect | monitor reset; detach (возобновляет выполнение) |
-| Внешний timeout | Новый GDB-клиент для recovery | Новый клиент к persistent-серверу; reset + detach |
-| Runtime metadata | Версия OpenOCD, STLINK firmware/API | Версия ST server и firmware; API v2 баннером не сообщается, поле null |
-
-Schema 1 target.toml сохранена ради совместимости: её openocd_target/reset-поля
-использует только OpenOCD. ST получает команды из backend, а MCU identity,
-Flash bounds, breakpoints и fault handlers — из общего профиля. Это промежуточная
-совместимость, не универсальная новая схема профиля для всех серверов.
-
-Сервер ST сам устанавливает аппаратное соединение до запуска клиента GDB.
-Preflight GDB выполняется до подключения GDB/reset/load, но не является проверкой
-до любого обращения сервера к SWD. Attach не означает отсутствие влияния отладчика.
-При запросе 1000 kHz ST сообщил COM frequency 950 kHz; запрошенная частота — предел,
-а не доказательство фактической частоты интерфейса.
-
-Сервер ST открывает дополнительный порт для SWV (наблюдался GDB port + 1).
-В установленной CLI-справке нет аналога OpenOCD bindto; эти процессы предназначены
-для локального стенда. SWV в текущие тесты не включён. Shared mode `-t` не используется:
-доступ обоих backend защищён одной блокировкой по serial, сервер принадлежит запуску.
-Все logs/temp/CubeProgrammer-временные файлы направляются в репозиторий: cwd запуска,
-`--temp-path`, `-f`, TEMP/TMP. После завершения дерево процессов закрывается.
 
 ## Результаты и границы
 
