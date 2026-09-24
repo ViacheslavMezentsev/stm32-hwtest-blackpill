@@ -128,3 +128,9 @@ logs, lifecycle.log; внутри consumer project/build/lifecycle — summary �
 проверялись: project-local locks всё ещё недостаточны. Следующий этап — общий
 механизм владения отладчиком и host-проверки конкуренции/освобождения ресурса,
 после него — согласованная миграция namespace и подготовка отдельного модуля.
+
+
+Последующее обновление: межпроектный named mutex реализован и проверен; прежние
+заметки о project-local locks описывают состояние предыдущих опытов.
+Read-only/CMake/HW/recovery regression повторена успешно после изменения lock.
+Актуальные гарантии, ограничения и результаты — [DEBUGGER_OWNERSHIP](DEBUGGER_OWNERSHIP.md).

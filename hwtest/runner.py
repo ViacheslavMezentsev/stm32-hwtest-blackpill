@@ -55,7 +55,7 @@ def run(session, test, stand_path=None, timeout=None, identity_policy=None):
         report["backend"] = stand["backend"]
         profile = load_profile(session["profile"])
         report["profile"] = profile
-        with probe_lock(project_root, stand["serial"]):
+        with probe_lock(project_root, stand["serial"], stand["backend"]):
             execute(session, test, stand, out, report, limit, profile)
     except BaseException:
         report.update(status="ERROR", error=traceback.format_exc())

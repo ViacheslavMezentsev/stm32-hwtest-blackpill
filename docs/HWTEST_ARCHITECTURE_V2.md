@@ -21,7 +21,7 @@
 > Самостоятельный consumer без YAML/framework собран, build/offline проверки PASS;
 > module/consumer paths разделены. [HW lifecycle F411/ST-Link/OpenOCD](CONSUMER_VALIDATION.md)
 > проверен с timeout/recovery и восстановлением основной прошивки. Перенос дерева
-> исходников/read-only ACL подтверждён, CTest3/3; межпроектные locks ещё требуют доработки.
+> исходников/read-only ACL подтверждён, CTest3/3; [межпроектный mutex](DEBUGGER_OWNERSHIP.md) реализован в одной Windows-сессии.
 
 ## 1. Назначение и текущий масштаб
 

@@ -7,6 +7,13 @@
 
 ### Changed
 
+- Межпроектный Windows mutex для отладчика в одной Windows-сессии; ST-Link общий
+  для OpenOCD/ST server, J-Link отдельный. Занятость/WAIT_ABANDONED дают ERROR
+  до подключения; legacy lock сохранён. Observe_sleep использует тот же механизм.
+- Host41 PASS с реальными конкурирующими процессами; F411 read-only consumer
+  CTest3/3 + recovery/restore/Sleep PASS, F103/J-Link BOOT/BLINK PASS.
+  Границы защиты и аварийных дочерних серверов: DEBUGGER_OWNERSHIP.md.
+
 - Проверены перенесённые исходники модуля/потребителя в путях с пробелами под
   Windows ACL Deny Write/Delete: build/offline, CTest3/3 и HW timeout/recovery PASS.
   Добавлен check_readonly_consumer.ps1; lifecycle experiment принимает пути копий

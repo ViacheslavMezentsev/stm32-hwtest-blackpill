@@ -51,7 +51,7 @@ def main():
     report = {"profile": profile["name"], "status": "ERROR", "samples": [],
               "limitations": "No Flash verification; run check-hw first. Debug connection affects power."}
     try:
-        with probe_lock(ROOT, stand["serial"]):
+        with probe_lock(ROOT, stand["serial"], stand["backend"]):
             run = subprocess.run(cmd, capture_output=True, text=True, env=env, cwd=ROOT,
                                  timeout=10 + args.samples * args.interval_ms / 1000, creationflags=FLAGS)
         output = run.stdout + run.stderr
