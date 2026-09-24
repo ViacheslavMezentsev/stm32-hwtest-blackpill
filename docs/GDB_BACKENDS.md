@@ -15,7 +15,7 @@
 Один тест:
 
 ```powershell
-python -B stm32_gdbtest/cli.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/bluepill-stlink.local.toml
+python -B tools/gdbtest.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/bluepill-stlink.local.toml
 ```
 
 Полный набор (переменная только в текущем PowerShell; сохранить предыдущее значение):

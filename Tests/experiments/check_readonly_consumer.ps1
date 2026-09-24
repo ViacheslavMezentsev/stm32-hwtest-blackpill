@@ -8,14 +8,18 @@ $dependency = Join-Path $runRoot 'module checkout'
 $consumer = Join-Path $runRoot 'consumer project'
 New-Item -ItemType Directory -Path $dependency, $consumer -Force | Out-Null
 # Copy tracked source paths only, excluding caches, local stands and build products.
-$tracked = & git -C $repo ls-files stm32_gdbtest examples/minimal-consumer
-if ($LASTEXITCODE -ne 0) { throw 'git ls-files failed' }
+$module = Join-Path $repo 'modules/stm32-gdbtest'
+$tracked = & git -c "safe.directory=$module" -C $module ls-files stm32_gdbtest
+if ($LASTEXITCODE -ne 0) { throw 'module git ls-files failed' }
 foreach ($relative in $tracked) {
-    if ($relative.StartsWith('stm32_gdbtest/')) {
-        $destination = Join-Path $dependency $relative
-    } else {
-        $destination = Join-Path $consumer $relative.Substring('examples/minimal-consumer/'.Length)
-    }
+    $destination = Join-Path $dependency $relative
+    New-Item -ItemType Directory -Path (Split-Path $destination) -Force | Out-Null
+    Copy-Item -LiteralPath (Join-Path $module $relative) -Destination $destination
+}
+$tracked = & git -C $repo ls-files examples/minimal-consumer
+if ($LASTEXITCODE -ne 0) { throw 'consumer git ls-files failed' }
+foreach ($relative in $tracked) {
+    $destination = Join-Path $consumer $relative.Substring('examples/minimal-consumer/'.Length)
     New-Item -ItemType Directory -Path (Split-Path $destination) -Force | Out-Null
     Copy-Item -LiteralPath (Join-Path $repo $relative) -Destination $destination
 }

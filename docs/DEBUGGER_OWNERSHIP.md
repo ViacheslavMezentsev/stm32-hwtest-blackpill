@@ -47,7 +47,7 @@ Job Object/надзор за дочерними процессами остаё�
 
 ## Проверки
 
-`python -B -m unittest discover -s Tests/host -v`: **41 unittest PASS**.
+`python -B tools/test_module_host.py`: **41 unittest PASS**.
 Новые проверки используют синтетические serial и не запускают GDB-сервер:
 
 - процесс-владелец импортирует копию модуля из другого каталога;

@@ -7,6 +7,15 @@
 
 ### Changed
 
+- Подключён Git-подмодуль modules/stm32-gdbtest на опубликованный f9d9f53.
+  CMake, consumer, CLI и experiments используют его; проверенные дубли ядра,
+  host tests/fixtures и одноразовые export-шаблоны удалены из родительского проекта.
+- tools/gdbtest.py — CLI приложения; tools/test_module_host.py выполняет host44
+  в отдельных build-копиях без записи в подмодуль. После обновления нужен configure.
+- Три MCU build/offline PASS; F411/OpenOCD24/24 и F103/J-Link24/24, read-only
+  consumer3/3/timeout/recovery/restore PASS. F411 live Sleep29/30,tick+1384ms.
+  Подмодуль чистый, основные прошивки работают. Релизный тег пока не создан.
+
 - Создана новая локальная история stm32-gdbtest в build/module-ready/stm32-gdbtest:
   один initial commit f9d9f53, main, origin на созданный владельцем GitHub remote.
   Runtime совпадает с проверенным снимком; README уточняет URL. Push ожидается

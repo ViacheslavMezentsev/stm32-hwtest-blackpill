@@ -4,3 +4,6 @@
 [submodule "modules/stm32-cmake-yml"]
 	path = modules/stm32-cmake-yml
 	url = https://github.com/ViacheslavMezentsev/stm32-cmake-yml.git
+[submodule "modules/stm32-gdbtest"]
+	path = modules/stm32-gdbtest
+	url = https://github.com/ViacheslavMezentsev/stm32-gdbtest.git

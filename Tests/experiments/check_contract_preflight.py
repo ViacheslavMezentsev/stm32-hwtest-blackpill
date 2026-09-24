@@ -8,7 +8,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT))
+MODULE_ROOT = ROOT / "modules/stm32-gdbtest"
+sys.path.insert(0, str(MODULE_ROOT))
 from stm32_gdbtest.build_manifest import digest, load_verified
 from stm32_gdbtest.contracts import select_contracts
 
@@ -70,7 +71,7 @@ for name, data in variants.items():
     env.pop("PYTHONPATH", None)
     with (out / (name + ".log")).open("wb") as log:
         proc = subprocess.run([session["gdb"], "-nx", "-q", "-batch", "-iex", "set auto-load off",
-            str(elf), "-x", str(ROOT / "stm32_gdbtest/contract_preflight.py")], timeout=15, env=env,
+            str(elf), "-x", str(MODULE_ROOT / "stm32_gdbtest/contract_preflight.py")], timeout=15, env=env,
             stdout=log, stderr=subprocess.STDOUT, creationflags=subprocess.CREATE_NO_WINDOW)
     report = json.loads(result.read_text())
     expected = "PASS" if name == "positive" else "ERROR"

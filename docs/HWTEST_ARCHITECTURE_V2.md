@@ -25,6 +25,9 @@
 
 > Namespace перенесён: [публичный API прототипа и миграция](STM32_GDBTEST_API.md).
 
+> Отделение завершено: gitlink modules/stm32-gdbtest → f9d9f53; ядро и его host-тесты
+> больше не дублируются в корне приложения. Публичный интерфейс — из подмодуля.
+
 ## 1. Назначение и текущий масштаб
 
 Система проверяет реальную STM32-прошивку через SWD, GDB-сервер и GDB-Python.
@@ -69,14 +72,14 @@ flowchart TD
 | Слой | Реализованная ответственность | Основные файлы |
 | --- | --- | --- |
 | Сборка приложения | MCU-профиль, CubeFW, исходники, toolchain; stm32-cmake-yml остаётся системой сборки | `stm32_config.yml`, `profiles/`, `modules/` |
-| CMake-интеграция HWTEST | Сессия, AST-сбор тестов, CTest, manifest после линковки, цель check-hw | [STM32GDBTest.cmake](../stm32_gdbtest/cmake/STM32GDBTest.cmake) |
-| Host-оркестратор | Владение отладчиком, снимки артефактов, preflight, процессы, таймауты, отчёты | [runner.py](../stm32_gdbtest/runner.py), [processes.py](../stm32_gdbtest/processes.py) |
-| Backend | Аргументы сервера, признак готовности, setup/reset/finish конкретного сервера | [backends.py](../stm32_gdbtest/backends.py), [openocd.py](../stm32_gdbtest/openocd.py) |
-| GDB-агент | GDB API checks, подключение, MCU identity, Flash verify/load, выполнение сценария и диагностика | [agent.py](../stm32_gdbtest/agent.py) |
-| API сценария | Проверки, значения и поля, hardware breakpoints, инъекции | [target.py](../stm32_gdbtest/target.py) |
+| CMake-интеграция HWTEST | Сессия, AST-сбор тестов, CTest, manifest после линковки, цель check-hw | [STM32GDBTest.cmake](../modules/stm32-gdbtest/stm32_gdbtest/cmake/STM32GDBTest.cmake) |
+| Host-оркестратор | Владение отладчиком, снимки артефактов, preflight, процессы, таймауты, отчёты | [runner.py](../modules/stm32-gdbtest/stm32_gdbtest/runner.py), [processes.py](../modules/stm32-gdbtest/stm32_gdbtest/processes.py) |
+| Backend | Аргументы сервера, признак готовности, setup/reset/finish конкретного сервера | [backends.py](../modules/stm32-gdbtest/stm32_gdbtest/backends.py), [openocd.py](../modules/stm32-gdbtest/stm32_gdbtest/openocd.py) |
+| GDB-агент | GDB API checks, подключение, MCU identity, Flash verify/load, выполнение сценария и диагностика | [agent.py](../modules/stm32-gdbtest/stm32_gdbtest/agent.py) |
+| API сценария | Проверки, значения и поля, hardware breakpoints, инъекции | [target.py](../modules/stm32-gdbtest/stm32_gdbtest/target.py) |
 | Проектные тесты | Что именно должно делать приложение; ожидаемые MCU-различия | `Tests/scenarios/`, `profiles/<MCU>/Tests/` |
 
-`stm32_gdbtest/` пока является обычным каталогом этого репозитория. В коде есть привязки
+`modules/stm32-gdbtest` является Git-подмодулем с закреплённым коммитом. В коде есть привязки
 к корню проекта, размещению Tests, build и профилей. Backend также содержит явное
 отображение поддержанного J-Link device. До выделения подмодуля эти зависимости
 нужно превратить в документированные параметры или профильные данные.

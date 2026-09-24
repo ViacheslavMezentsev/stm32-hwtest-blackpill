@@ -222,11 +222,11 @@ $session.out = Join-Path (Resolve-Path build/method-negative).Path 'runs'
 $json = $session | ConvertTo-Json
 $destination = Join-Path (Resolve-Path build/method-negative).Path 'session.json'
 [IO.File]::WriteAllText($destination, $json, [Text.UTF8Encoding]::new($false))
-python -B stm32_gdbtest/cli.py run --session build/method-negative/session.json --test HW_BAD_FIELD
+python -B tools/gdbtest.py run --session build/method-negative/session.json --test HW_BAD_FIELD
 # Ожидается exit 1, FAIL, имя поля Mode.
-python -B stm32_gdbtest/cli.py run --session build/method-negative/session.json --test HW_FALSE_CONDITION --timeout 2
+python -B tools/gdbtest.py run --session build/method-negative/session.json --test HW_FALSE_CONDITION --timeout 2
 # Ожидается exit 2, ERROR, host recovery.
-python -B stm32_gdbtest/cli.py run --session build/method-negative/session.json --test HW_INVALID_CONDITION
+python -B tools/gdbtest.py run --session build/method-negative/session.json --test HW_INVALID_CONDITION
 # Ожидается exit 2, ERROR, неизвестный символ.
 ctest --preset f411ce-hw -R '^hw.HW_BLINK$'
 # После отрицательных контролей штатный тест должен пройти.

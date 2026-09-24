@@ -1,7 +1,7 @@
 """Run with gdb-py -nx -batch -ex 'source Tests/gdb/check_breakpoint.py'. No board needed."""
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "modules/stm32-gdbtest"))
 import gdb
 from stm32_gdbtest.target import Target
 gdb.execute("set breakpoint pending off")

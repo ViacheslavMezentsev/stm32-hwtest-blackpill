@@ -142,9 +142,9 @@ H503 остаётся отложенным до сообщения владел�
   минимальный пример build/offline2/2 PASS, без рабочей profiles основного проекта.
 - [x] Владелец создал пустой https://github.com/ViacheslavMezentsev/stm32-gdbtest; remote refs проверены.
 - [x] Подготовлена новая история внутри build/module-ready/stm32-gdbtest: main, initial commit f9d9f53, origin настроен.
-- [ ] Владелец отправляет main нового репозитория; сверить remote SHA перед submodule add.
-- [ ] Подключить modules/stm32-gdbtest закреплённым gitlink, убрать дубли ядра только после проверки зависимостей.
-- [ ] Проверить новый consumer/submodule: host/build/offline и согласованный HW/recovery.
+- [x] Владелец отправил main; remote SHA f9d9f53 совпал с initial commit.
+- [x] Подключить modules/stm32-gdbtest закреплённым gitlink f9d9f53, убрать проверенные дубли ядра/host tests/export templates.
+- [x] Проверить новый consumer/submodule: host44, все3 MCU build/offline, read-only consumer3/3/recovery, F411/OpenOCD24/24, F103/J-Link24/24, F411 live Sleep PASS.
 - [ ] Подготовить первый кандидат v0.1.0-rc.1, затем v0.1.0; до проверки новых связей тегов нет.
 
 ## Внешнее согласованное управление стендом — отложено

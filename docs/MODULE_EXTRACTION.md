@@ -1,4 +1,11 @@
-# Подготовка самостоятельного модуля
+# Подключённый самостоятельный модуль
+
+Актуально: stm32-gdbtest подключён как Git-подмодуль modules/stm32-gdbtest на
+f9d9f53865cd02ecc2800912662fcb1bbd3fa3cd. [README модуля](../modules/stm32-gdbtest/README.md).
+Ниже сохранены этапы подготовки и прежние ограничения; исходный каталог ядра,
+Tests/host, Tests/fixtures и export templates удалены из родительского репозитория.
+Host-проверка — tools/test_module_host.py в отдельной build-копии; CLI — tools/gdbtest.py.
+
 
 Статус: рабочее имя **stm32-gdbtest** согласовано владельцем. Проверен первый
 проект-потребитель (build/offline и F411/ST-Link/OpenOCD lifecycle); пакет не опубликован. Python/CLI/CMake переведены на namespace stm32_gdbtest;

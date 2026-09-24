@@ -54,7 +54,7 @@ ctest --preset f411ce-host
 # Отдельная проверка:
 ctest --preset f411ce-hw -R '^hw.HW_CLOCK$'
 # Host CLI, например с другим локальным стендом:
-python -B stm32_gdbtest/cli.py run --session build/f411ce-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/blackpill.local.toml
+python -B tools/gdbtest.py run --session build/f411ce-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/blackpill.local.toml
 ```
 
 Прямой `ctest` не собирает прошивку. Для цикла «изменить → собрать → проверить»

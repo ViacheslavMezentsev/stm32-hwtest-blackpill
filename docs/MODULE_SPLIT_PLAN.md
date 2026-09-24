@@ -1,6 +1,6 @@
 # Выделение stm32-gdbtest: пошаговый переход
 
-## Шаг1 — подготовлено здесь
+## Шаг1 — история подготовки (export tool и templates теперь в истории Git)
 
 Новая история начинается с текущего проверенного снимка, без переноса промежуточной
 Git-истории прототипа. Основной способ подключения — Git submodule. Публикация
@@ -17,7 +17,7 @@ build; существующий каталог не перезаписывает
 - SOURCE.md/EXPORT_MANIFEST.json: исходный commit, dirty-состояние и hashes файлов.
 
 README/AGENTS и инструкции для человека/агента находятся в
-[distribution/stm32-gdbtest](../distribution/stm32-gdbtest/README.md). Fixtures —
+[distribution/stm32-gdbtest](../modules/stm32-gdbtest/README.md). Fixtures —
 синтетические/замороженные входные данные host-тестов; не HW-профили и не evidence HAL.
 Рабочие MCU-профили, application User, HAL/CMSIS, Cube/toolchains, SVD, gdb.pdf,
 локальные конфиги/serial, ELF/логи и Git metadata не экспортируются.
@@ -67,7 +67,7 @@ commit в отдельном локальном Git-репозитории вн�
 До1.0 PATCH — совместимые исправления, MINOR — возможности/изменения API с миграцией.
 После1.0 несовместимый API увеличивает MAJOR. Released tags не перемещаются.
 Это политика проекта на основе [SemVer2.0.0](https://semver.org/spec/v2.0.0.html);
-[подробности](../distribution/stm32-gdbtest/docs/VERSIONING.md).
+[подробности](../modules/stm32-gdbtest/docs/VERSIONING.md).
 Schema/API_VERSION независимы от release version; gitlink всегда фиксирует SHA.
 
 Внешний host-контроллер оборудования отложен в TODO обоих проектов. Его драйверы
@@ -92,3 +92,30 @@ Git может запросить safe.directory из-за владельца к
 не менять глобальную конфигурацию. Следующий шаг: владелец push -u origin main из
 этого отдельного репозитория; затем сверить SHA remote и перейти к шагу4.
 Версия остаётся0.1.0.dev0, релизные теги не созданы. HW в этом этапе не использовался.
+
+
+## Шаг4 — подключение выполнено
+
+Remote main проверен: f9d9f53865cd02ecc2800912662fcb1bbd3fa3cd. Настроен настоящий
+Git-подмодуль modules/stm32-gdbtest с публичным HTTPS origin; .gitmodules и gitlink
+фиксируют зависимость. Основной CMake, consumer, scripts и GDB experiments используют
+его исходники. Корневые дубли ядра, host tests/fixtures, distribution templates и
+одноразовый export tool удалены после сравнения и проверки сборки. Их прежнее
+содержимое остаётся в истории, новый исходный репозиторий — источник изменений ядра.
+
+При configure не обновлять зависимость автоматически. После clone выполнять
+`git submodule update --init --recursive`. Для CLI приложения: tools/gdbtest.py;
+для внутренних host-тестов: tools/test_module_host.py (копия в build, modules не меняется).
+Версия пока0.1.0.dev0; release tag будет отдельным следующим этапом, после публикации
+проверенного gitlink в основном проекте.
+
+
+Результаты перехода:44 host-теста в изолированных копиях PASS; f103c8/f401cc/f411ce
+build и positive+11 negative ELF regression PASS. Минимальный consumer offline2/2;
+read-only relocation из Git-подмодуля CTest3/3, timeout/recovery/restore PASS
+(build/relocation validation/1a7eac91bda24bdba4bc807324f2acaf).
+Полные F411/OpenOCD и F103/J-Link —24/24, оба reset_run. F411 observe_sleep без halt:
+Sleep29/30,tick+1384ms (build/submodule-sleep). Подмодуль не изменён и не содержит
+build-артефактов. На F401 в этом этапе только build/offline, платы не переключались.
+Следующий шаг владельца — push main основного проекта с gitlink; затем подготовка
+первого кандидата релиза в отдельном репозитории и обновление gitlink после его push.

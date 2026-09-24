@@ -9,7 +9,8 @@ from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT))
+MODULE_ROOT = ROOT / "modules/stm32-gdbtest"
+sys.path.insert(0, str(MODULE_ROOT))
 from stm32_gdbtest.collect import collect
 from stm32_gdbtest.runner import run
 

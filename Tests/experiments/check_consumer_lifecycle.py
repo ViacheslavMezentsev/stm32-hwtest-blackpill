@@ -20,7 +20,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stand", required=True, type=Path)
     parser.add_argument("--consumer-root", type=Path, default=ROOT / "examples/minimal-consumer")
-    parser.add_argument("--module-root", type=Path, default=ROOT)
+    parser.add_argument("--module-root", type=Path, default=ROOT / "modules/stm32-gdbtest")
     parser.add_argument("--ctest", action="store_true", help="Also exercise generated CTest HW registration")
     args = parser.parse_args()
     consumer_root, module_root = args.consumer_root.resolve(), args.module_root.resolve()

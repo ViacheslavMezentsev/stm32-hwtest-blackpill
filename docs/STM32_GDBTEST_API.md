@@ -1,5 +1,8 @@
 # stm32-gdbtest: API прототипа и миграция
 
+Ядро теперь в modules/stm32-gdbtest; ниже команды из корня приложения используют
+tools/gdbtest.py. Из корня самого модуля сохраняется python -m stm32_gdbtest.
+
 Статус: исходный прототип **0.1.0.dev0**, `API_VERSION = 1`. Это номер описанной
 поверхности API, не обещание стабильности релиза 1.0 и не версия GDB. Пакет пока
 не устанавливается через pip и не опубликован. Рабочее имя согласовано;
@@ -72,10 +75,10 @@ boot/close/on_stop, report/owned/stops и создание Target — lifecycle 
 Из корня исходного checkout (из другой папки — через абсолютный путь cli.py):
 
 ```powershell
-python -B -m stm32_gdbtest --version
-python -B -m stm32_gdbtest collect --tests profiles/f411ce/Tests/board
-python -B -m stm32_gdbtest trace --tests profiles/f411ce/Tests/board --requirements profiles/f411ce/Tests/requirements.md
-python -B -m stm32_gdbtest run --session build/f411ce-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/blackpill.local.toml
+python -B tools/gdbtest.py --version
+python -B tools/gdbtest.py collect --tests profiles/f411ce/Tests/board
+python -B tools/gdbtest.py trace --tests profiles/f411ce/Tests/board --requirements profiles/f411ce/Tests/requirements.md
+python -B tools/gdbtest.py run --session build/f411ce-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/blackpill.local.toml
 ```
 
 CLI имеет логическое имя stm32-gdbtest; отдельный console executable будет добавлен

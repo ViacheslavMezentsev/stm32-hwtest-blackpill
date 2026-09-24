@@ -207,4 +207,26 @@ F401CC на текущей плате: 24/24 CTest через OpenOCD и ST GDB 
 Границы, результаты и следующие шаги: [MODULE_EXTRACTION](docs/MODULE_EXTRACTION.md).
 
 Публичный интерфейс прототипа0.1.0.dev0: [API и миграция stm32_gdbtest](docs/STM32_GDBTEST_API.md).
-CLI из корня checkout: `python -B -m stm32_gdbtest --help`.
+CLI из корня checkout: `python -B tools/gdbtest.py --help`.
+
+
+### Отдельный Git-подмодуль stm32-gdbtest
+
+Ядро находится в [modules/stm32-gdbtest](modules/stm32-gdbtest/README.md), закреплено
+на f9d9f53865cd02ecc2800912662fcb1bbd3fa3cd. MCU-профили, сценарии приложения и локальные
+стенды остаются в этом проекте. Изменения ядра ведутся в отдельном репозитории.
+
+```powershell
+git submodule update --init --recursive
+cmake --preset f411ce-debug-hwtest
+cmake --build --preset f411ce-debug-hwtest
+python -B tools/gdbtest.py --version
+python -B tools/test_module_host.py
+```
+
+После перехода повторить configure/build существующих presets. Если у минимального
+consumer остался старый cache пути к ядру, в его каталоге выполнить
+`cmake --preset debug -U STM32_GDBTEST_SOURCE_DIR`, затем build/offline.
+Host-тесты модуля выполняются в отдельных копиях build/module-host; в modules
+артефакты не создаются. Запуск `python -m stm32_gdbtest` из корня приложения больше
+не поддерживается без настройки import path — используйте tools/gdbtest.py.

@@ -56,3 +56,8 @@ ACL. Воспроизведение из корня репозитория — T
 
 Текущий namespace и контракт подключения: [STM32_GDBTEST_API](../../docs/STM32_GDBTEST_API.md).
 После обновления повторить configure/build, старые HWTEST_* cache/env заменить по инструкции миграции.
+
+
+В этом приложении STM32_GDBTEST_SOURCE_DIR теперь по умолчанию указывает на
+../../modules/stm32-gdbtest. Для обновления старого cache: `cmake --preset debug -U STM32_GDBTEST_SOURCE_DIR`.
+Подмодуль предварительно инициализировать; пример не обновляет его коммит автоматически.

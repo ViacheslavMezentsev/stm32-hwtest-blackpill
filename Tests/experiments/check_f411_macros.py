@@ -37,7 +37,7 @@ if __name__ == "__main__":
     import sys
 
     root = Path(__file__).resolve().parents[2]
-    sys.path.insert(0, str(root))
+    sys.path.insert(0, str(root / "modules/stm32-gdbtest"))
     from stm32_gdbtest.runner import run
 
     parser = argparse.ArgumentParser(description=__doc__)

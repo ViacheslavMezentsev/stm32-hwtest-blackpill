@@ -8,7 +8,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+MODULE_ROOT = ROOT / "modules/stm32-gdbtest"
+sys.path.insert(0, str(MODULE_ROOT))
 from stm32_gdbtest.openocd import load_stand, server_command
 from stm32_gdbtest.processes import FLAGS, probe_lock
 from stm32_gdbtest.profile import load_profile
@@ -28,9 +29,9 @@ def main():
         parser.error("Identity policy must be warn or strict")
     if not 5 <= args.samples <= 100 or not 10 <= args.interval_ms <= 500:
         parser.error("samples must be 5..100; interval-ms must be 10..500")
-    out = local_directory(args.out)
+    out = local_directory(args.out, ROOT)
     env = os.environ.copy()
-    env.update(TEMP=str(local_directory(ROOT / "build/hwtest-tmp")), TMP=str(ROOT / "build/hwtest-tmp"))
+    env.update(TEMP=str(local_directory(ROOT / "build/hwtest-tmp", ROOT)), TMP=str(ROOT / "build/hwtest-tmp"))
     session = json.loads(args.session.read_text(encoding="utf-8"))
     profile = load_profile(session["profile"])
     stand = load_stand(session["stand"])
