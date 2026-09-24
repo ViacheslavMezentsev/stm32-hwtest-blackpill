@@ -7,6 +7,14 @@
 
 ### Changed
 
+- Проверки GPIO/RCC в трёх профилях переведены на HAL-предикаты и CMSIS-маски;
+  добавлены ADC1/TIM2/DMA clock checks, TIM2 ARR через GET_AUTORELOAD.
+- Offline macro contracts с явным source context, наличием и раскрытием в ELF;
+  регрессия трёх профилей включает11 отрицательных вариантов. F411/OpenOCD
+  и F103/J-Link 24/24 PASS; F401 для этих изменений пока только build/offline.
+- HAL_MACRO_GUIDE.md: каталог Exported Macros, побочные эффекты и правила тестов.
+  MODULE_EXTRACTION.md: границы и варианты имени будущего модуля, без переименования.
+
 - F411CE/ST-Link: новая identity/Flash политика подтверждена аппаратно, OpenOCD
   и ST server strict 24/24 PASS, DEV_ID/Flash совпадают; live Sleep PASS.
 - Отдельный опыт check_f411_macros.py подтвердил вычисление HAL-предикатов

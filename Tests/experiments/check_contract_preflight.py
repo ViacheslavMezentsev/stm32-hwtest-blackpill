@@ -45,6 +45,20 @@ for name in ("missing_symbol", "return_type", "arity", "argument_name", "field_t
     else:
         contracts["rcc_error"]["enums"]["HAL_StatusTypeDef"]["HAL_ERROR"] = 99
     variants[name] = data
+for name in ("missing_macro", "missing_macro_context", "wrong_macro_scope", "unexpanded_macro"):
+    data = deepcopy(selected)
+    macros = data["contracts"]["clock_macros"]["macros"]
+    if name == "missing_macro":
+        macros["expressions"].append("__HWTEST_MISSING_MACRO__()")
+    elif name == "missing_macro_context":
+        macros["context"] = "HWTEST_MISSING_CONTEXT"
+    elif name == "wrong_macro_scope":
+        macros["context"] = ("adc_convert_typical" if "f103c8" in session["profile"]
+                             else "adc_convert_factory")
+    else:
+        # Function-like definition exists, but without parentheses no expansion occurs.
+        macros["expressions"] = ["__HAL_RCC_ADC1_IS_CLK_ENABLED"]
+    variants[name] = data
 for name, data in variants.items():
     result = out / (name + "-result.json")
     result.unlink(missing_ok=True)

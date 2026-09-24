@@ -16,11 +16,23 @@ def select_contracts(path, names, manifest):
     selected = {}
     for name in names:
         spec = registry["contracts"][name]
-        if set(spec) - {"functions", "fields", "enums", "source_reviews", "type_context"} or not spec.get("functions"):
+        if set(spec) - {"functions", "fields", "enums", "source_reviews", "type_context", "macros"} or not (spec.get("functions") or spec.get("macros")):
             raise ValueError("Invalid contract: " + name)
-        if spec.get("type_context") not in spec["functions"]:
+        if spec.get("functions") and spec.get("type_context") not in spec["functions"]:
             raise ValueError("Invalid type context: " + name)
-        for symbol, function in spec["functions"].items():
+        if not spec.get("functions") and any(key in spec for key in ("fields", "enums", "type_context")):
+            raise ValueError("Type checks require function context: " + name)
+        if "macros" in spec:
+            macros = spec["macros"]
+            if (not isinstance(macros, dict) or set(macros) != {"context", "expressions"}
+                    or not isinstance(macros["context"], str)
+                    or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", macros["context"])
+                    or not isinstance(macros["expressions"], list) or not macros["expressions"]
+                    or any(not isinstance(e, str) or not re.fullmatch(
+                        r"[A-Za-z_][A-Za-z0-9_]*(?:\([A-Za-z0-9_&, *]*\))?", e)
+                        for e in macros["expressions"])):
+                raise ValueError("Invalid macro contract: " + name)
+        for symbol, function in spec.get("functions", {}).items():
             if set(function) != {"returns", "arguments"} or not isinstance(function["arguments"], list):
                 raise ValueError("Invalid function contract: " + symbol)
             args = function["arguments"]
@@ -38,7 +50,7 @@ def select_contracts(path, names, manifest):
 
 def inspect_contracts(api, selected):
     report = dict(schema=1, status="PASS", checks=[], errors=[],
-                  scope="ELF types and reviewed-source hashes; no runtime semantics")
+                  scope="ELF types, macro presence/expansion and reviewed-source hashes; no runtime semantics")
 
     def check(name, actual, expected):
         passed = actual == expected
@@ -57,7 +69,7 @@ def inspect_contracts(api, selected):
     for name, spec in selected["contracts"].items():
         try:
             context = None
-            for symbol, expected in spec["functions"].items():
+            for symbol, expected in spec.get("functions", {}).items():
                 sym = api.lookup_global_symbol(symbol)
                 if sym is None or not sym.is_function:
                     raise ValueError("Function absent from ELF: " + symbol)
@@ -86,6 +98,26 @@ def inspect_contracts(api, selected):
                 fields = {f.name: f.enumval for f in ctype(typename, context).fields()}
                 for field, value in expected.items():
                     check(name + ": " + typename + "." + field, fields.get(field), value)
+            if "macros" in spec:
+                macros = spec["macros"]
+                sym = api.lookup_global_symbol(macros["context"])
+                if sym is None or not sym.is_function:
+                    raise ValueError("Macro context absent from ELF: " + macros["context"])
+                address = int(sym.value().address)
+                # Separate offline GDB has no frame. Select source context explicitly.
+                api.execute(f"list *0x{address:x}", to_string=True)
+                for expression in macros["expressions"]:
+                    identifier = expression.split("(", 1)[0]
+                    definition = api.execute("info macro " + identifier, to_string=True)
+                    check(name + ": defined " + identifier,
+                          bool(re.search(r"^#define " + re.escape(identifier) + r"(?:\(|\s|$)", definition, re.M)), True)
+                    expansion = api.execute("macro expand " + expression, to_string=True).strip()
+                    prefix = "expands to: "
+                    if not expansion.startswith(prefix) or expansion[len(prefix):] == expression:
+                        raise ValueError("Macro did not expand: " + expression)
+                    report.setdefault("macros", []).append(dict(contract=name,
+                        context=macros["context"], expression=expression,
+                        expansion=expansion[len(prefix):]))
         except Exception as exc:
             report["errors"].append(dict(contract=name, error=str(exc)))
     if report["errors"]:

@@ -34,7 +34,11 @@ H503 остаётся отложенным до сообщения владел�
 - [x] Проверить новую политику/Flash на F103/J-Link: 24/24, strict boot PASS; DEV_ID совпал, Flash128K при профиле64K предупреждает.
 - [x] Проверить новую политику/Flash на F411: OpenOCD и ST server strict 24/24, DEV_ID0x431/Flash512K совпадают; live Sleep PASS.
 - [x] Подтвердить HAL function-like макросы через GDB на F411, сохранить отдельный опыт.
-- [ ] Перевести clock-enable проверки на HAL-предикаты, заменить численные mask/shift на CMSIS там, где уместно; добавить macro preflight с явным исходным контекстом.
+- [x] Перевести GPIO clock и поля RCC/GPIO на HAL/CMSIS, добавить ADC1/TIM2/DMA clock predicates, TIM2 GET_AUTORELOAD и macro preflight с контекстом.
+- [ ] После согласованной смены платы проверить обновлённые macro-сценарии на F401CC аппаратно.
+- [ ] Расширять применение макросов ADC/RTC/IRQ с учётом побочных эффектов и независимых ожиданий по RM.
+- [x] Описать HAL_MACRO_GUIDE и предложения имени/границ модуля в MODULE_EXTRACTION.
+- [ ] Согласовать имя и проверить реестры перед публикацией; текущие imports/CLI пока сохранять.
 
 - [x] По запросу владельца проверить f401cc «как есть» с отдельным identity override: три init PASS, boot/clock timeout, найдены дубли setup/loop.
 - [x] Удалить дубли setup/loop в USER CODE f401cc: 22/22 HW PASS, два host CTest PASS; ADC channel16 даёт правдоподобную температуру, live Sleep PASS.

@@ -22,12 +22,12 @@ def adc_dma_init(t):
                            "Init.MemDataAlignment": "DMA_MDATAALIGN_HALFWORD"})
 
 
-@case("HW_TIM2_INIT", labels=("tim", "init"))
+@case("HW_TIM2_INIT", labels=("tim", "init"), contracts=("tim_init_macros",))
 def tim2_init(t):
     t.reach("setup")
     t.check("TIM2 prescaler", t.value("TIM2->PSC"), 7999)
-    t.check("TIM2 period", t.value("TIM2->ARR"), 99)
-    t.check("TIM2 not started", t.value("TIM2->CR1") & 1, 0)
+    t.check("TIM2 period", t.value("__HAL_TIM_GET_AUTORELOAD(&htim2)"), 99)
+    t.check("TIM2 not started", t.value("TIM2->CR1 & TIM_CR1_CEN"), 0)
 
 
 @case("HW_RTC_INIT", labels=("rtc", "init"))

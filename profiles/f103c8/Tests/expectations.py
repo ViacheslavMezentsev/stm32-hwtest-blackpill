@@ -1,17 +1,25 @@
-"""Explicit MCU expectations; never inferred from the tested firmware."""
-EXPECTED = {'clock': [('HSI', 'RCC->CFGR', 2, 3, 0),
-           ('AHB', 'RCC->CFGR', 4, 15, 0),
-           ('APB1', 'RCC->CFGR', 8, 7, 0),
-           ('APB2', 'RCC->CFGR', 11, 7, 0)],
- 'gpio': [('GPIOB clock', 'RCC->APB2ENR', 3, 1, 1),
-          ('PB2 output 2 MHz', 'GPIOB->CRL', 8, 15, 2),
-          ('PB2 initial', 'GPIOB->ODR', 2, 1, 1)],
+"""Profile expressions; numeric expected encodings remain independent of HAL."""
+EXPECTED = {'clock': [('HSI', '(RCC->CFGR & RCC_CFGR_SWS_Msk) >> RCC_CFGR_SWS_Pos', 0),
+           ('AHB', '(RCC->CFGR & RCC_CFGR_HPRE_Msk) >> RCC_CFGR_HPRE_Pos', 0),
+           ('APB1', '(RCC->CFGR & RCC_CFGR_PPRE1_Msk) >> RCC_CFGR_PPRE1_Pos', 0),
+           ('APB2', '(RCC->CFGR & RCC_CFGR_PPRE2_Msk) >> RCC_CFGR_PPRE2_Pos', 0),
+           ('ADC1 clock', '__HAL_RCC_ADC1_IS_CLK_ENABLED()', 1),
+           ('TIM2 clock', '__HAL_RCC_TIM2_IS_CLK_ENABLED()', 1),
+           ('DMA1 clock', '__HAL_RCC_DMA1_IS_CLK_ENABLED()', 1)],
+ 'gpio': [('GPIOB clock', '__HAL_RCC_GPIOB_IS_CLK_ENABLED()', 1),
+          ('PB2 output 2 MHz',
+           '(GPIOB->CRL & (GPIO_CRL_MODE2_Msk | GPIO_CRL_CNF2_Msk)) >> GPIO_CRL_MODE2_Pos',
+           2),
+          ('PB2 initial', '(GPIOB->ODR & GPIO_ODR_ODR2_Msk) >> GPIO_ODR_ODR2_Pos', 1)],
  'led_initial': 1,
  'gpio_mode_expression': '(GPIOB->CRL >> 8) & 15',
  'gpio_mode': 2,
  'dma_remaining': 'DMA1_Channel1->CNDTR',
- 'measurement_quality': 1}
-
-EXPECTED["adc_vectors"] = [(1716, 1440, 3412, 25000), (2145, 1800, 2730, 25000), (1974, 1440, 3412, -25000), (1329, 1440, 3412, 100000)]
-
-EXPECTED.update(led_port="GPIOB", led_pin="GPIO_PIN_2", led_level="(GPIOB->ODR >> 2) & 1")
+ 'measurement_quality': 1,
+ 'adc_vectors': [(1716, 1440, 3412, 25000),
+                 (2145, 1800, 2730, 25000),
+                 (1974, 1440, 3412, -25000),
+                 (1329, 1440, 3412, 100000)],
+ 'led_port': 'GPIOB',
+ 'led_pin': 'GPIO_PIN_2',
+ 'led_level': '(GPIOB->ODR >> 2) & 1'}

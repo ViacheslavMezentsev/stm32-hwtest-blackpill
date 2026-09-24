@@ -194,3 +194,6 @@ DEV_ID по умолчанию выводится предупреждение �
 Строгий режим, проверка размера Flash и команды: [TARGET_IDENTITY](docs/TARGET_IDENTITY.md).
 F401CC на текущей плате: 24/24 CTest через OpenOCD и ST GDB Server; отдельный
 экспериментальный скрипт больше не требуется.
+
+Для авторов сценариев: [применение HAL-макросов](docs/HAL_MACRO_GUIDE.md).
+План самостоятельного модуля и предложения имени: [MODULE_EXTRACTION](docs/MODULE_EXTRACTION.md).

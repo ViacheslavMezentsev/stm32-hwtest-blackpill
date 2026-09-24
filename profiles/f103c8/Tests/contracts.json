@@ -192,6 +192,46 @@
         }
       },
       "type_context": "HAL_GPIO_TogglePin"
+    },
+    "clock_macros": {
+      "macros": {
+        "context": "loop",
+        "expressions": [
+          "RCC_CFGR_SWS_Msk",
+          "RCC_CFGR_SWS_Pos",
+          "RCC_CFGR_HPRE_Msk",
+          "RCC_CFGR_HPRE_Pos",
+          "RCC_CFGR_PPRE1_Msk",
+          "RCC_CFGR_PPRE1_Pos",
+          "RCC_CFGR_PPRE2_Msk",
+          "RCC_CFGR_PPRE2_Pos",
+          "__HAL_RCC_ADC1_IS_CLK_ENABLED()",
+          "__HAL_RCC_TIM2_IS_CLK_ENABLED()",
+          "__HAL_RCC_DMA1_IS_CLK_ENABLED()"
+        ]
+      }
+    },
+    "gpio_macros": {
+      "macros": {
+        "context": "loop",
+        "expressions": [
+          "__HAL_RCC_GPIOB_IS_CLK_ENABLED()",
+          "GPIO_CRL_MODE2_Msk",
+          "GPIO_CRL_CNF2_Msk",
+          "GPIO_CRL_MODE2_Pos",
+          "GPIO_ODR_ODR2_Msk",
+          "GPIO_ODR_ODR2_Pos"
+        ]
+      }
+    },
+    "tim_init_macros": {
+      "macros": {
+        "context": "setup",
+        "expressions": [
+          "__HAL_TIM_GET_AUTORELOAD(&htim2)",
+          "TIM_CR1_CEN"
+        ]
+      }
     }
   }
 }

@@ -40,6 +40,19 @@ class ContractTests(unittest.TestCase):
     def test_unrequested_contracts_do_not_require_registry(self):
         self.assertEqual(select_contracts(self.directory / "absent", [], None)["contracts"], {})
 
+    def test_macro_contract_rejects_commands_and_invalid_schema(self):
+        path = self.directory / "macros.json"
+        for macros in ({"context": "loop\nquit", "expressions": ["GPIO_PIN_2"]},
+                       {"context": "loop", "expressions": ["GPIO_PIN_2\nquit"]},
+                       {"context": "loop", "expressions": []},
+                       {"context": "loop", "expressions": "GPIO_PIN_2"},
+                       {"context": "loop", "expressions": ["MACRO();quit"]}):
+            path.write_text(json.dumps(dict(schema=1, contracts={"m": {"macros": macros}})))
+            with self.subTest(macros=macros), self.assertRaisesRegex(ValueError, "macro contract"):
+                select_contracts(path, ["m"], None)
+        selected = select_contracts(self.registry, ["clock_macros"], None)
+        self.assertEqual(selected["contracts"]["clock_macros"]["macros"]["context"], "loop")
+
     def test_bad_preflight_stops_before_debug_server(self):
         elf = self.directory / "firmware.elf"
         elf.write_bytes(b"fixture")

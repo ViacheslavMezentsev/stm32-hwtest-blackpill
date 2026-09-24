@@ -8,12 +8,12 @@ def boot(t):
     scenarios.boot(t, EXPECTED)
 
 
-@case("HW_CLOCK", labels=("rcc",))
+@case("HW_CLOCK", labels=("rcc",), contracts=("clock_macros",))
 def clock(t):
     scenarios.clock(t, EXPECTED)
 
 
-@case("HW_GPIO", labels=("gpio",))
+@case("HW_GPIO", labels=("gpio",), contracts=("gpio_macros",))
 def gpio(t):
     scenarios.gpio(t, EXPECTED)
 

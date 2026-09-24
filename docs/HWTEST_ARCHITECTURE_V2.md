@@ -300,5 +300,14 @@ DEV_ID совпадает (0x410), ёмкость128 KiB против профи
 
 F411CE/ST-Link также проверен с новой identity/Flash политикой: OpenOCD/ST server
 strict24/24 PASS. Эксперимент function-like HAL macros подтверждён отдельным
-сценарием; включение macro contracts в offline preflight остаётся планом.
+сценарием; macro contracts теперь включены в offline preflight (описание ниже).
 [Методика](STM32_TESTING_METHODS.md#hal-макросы-в-gdb-проверка-на-f411ce).
+
+## Макросы HAL/CMSIS и подготовка отделения
+
+Macro preflight теперь реализован в общем contracts schema1: явный context,
+info macro и macro expand в отдельном offline GDB, без вычисления выражения.
+GPIO clock/поля RCC и GPIO/TIM2 ARR обновлены в трёх профилях; аппаратные значения
+проверяются сценариями, а preflight подтверждает только наличие/раскрытие.
+[Руководство](HAL_MACRO_GUIDE.md), [границы и кандидаты имени модуля](MODULE_EXTRACTION.md).
+Новый публичный namespace ещё не выбран, текущие импорты hwtest сохранены.

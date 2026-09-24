@@ -6,14 +6,14 @@ def boot(t, expected):
 def clock(t, expected):
     t.reach("loop")
     t.check("SystemCoreClock", t.value("SystemCoreClock"), 8000000)
-    for name, expression, shift, mask, value in expected["clock"]:
-        t.check(name, (t.value(expression) >> shift) & mask, value)
+    for name, expression, value in expected["clock"]:
+        t.check(name, t.value(expression), value)
 
 
 def gpio(t, expected):
     t.reach("loop")
-    for name, expression, shift, mask, value in expected["gpio"]:
-        t.check(name, (t.value(expression) >> shift) & mask, value)
+    for name, expression, value in expected["gpio"]:
+        t.check(name, t.value(expression), value)
 
 
 def blink(t, expected):

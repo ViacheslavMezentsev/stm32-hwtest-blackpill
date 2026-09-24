@@ -9,9 +9,8 @@ def rcc_osc_null(t):
 ```
 
 AST-сборщик читает имена без импорта тестового кода. Определения находятся в
-`profiles/<MCU>/Tests/contracts.json`, schema 1. Сейчас заполнены F103 и F411:
-два GPIO-сценария, RCC force-return, два RCC NULL, ADC start-error и подавление
-ADC callback. Другие сценарии явно имеют `contracts.status=NOT_REQUESTED`.
+`profiles/<MCU>/Tests/contracts.json`, schema 1. Заполнены F103C8/F401CC/F411CE: семь прежних
+сценариев функций/типов плюс HW_CLOCK, HW_GPIO, HW_TIM2_INIT с макросами. Другие сценарии явно имеют `contracts.status=NOT_REQUESTED`.
 Это статус метаданных, не новый результат теста: протокол остаётся PASS/FAIL/ERROR.
 
 ## Порядок и разделение ответственности
@@ -22,7 +21,8 @@ ADC callback. Другие сценарии явно имеют `contracts.statu
 3. Сохраняет выбранные декларации, SHA-256 реестра и `contract-request.json`.
 4. Запускает отдельный batch GDB с этим ELF, отключённым auto-load, без сервера
    и без target connect. Внешний timeout — 15 секунд. Проверки используют только
-   Symbol/Type/Block, не parse_and_eval, inferior calls или запись памяти.
+   Symbol/Type/Block и list/info macro/macro expand, не parse_and_eval, inferior calls
+   или запись памяти.
 5. Принимает `contract-result.json` только при PASS, коде выхода 0 и совпавшем ELF SHA.
    Ошибка, отсутствие результата или timeout останавливают запуск до GDB-сервера.
 6. После успешного preflight выполняет обычный аппаратный сценарий с прежними
@@ -104,3 +104,12 @@ Cube F4 V1.28.3 содержит HAL 1.8.5, CMSIS Device 2.6.11 и Core 5.6.
 NULL-пути повторно изучены в исходнике F4: возврат HAL_ERROR до разыменования/assert.
 F411 contracts.json содержит собственный reviewed-source hash. Сигнатуры остальных
 пяти контрактов совпали; это проверено по ELF, а не выведено из сходства имён HAL.
+
+## Макросы (расширение schema 1)
+
+Контракт может содержать macros с context и expressions без секции functions.
+Для type/field/enum контрактов контекст функции остаётся обязательным. Пример,
+ограничения грамматики, семантика context и правила проверки:
+[HAL_MACRO_GUIDE](HAL_MACRO_GUIDE.md). Раскрытия сохраняются в contracts.macros
+рядом с checks; preflight не доказывает runtime значение или чистоту выражения.
+Регрессия реального GDB: 11 отрицательных вариантов, в том числе четыре macro-варианта.

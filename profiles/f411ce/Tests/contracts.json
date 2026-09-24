@@ -192,6 +192,51 @@
         }
       },
       "type_context": "HAL_GPIO_TogglePin"
+    },
+    "clock_macros": {
+      "macros": {
+        "context": "loop",
+        "expressions": [
+          "RCC_CFGR_SWS_Msk",
+          "RCC_CFGR_SWS_Pos",
+          "RCC_CFGR_HPRE_Msk",
+          "RCC_CFGR_HPRE_Pos",
+          "RCC_CFGR_PPRE1_Msk",
+          "RCC_CFGR_PPRE1_Pos",
+          "RCC_CFGR_PPRE2_Msk",
+          "RCC_CFGR_PPRE2_Pos",
+          "__HAL_RCC_ADC1_IS_CLK_ENABLED()",
+          "__HAL_RCC_TIM2_IS_CLK_ENABLED()",
+          "__HAL_RCC_DMA2_IS_CLK_ENABLED()"
+        ]
+      }
+    },
+    "gpio_macros": {
+      "macros": {
+        "context": "loop",
+        "expressions": [
+          "__HAL_RCC_GPIOC_IS_CLK_ENABLED()",
+          "GPIO_MODER_MODER13_Msk",
+          "GPIO_MODER_MODER13_Pos",
+          "GPIO_OTYPER_OT13_Msk",
+          "GPIO_OTYPER_OT13_Pos",
+          "GPIO_PUPDR_PUPD13_Msk",
+          "GPIO_PUPDR_PUPD13_Pos",
+          "GPIO_OSPEEDR_OSPEED13_Msk",
+          "GPIO_OSPEEDR_OSPEED13_Pos",
+          "GPIO_ODR_OD13_Msk",
+          "GPIO_ODR_OD13_Pos"
+        ]
+      }
+    },
+    "tim_init_macros": {
+      "macros": {
+        "context": "setup",
+        "expressions": [
+          "__HAL_TIM_GET_AUTORELOAD(&htim2)",
+          "TIM_CR1_CEN"
+        ]
+      }
     }
   }
 }

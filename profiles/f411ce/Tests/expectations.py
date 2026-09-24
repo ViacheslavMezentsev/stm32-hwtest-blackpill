@@ -1,20 +1,26 @@
-"""Explicit MCU expectations; never inferred from the tested firmware."""
-EXPECTED = {'clock': [('HSI', 'RCC->CFGR', 2, 3, 0),
-           ('AHB', 'RCC->CFGR', 4, 15, 8),
-           ('APB1', 'RCC->CFGR', 10, 7, 0),
-           ('APB2', 'RCC->CFGR', 13, 7, 5)],
- 'gpio': [('GPIOC clock', 'RCC->AHB1ENR', 2, 1, 1),
-          ('PC13 output', 'GPIOC->MODER', 26, 3, 1),
-          ('PC13 push-pull', 'GPIOC->OTYPER', 13, 1, 0),
-          ('PC13 no pull', 'GPIOC->PUPDR', 26, 3, 0),
-          ('PC13 low speed', 'GPIOC->OSPEEDR', 26, 3, 0),
-          ('PC13 initial', 'GPIOC->ODR', 13, 1, 0)],
+"""Profile expressions; numeric expected encodings remain independent of HAL."""
+EXPECTED = {'clock': [('HSI', '(RCC->CFGR & RCC_CFGR_SWS_Msk) >> RCC_CFGR_SWS_Pos', 0),
+           ('AHB', '(RCC->CFGR & RCC_CFGR_HPRE_Msk) >> RCC_CFGR_HPRE_Pos', 8),
+           ('APB1', '(RCC->CFGR & RCC_CFGR_PPRE1_Msk) >> RCC_CFGR_PPRE1_Pos', 0),
+           ('APB2', '(RCC->CFGR & RCC_CFGR_PPRE2_Msk) >> RCC_CFGR_PPRE2_Pos', 5),
+           ('ADC1 clock', '__HAL_RCC_ADC1_IS_CLK_ENABLED()', 1),
+           ('TIM2 clock', '__HAL_RCC_TIM2_IS_CLK_ENABLED()', 1),
+           ('DMA2 clock', '__HAL_RCC_DMA2_IS_CLK_ENABLED()', 1)],
+ 'gpio': [('GPIOC clock', '__HAL_RCC_GPIOC_IS_CLK_ENABLED()', 1),
+          ('PC13 output', '(GPIOC->MODER & GPIO_MODER_MODER13_Msk) >> GPIO_MODER_MODER13_Pos', 1),
+          ('PC13 push-pull', '(GPIOC->OTYPER & GPIO_OTYPER_OT13_Msk) >> GPIO_OTYPER_OT13_Pos', 0),
+          ('PC13 no pull', '(GPIOC->PUPDR & GPIO_PUPDR_PUPD13_Msk) >> GPIO_PUPDR_PUPD13_Pos', 0),
+          ('PC13 low speed',
+           '(GPIOC->OSPEEDR & GPIO_OSPEEDR_OSPEED13_Msk) >> GPIO_OSPEEDR_OSPEED13_Pos',
+           0),
+          ('PC13 initial', '(GPIOC->ODR & GPIO_ODR_OD13_Msk) >> GPIO_ODR_OD13_Pos', 0)],
  'led_initial': 0,
  'gpio_mode_expression': '(GPIOC->MODER >> 26) & 3',
  'gpio_mode': 1,
  'dma_remaining': 'DMA2_Stream0->NDTR',
- 'measurement_quality': 2}
-
-EXPECTED["adc_vectors"] = [('*(unsigned short *)0x1FFF7A2C', '*(unsigned short *)0x1FFF7A2A', 3300, 30000), ('*(unsigned short *)0x1FFF7A2E', '*(unsigned short *)0x1FFF7A2A', 3300, 110000)]
-
-EXPECTED.update(led_port="GPIOC", led_pin="GPIO_PIN_13", led_level="(GPIOC->ODR >> 13) & 1")
+ 'measurement_quality': 2,
+ 'adc_vectors': [('*(unsigned short *)0x1FFF7A2C', '*(unsigned short *)0x1FFF7A2A', 3300, 30000),
+                 ('*(unsigned short *)0x1FFF7A2E', '*(unsigned short *)0x1FFF7A2A', 3300, 110000)],
+ 'led_port': 'GPIOC',
+ 'led_pin': 'GPIO_PIN_13',
+ 'led_level': '(GPIOC->ODR >> 13) & 1'}
