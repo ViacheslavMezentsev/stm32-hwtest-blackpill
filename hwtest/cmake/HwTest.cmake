@@ -2,7 +2,7 @@ include_guard(GLOBAL)
 
 function(hwtest_register id timeout labels)
     add_test(NAME hw.${id}
-        COMMAND "${Python3_EXECUTABLE}" "${HWTEST_ROOT}/hwtest/cli.py" run
+        COMMAND "${Python3_EXECUTABLE}" "${HWTEST_MODULE_ROOT}/hwtest/cli.py" run
             --session "${HWTEST_SESSION}" --test "${id}")
     # GDB deadline plus preparation, server startup, recovery and process cleanup.
     math(EXPR outer_timeout "${timeout} + 90")
@@ -11,11 +11,15 @@ function(hwtest_register id timeout labels)
 endfunction()
 
 function(hwtest_attach target)
-    cmake_parse_arguments(HW "" "PROFILE_DIR" "" ${ARGN})
+    cmake_parse_arguments(HW "SELF_TESTS" "PROFILE_DIR" "MANIFEST_INPUTS" ${ARGN})
+    if(HW_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "Unknown hwtest_attach arguments: ${HW_UNPARSED_ARGUMENTS}")
+    endif()
     if(NOT HW_PROFILE_DIR OR NOT EXISTS "${HW_PROFILE_DIR}/target.toml")
         message(FATAL_ERROR "hwtest_attach requires PROFILE_DIR with target.toml")
     endif()
     find_package(Python3 3.11 COMPONENTS Interpreter REQUIRED)
+    get_filename_component(HWTEST_MODULE_ROOT "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../.." ABSOLUTE)
     set(HWTEST_ROOT "${PROJECT_SOURCE_DIR}")
     set(HWTEST_TESTS "${HW_PROFILE_DIR}/Tests/board")
     set(HWTEST_PROFILE "${HW_PROFILE_DIR}/target.toml")
@@ -25,22 +29,26 @@ function(hwtest_attach target)
     endif()
     set_property(TARGET ${target} PROPERTY EXPORT_COMPILE_COMMANDS ON)
     set(HWTEST_MANIFEST "${CMAKE_BINARY_DIR}/hwtest/build-manifest.json")
-    set(manifest_script "${HWTEST_ROOT}/hwtest/build_manifest.py")
+    set(manifest_script "${HWTEST_MODULE_ROOT}/hwtest/build_manifest.py")
     file(GLOB manifest_ioc "${HW_PROFILE_DIR}/*.ioc")
+    set(manifest_inputs ${HW_MANIFEST_INPUTS})
+    if(EXISTS "${HWTEST_ROOT}/stm32_config.yml")
+        list(APPEND manifest_inputs "${HWTEST_ROOT}/stm32_config.yml")
+    endif()
+    set(manifest_input_args)
+    foreach(input IN LISTS manifest_inputs)
+        list(APPEND manifest_input_args --input "${input}")
+    endforeach()
     set_property(TARGET ${target} APPEND PROPERTY LINK_DEPENDS
-        "${manifest_script}" "${HWTEST_PROFILE}" "${HWTEST_ROOT}/stm32_config.yml" ${manifest_ioc})
+        "${manifest_script}" "${HWTEST_PROFILE}" ${manifest_inputs} ${manifest_ioc})
     add_custom_command(TARGET ${target} POST_BUILD
         COMMAND "${Python3_EXECUTABLE}" -B "${manifest_script}"
             --root "${HWTEST_ROOT}" --build "${CMAKE_BINARY_DIR}"
             --elf "$<TARGET_FILE:${target}>" --profile "${HWTEST_PROFILE}"
             --out "${HWTEST_MANIFEST}" --ninja "${CMAKE_MAKE_PROGRAM}"
+            --target "${target}" ${manifest_input_args}
         BYPRODUCTS "${HWTEST_MANIFEST}" VERBATIM)
-    if(STM32_YML_PROFILE MATCHES "^f4")
-        set(stand_name blackpill)
-    else()
-        set(stand_name bluepill)
-    endif()
-    set(HWTEST_STAND "${HWTEST_ROOT}/Tests/stands/${stand_name}.local.toml" CACHE FILEPATH "Local stand TOML")
+    set(HWTEST_STAND "" CACHE FILEPATH "Local stand TOML; select explicitly before HW runs")
     get_filename_component(compiler_bin "${CMAKE_C_COMPILER}" DIRECTORY)
     find_program(HWTEST_GDB NAMES arm-none-eabi-gdb-py3 arm-none-eabi-gdb
         HINTS "${compiler_bin}" REQUIRED)
@@ -68,8 +76,8 @@ function(hwtest_attach target)
         string(JSON session SET "${session}" "${key}" "\"${value}\"")
     endforeach()
     file(GENERATE OUTPUT "${HWTEST_SESSION}" CONTENT "${session}\n")
-    execute_process(COMMAND "${Python3_EXECUTABLE}" "${HWTEST_ROOT}/hwtest/cli.py" collect
-        --tests "${HWTEST_TESTS}" --cmake "${CMAKE_BINARY_DIR}/hwtest/tests.cmake"
+    execute_process(COMMAND "${Python3_EXECUTABLE}" "${HWTEST_MODULE_ROOT}/hwtest/cli.py" collect
+        --tests "${HWTEST_TESTS}" --workspace "${HWTEST_ROOT}" --cmake "${CMAKE_BINARY_DIR}/hwtest/tests.cmake"
         RESULT_VARIABLE rc)
     if(NOT rc EQUAL 0)
         message(FATAL_ERROR "Hardware test collection failed")
@@ -77,13 +85,17 @@ function(hwtest_attach target)
     include("${CMAKE_BINARY_DIR}/hwtest/tests.cmake")
     file(GLOB test_sources CONFIGURE_DEPENDS "${HWTEST_TESTS}/test_*.py")
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${test_sources}
-        "${HWTEST_ROOT}/hwtest/collect.py")
-    add_test(NAME host.traceability COMMAND "${Python3_EXECUTABLE}" "${HWTEST_ROOT}/hwtest/cli.py"
+        "${HWTEST_MODULE_ROOT}/hwtest/collect.py")
+    add_test(NAME host.traceability COMMAND "${Python3_EXECUTABLE}" "${HWTEST_MODULE_ROOT}/hwtest/cli.py"
         trace --tests "${HWTEST_TESTS}" --requirements "${HW_PROFILE_DIR}/Tests/requirements.md")
-    add_test(NAME host.hwtest COMMAND "${Python3_EXECUTABLE}" -B -m unittest discover
-        -s "${HWTEST_ROOT}/Tests/host" -v)
-    set_tests_properties(host.traceability host.hwtest PROPERTIES LABELS host TIMEOUT 30
+    set_tests_properties(host.traceability PROPERTIES LABELS host TIMEOUT 30
         WORKING_DIRECTORY "${HWTEST_ROOT}" ENVIRONMENT "PYTHONDONTWRITEBYTECODE=1")
+    if(HW_SELF_TESTS)
+        add_test(NAME host.hwtest COMMAND "${Python3_EXECUTABLE}" -B -m unittest discover
+            -s "${HWTEST_MODULE_ROOT}/Tests/host" -v)
+        set_tests_properties(host.hwtest PROPERTIES LABELS host TIMEOUT 30
+            WORKING_DIRECTORY "${HWTEST_MODULE_ROOT}" ENVIRONMENT "PYTHONDONTWRITEBYTECODE=1")
+    endif()
     add_custom_target(check-hw
         COMMAND "${CMAKE_CTEST_COMMAND}" --test-dir "${CMAKE_BINARY_DIR}" --output-on-failure
             --output-junit "${CMAKE_BINARY_DIR}/hwtest/ctest-junit.xml"

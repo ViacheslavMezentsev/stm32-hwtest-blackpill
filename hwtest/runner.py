@@ -23,17 +23,18 @@ from hwtest.contracts import select_contracts
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def local_directory(path):
+def local_directory(path, root=ROOT):
     path = Path(path).resolve()
-    if not path.is_relative_to(ROOT):
-        raise ValueError("Output directories must remain inside this repository")
+    if not path.is_relative_to(Path(root).resolve()):
+        raise ValueError("Output directories must remain inside the selected project root")
     path.mkdir(parents=True, exist_ok=True)
     return path
 
 
 def run(session, test, stand_path=None, timeout=None, identity_policy=None):
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")
-    out = local_directory(Path(session["out"]) / f"{stamp}-{test['id']}-{os.getpid()}")
+    project_root = Path(session.get("root", ROOT)).resolve()
+    out = local_directory(Path(session["out"]) / f"{stamp}-{test['id']}-{os.getpid()}", project_root)
     started = time.monotonic()
     report = {"id": test["id"], "status": "ERROR", "checks": [], "started_utc": stamp}
     try:
@@ -54,7 +55,7 @@ def run(session, test, stand_path=None, timeout=None, identity_policy=None):
         report["backend"] = stand["backend"]
         profile = load_profile(session["profile"])
         report["profile"] = profile
-        with probe_lock(ROOT, stand["serial"]):
+        with probe_lock(project_root, stand["serial"]):
             execute(session, test, stand, out, report, limit, profile)
     except BaseException:
         report.update(status="ERROR", error=traceback.format_exc())
@@ -78,7 +79,8 @@ def execute(session, test, stand, out, report, timeout, profile):
     server = client = None
     ready = False
     env = os.environ.copy()
-    temp = local_directory(ROOT / "build/hwtest-tmp")
+    project_root = Path(session.get("root", ROOT)).resolve()
+    temp = local_directory(project_root / "build/hwtest-tmp", project_root)
     env.update(TEMP=str(temp), TMP=str(temp), PYTHONDONTWRITEBYTECODE="1")
     # The embedded Python must not inherit another Python installation's runtime path.
     env.pop("PYTHONHOME", None)
@@ -133,7 +135,7 @@ def execute(session, test, stand, out, report, timeout, profile):
         report["backend_commands"] = dict(reset_halt=backend["reset_halt"], finish=backend["finish"],
                                           setup=backend.get("setup", []))
         run_data = dict(test=test, elf=str(elf), image=str(image), result=str(agent_result),
-                        identity_policy=session.get("identity_policy", "warn"),
+                        identity_policy=session.get("identity_policy", "warn"), root=str(project_root),
                         endpoint=endpoint, flash=stand["flash"], profile=profile,
                         reset_halt=backend["reset_halt"], finish=backend["finish"],
                         setup=backend.get("setup", []))
@@ -154,7 +156,7 @@ def execute(session, test, stand, out, report, timeout, profile):
             if not ready:
                 raise TimeoutError("GDB server startup timed out")
             client = subprocess.Popen(gdb_base + [str(elf), "-x", str(ROOT / "hwtest/agent.py")],
-                                      env=env, cwd=ROOT, stdout=gdb_log, stderr=subprocess.STDOUT,
+                                      env=env, cwd=project_root, stdout=gdb_log, stderr=subprocess.STDOUT,
                                       creationflags=FLAGS)
             returncode = client.wait(timeout=timeout)
         if not agent_result.exists():

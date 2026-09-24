@@ -15,7 +15,7 @@
 3. **F103 + ST-Link**: после согласованной смены проводки повторить новые manifest/HAL
    механизмы через OpenOCD/ST server. Старые результаты этого не доказывают.
 4. До смены проводки можно продолжать выделение модуля и расширение контрактов на
-   действующих F411/ST-Link и F103/J-Link. Проверить отдельный проект-потребитель.
+   действующих F411/ST-Link и F103/J-Link. Build/offline отдельного потребителя проверены; следующий шаг — HW lifecycle.
 5. Stop/watchpoints/наблюдение без halt планировать отдельными наборами.
 
 | Плата | ST-Link / OpenOCD | ST-Link / ST server | J-Link / J-Link server |
@@ -121,3 +121,13 @@ H503 остаётся отложенным до сообщения владел�
 - [x] Изучить launch/tasks соседнего 03-blink; адаптировать идеи без подавления ошибок и общей временной команды.
 - [x] J-Link GDB Server V8.32: 24/24 BluePill, Flash/verify-only/timeout/recovery, отдельное чтение Commander после выхода.
 - [ ] Обобщить непрерывное наблюдение OpenOCD/Commander с явными ограничениями чтения MMIO; отдельно исследовать watchpoints/RTT/SWV.
+
+## Подготовка stm32-gdbtest
+
+- [x] Согласовать рабочее имя stm32-gdbtest.
+- [x] Разделить корни модуля/потребителя; исключить обязательный YAML и Tests основного проекта.
+- [x] Собрать examples/minimal-consumer; проверить manifest/imports/output isolation и offline macro contracts.
+- [ ] Проверить потребителя на F411CE + ST-Link/OpenOCD, восстановить основную прошивку и smoke checks.
+- [ ] Проверить перенос checkout и отсутствие записей в dependency при HW/recovery.
+- [ ] Решить межпроектную блокировку отладчика; закрепить публичные API и namespace.
+- [ ] Отделить модуль, проверить имя перед публикацией; см. docs/MODULE_EXTRACTION.md.

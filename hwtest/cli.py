@@ -17,6 +17,7 @@ def main():
     gather = subs.add_parser("collect")
     gather.add_argument("--tests", type=Path, required=True)
     gather.add_argument("--cmake", type=Path)
+    gather.add_argument("--workspace", type=Path, default=ROOT)
     check = subs.add_parser("trace")
     check.add_argument("--tests", type=Path, required=True)
     check.add_argument("--requirements", type=Path, required=True)
@@ -31,7 +32,7 @@ def main():
         tests = collect(args.tests)
         if args.cmake:
             from hwtest.runner import local_directory
-            local_directory(args.cmake.resolve().parent)
+            local_directory(args.cmake.resolve().parent, args.workspace)
             args.cmake.write_text("\n".join(
                 f"hwtest_register({t['id']} {t['timeout_s']} \"{';'.join(t['labels'])}\")"
                 for t in tests) + "\n", encoding="utf-8")

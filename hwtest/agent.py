@@ -19,6 +19,7 @@ from hwtest.identity import check_target
 
 def main():
     session = json.loads(Path(os.environ["HWTEST_RUN"]).read_text(encoding="utf-8"))
+    sys.path.insert(1, str(Path(session.get("root", ROOT)).resolve()))
     profile = session["profile"]
     report = {"id": session["test"]["id"], "status": "ERROR", "checks": [],
               "gdb_version": gdb.VERSION, "python_version": sys.version.split()[0],

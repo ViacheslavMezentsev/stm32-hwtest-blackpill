@@ -17,6 +17,10 @@
 > Flash: [TARGET_IDENTITY](TARGET_IDENTITY.md). Второй экземпляр с DEV_ID0x423 также прошёл OpenOCD 24/24;
 > ST server/strict после переподключения USB тоже 24/24 PASS, live Sleep PASS.
 
+> Подготовка выделения **stm32-gdbtest**: [MODULE_EXTRACTION](MODULE_EXTRACTION.md).
+> Самостоятельный consumer без YAML/framework собран, build/offline проверки PASS;
+> module/consumer paths разделены. HW lifecycle и межпроектные locks ещё требуют проверки/доработки.
+
 ## 1. Назначение и текущий масштаб
 
 Система проверяет реальную STM32-прошивку через SWD, GDB-сервер и GDB-Python.

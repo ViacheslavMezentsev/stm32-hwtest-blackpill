@@ -68,7 +68,7 @@ def selected_flags(args):
             and re.fullmatch(r"[-A-Za-z0-9_+=.,]+", arg)]
 
 
-def snapshot(root, build, elf, profile, ninja):
+def snapshot(root, build, elf, profile, ninja, target=None, extra_inputs=()):
     flags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
     def run(args):
         return subprocess.check_output(args, cwd=build, text=True, timeout=20, creationflags=flags)
@@ -78,7 +78,7 @@ def snapshot(root, build, elf, profile, ninja):
     for row in database:
         obj = (Path(row["directory"]) / row["output"]).resolve()
         # This MVP attaches to the single firmware target, not arbitrary host/helper targets.
-        if not obj.is_relative_to(build / "CMakeFiles" / (elf.stem + ".dir")):
+        if not obj.is_relative_to(build / "CMakeFiles" / ((target or elf.stem) + ".dir")):
             continue
         dependencies = deps.get(obj)
         source = Path(row["file"]).resolve()
@@ -102,7 +102,10 @@ def snapshot(root, build, elf, profile, ninja):
                           command_sha256=hashlib.sha256(row["command"].encode()).hexdigest()))
     if not units:
         raise ValueError("No firmware objects found in compile_commands.json")
-    files.update([profile, root / "stm32_config.yml"])
+    files.add(profile)
+    files.update(Path(p).resolve() for p in extra_inputs)
+    if (root / "stm32_config.yml").exists():
+        files.add(root / "stm32_config.yml")
     files.update(profile.parent.glob("*.ioc"))
     files.update(profile.parent.glob("*_FLASH.ld"))
     inputs, versions, cubes = [], [], set()
@@ -145,12 +148,14 @@ def main():
     for key in ("root", "build", "elf", "profile", "out"):
         parser.add_argument("--" + key, required=True, type=Path)
     parser.add_argument("--ninja", required=True)
+    parser.add_argument("--target")
+    parser.add_argument("--input", action="append", type=Path, default=[])
     args = parser.parse_args()
     root, build, output = args.root.resolve(), args.build.resolve(), args.out.resolve()
     if not build.is_relative_to(root) or not output.is_relative_to(build):
         raise ValueError("Manifest outputs must stay inside repository build directory")
     output.unlink(missing_ok=True)
-    result = snapshot(root, build, args.elf.resolve(), args.profile.resolve(), args.ninja)
+    result = snapshot(root, build, args.elf.resolve(), args.profile.resolve(), args.ninja, args.target, args.input)
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_suffix(".tmp")
     temporary.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")

@@ -197,3 +197,10 @@ F401CC на текущей плате: 24/24 CTest через OpenOCD и ST GDB 
 
 Для авторов сценариев: [применение HAL-макросов](docs/HAL_MACRO_GUIDE.md).
 План самостоятельного модуля и предложения имени: [MODULE_EXTRACTION](docs/MODULE_EXTRACTION.md).
+
+### Подготовка самостоятельного модуля
+
+Рабочее имя — **stm32-gdbtest**. [Минимальный потребитель](examples/minimal-consumer/README.md)
+собирается без stm32-cmake-yml, использует свои firmware/profile/tests и проходит offline
+проверки без платы. Аппаратный lifecycle примера пока не проверен.
+Границы, результаты и следующие шаги: [MODULE_EXTRACTION](docs/MODULE_EXTRACTION.md).

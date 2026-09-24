@@ -7,6 +7,13 @@
 
 ### Changed
 
+- Согласовано рабочее имя stm32-gdbtest; добавлен самостоятельный minimal-consumer
+  без stm32-cmake-yml (собственные firmware/profile/tests). Build и 2/2 offline CTest PASS.
+- CMake/runner разделяют корни модуля и потребителя; YAML необязателен для manifest,
+  имя target независимо от ELF, stand выбирается потребителем, SELF_TESTS опционален.
+- Три основных профиля: build/host и offline contract regression PASS; 37 unittest.
+  Аппаратных запусков в этом этапе нет; межпроектная блокировка пока не реализована.
+
 - Проверки GPIO/RCC в трёх профилях переведены на HAL-предикаты и CMSIS-маски;
   добавлены ADC1/TIM2/DMA clock checks, TIM2 ARR через GET_AUTORELOAD.
 - Offline macro contracts с явным source context, наличием и раскрытием в ELF;

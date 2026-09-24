@@ -12,3 +12,6 @@ __pycache__/
 *.pyc
 *.bak
 .mxproject
+
+/examples/minimal-consumer/build/
+/examples/minimal-consumer/CMakeUserPresets.json

@@ -25,6 +25,23 @@ class HostTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.directory = Path(self.temp.name)
 
+    def test_consumer_session_scopes_reports_and_rejects_escape(self):
+        from hwtest.runner import local_directory
+        consumer = self.directory / "consumer"
+        consumer.mkdir()
+        session = dict(root=str(consumer), out=str(consumer / "build/runs"), stand="")
+        test = dict(id="HW_CONSUMER", timeout_s=10)
+        with patch.dict(os.environ, {}, clear=True), patch("hwtest.runner.execute") as process:
+            self.assertNotEqual(run(session, test), 0)
+            process.assert_not_called()
+        reports = list(consumer.glob("build/runs/*/result.json"))
+        self.assertEqual(len(reports), 1)
+        self.assertIn("Select a local stand", json.loads(reports[0].read_text())["error"])
+        escaped = self.directory / "escaped"
+        with self.assertRaises(ValueError):
+            local_directory(escaped, consumer)
+        self.assertFalse(escaped.exists())
+
     def test_collection_does_not_execute_code(self):
         (self.directory / "test_one.py").write_text(
             'raise RuntimeError("must not import")\n@case("HW_ONE", labels=("gpio",))\ndef one(t): pass\n')

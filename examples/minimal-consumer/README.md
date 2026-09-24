@@ -1,0 +1,45 @@
+# Минимальный потребитель HWTEST
+
+Самостоятельный CMake-проект для STM32F411CEU6 / BlackPill с LED PC13.
+Подключает исходный HWTEST через `HWTEST_SOURCE_DIR`, без родительского CMake,
+`stm32-cmake-yml`, YAML, общего User и сценариев основного приложения.
+Модуль пока не опубликован; рабочее имя будущего модуля — **stm32-gdbtest**.
+
+## Проверка без платы
+
+В терминале из этого каталога:
+
+```powershell
+cmake --preset debug
+cmake --build --preset debug
+ctest --preset offline
+```
+
+Нужны Windows, CMake >=3.25 (presets schema6), Ninja, Python >=3.11, xPack GCC13
+с GDB-Python и установленный CubeF4 V1.28.3. Значения `ARM_TOOLCHAIN_ROOT` и
+`CUBE_F4_ROOT` по умолчанию вычисляются относительно USERPROFILE; другое размещение
+задаётся через CMake cache / локальный CMakeUserPresets.json. Cube-пакет только читается.
+
+`host.consumer_offline` проверяет post-link manifest двух translation units,
+импорт собственного helper из корня потребителя, запрет выхода отчётов за корень,
+наличие/раскрытие CMSIS-макросов в настоящем GDB и отрицательный вариант с
+отсутствующим макросом. GDB-сервер не запускается. Логи: `build/offline`.
+Имя CMake-target `consumer_app` намеренно отличается от `consumer-blink.elf`.
+
+## Граница примера
+
+Собственная прошивка содержит только GPIO blink с busy wait на reset HSI.
+Startup минимален: core vectors, data/bss; периферийные IRQ и HAL не используются.
+Задержка не является калиброванным временем. Test hooks в прошивке отсутствуют.
+Тест `HW_CONSUMER_GPIO` проверяет clock/output mode при входе в `app_loop`.
+Аппаратное выполнение этого примера **ещё не проверено**.
+
+Stand по умолчанию пустой. Для будущего HW запуска нужно явно выбрать локальный
+TOML через `--stand`, `HWTEST_STAND` или CMake cache. Такой запуск может прошить
+этот ELF вместо основного приложения; после проверки требуется восстановить его.
+`ctest --preset offline` исключает HW; обычный CTest и `check-hw` включают его.
+Не запускать потребителя и основной проект одновременно на одном отладчике:
+межпроектная блокировка ещё не реализована.
+
+Границы CMake API, оставшиеся зависимости и план:
+[MODULE_EXTRACTION](../../docs/MODULE_EXTRACTION.md).
