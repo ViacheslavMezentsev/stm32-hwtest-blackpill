@@ -1,4 +1,4 @@
-"""F030R8 expectations from IOC/CMSIS/RM0360; hardware validation pending."""
+"""F030R8 expectations from IOC/CMSIS/RM0360; validated via J-Link STLink/SWD."""
 EXPECTED = {
     "clock": [
         ("HSI", "(RCC->CFGR & RCC_CFGR_SWS_Msk) >> RCC_CFGR_SWS_Pos", 0),

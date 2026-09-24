@@ -2,8 +2,8 @@
 
 STM32F030R8T6, Cortex-M0, Flash 64 KiB, RAM 8 KiB. CubeF0 V1.11.6.
 Профиль сборки и 17 аппаратных сценариев подготовлены для stm32-gdbtest.
-Сценарии ещё не выполнены на Nucleo.
-Плата не подключена; успешная сборка не подтверждает работу периферии.
+На Nucleo с встроенным **J-Link STLink** через SWD выполнены **17/17 PASS**.
+Мигание LD2 подтверждено владельцем. [Протокол](../../docs/F030_JLINK_VALIDATION.md).
 
 ## Сборка
 
@@ -25,11 +25,18 @@ host.profile_offline проверяет manifest/ELF, сбор сценарие�
 запрошенные HAL-контракты отдельным GDB без запуска сервера. Её можно вызвать
 напрямую: `python -B tools/check_profile_offline.py --session build/f030r8-debug-hwtest/hwtest/session.json`.
 Функции/макросы проверяются офлайн, семантика MMIO/IRQ требует платы.
-Запуск CTest без фильтра включает аппаратные сценарии — пока не выполнять.
+Запуск CTest без фильтра включает аппаратные сценарии — выбирать stand явно.
 
-Конфигурация по умолчанию указывает на отсутствующий nucleo-f030r8.local.toml,
-а не на действующий BlackPill/BluePill. Шаблон: Tests/stands/nucleo-f030r8.example.toml.
-Не копировать serial другого ST-Link; встроенный отладчик выбирается явно.
+Для действующей платы: Tests/stands/nucleo-f030r8-jlink.example.toml →
+nucleo-f030r8-jlink.local.toml с её decimal serial. Не копировать serial BluePill.
+
+```powershell
+$env:STM32_GDBTEST_STAND = "$PWD/Tests/stands/nucleo-f030r8-jlink.local.toml"
+ctest --test-dir build/f030r8-debug-hwtest -L hw --output-on-failure
+```
+
+Шаблон nucleo-f030r8.example.toml предназначен для OpenOCD после возврата ST-Link
+firmware и ещё не проверен аппаратно. Встроенный отладчик выбирается явно.
 
 ## Проверенная генерация CubeMX
 
@@ -71,7 +78,7 @@ CMSIS stm32f030x8.h задаёт FLASHSIZE_BASE=0x1FFFF7CC (16-bit KiB).
 Не читать CFSR/HFSR и не ставить BP на отсутствующие MemManage/BusFault/UsageFault.
 Один BP занят HardFault, для последовательного reach нужен ещё один.
 DEV_ID mismatch сохраняет общую политику warning; Flash ограничен 64 KiB.
-Наличие четырёх BP на конкретном стенде ещё предстоит подтвердить сервером.
+Четыре BP подтверждены SEGGER при аппаратном подключении.
 
 ## Проверки и границы
 
@@ -82,18 +89,16 @@ DEV_ID mismatch сохраняет общую политику warning; Flash о
 - Общие сценарии получают adc_handle/timer_handle/timer_enabled из EXPECTED.
   F103/F401/F411 сохраняют прежние ID HW_TIM2_IRQ, F030 использует HW_TIM3_IRQ.
 - ADC/DMA runtime, TIM IRQ и Sleep/timer после параметризации повторены:
-  F411/ST-Link/OpenOCD 3/3, F103/J-Link 3/3. F030 HW пока PENDING.
+  F411/ST-Link/OpenOCD 3/3, F103/J-Link 3/3. F030/J-Link STLink: 17/17 PASS, см. отдельный протокол.
 - Не перенесены NULL-инъекции RCC без отдельного source review HAL F0.
   Нет утверждения о полном покрытии или точности физических измерений.
 
-## Подключение для первого запуска
+## Действующий стенд
 
-Теперь можно подключить NUCLEO-F030R8 через USB к её встроенному ST-Link/V2-1,
-со штатными SWD-перемычками CN2. Дополнительный внешний отладчик не нужен.
-Существующие F411/ST-Link и F103/J-Link можно оставить подключёнными.
-После подтверждения владельца определить serial Nucleo и записать локальный stand.
-Сначала identity/Flash/boot/GPIO, затем оставшиеся ADC/DMA/TIM3/RTC/Sleep.
-Не запускать GDB Server до подтверждения подключения и выбора serial.
+NUCLEO-F030R8 подключена через USB к встроенному J-Link STLink, штатные SWD
+перемычки CN2. Отдельные F411/ST-Link и F103/J-Link можно оставить подключёнными.
+MCU оставлен running. При смене firmware отладчика потребуется другой backend
+и повторное согласование стенда. Автоматическое обновление firmware не выполняется.
 
-Platform принадлежит приложению. Для этих тестов ядро stm32-gdbtest менять
-не потребовалось; переносимость подтверждена пока только offline-проверкой.
+Platform принадлежит приложению; в stm32-gdbtest добавлено только имя устройства
+SEGGER. Профиль Cortex-M0 использует существующие schema/Target API.

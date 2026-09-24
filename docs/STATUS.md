@@ -15,18 +15,18 @@
 с различными DEV_ID; [результаты и ограничения](TARGET_IDENTITY.md).
 H503 приостановлен: генерация сохранена, профиль ещё не включён в сборку.
 
-Текущие подтверждённые стенды: F411CE + ST-Link/SWD и F103C8 + J-Link/SWD.
+Текущие подтверждённые стенды: F411CE + ST-Link/SWD, F103C8 + J-Link/SWD и NUCLEO-F030R8 + встроенный J-Link STLink/SWD.
 Опыты К1921ВГ015 завершены, его стенд разобран владельцем.
 Для каждого аппаратного запуска явно выбирать profile и локальный stand TOML.
 Перед сменой платы/отладчика/проводки согласовать замену. UART/VCOM не подключён.
 
 ## F030R8 и граница User/Platform
 
-[NUCLEO-F030R8](../profiles/f030r8/README.md) добавлен как offline build:
+[NUCLEO-F030R8](../profiles/f030r8/README.md) проверен аппаратно через J-Link STLink:
 GCC13/CubeF0 V1.11.6, Flash 11348 B / 64 KiB, RAM 1888 B / 8 KiB
-(включая linker reserve heap/stack). Плата не подключена, HW не заявлен;
+(включая linker reserve heap/stack). На Nucleo/J-Link STLink/SWD выполнены 17/17 HW, LD2 подтверждён.
 Подготовлены target Cortex-M0, 17 сценариев и 9 контрактов; offline-проверка PASS.
-Для запуска нужен отдельный локальный stand с serial встроенного ST-Link Nucleo.
+Для запуска используется nucleo-f030r8-jlink.local.toml с serial встроенного J-Link STLink.
 GDB без подключения нашёл app/Platform callbacks и LED/ADC macros в Platform.
 
 User теперь не включает HAL. Адаптеры четырёх профилей обслуживают ADC/DMA,
@@ -34,13 +34,13 @@ User теперь не включает HAL. Адаптеры четырёх п�
 Native ADC: прежние формулы и F030 single-point, корректные и неверные входы — PASS.
 Собраны F030/F103/F401/F411. После исправления контекста макросов повторены
 F411CE/ST-Link/OpenOCD 22/22 и F103C8/J-Link 22/22; оба MCU оставлены running.
-Прогоны выполнены в режиме ELF load sections. Новые HW-проверки F401 и F030 ещё ожидаются.
+Прогоны выполнены в режиме ELF load sections. Новые HW-проверки F401 ещё ожидаются; F030/J-Link — 17/17 PASS.
 См. [наблюдение о контексте макросов](STM32_TESTING_METHODS.md#контекст-hal-макросов-после-отделения-platform).
 
 Текущий этап F030: общий offline checker прошёл на четырёх профилях, включая
 traceability и ELF contracts. Отрицательные absent macro/stale manifest отклонены.
 После параметризации hadc/TIM повторены F411/OpenOCD 3/3 и F103/J-Link 3/3;
-это выборочная регрессия поверх предыдущего полного прогона, F030 аппаратно не проверен.
+это выборочная регрессия поверх предыдущего полного прогона, F030 позднее проверен через J-Link STLink: 17/17 PASS, [протокол](F030_JLINK_VALIDATION.md).
 
 ## Что проверено
 

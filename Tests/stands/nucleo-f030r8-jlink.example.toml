@@ -1,0 +1,7 @@
+# Nucleo onboard debugger converted to J-Link STLink; do not use the BluePill serial.
+[probe]
+backend = "jlink"
+serial = "REPLACE_WITH_NUCLEO_JLINK_DECIMAL_SERIAL"
+executable = "JLinkGDBServerCL.exe"
+speed_khz = 1000
+flash = "if-different"

@@ -7,6 +7,11 @@
 
 ### Added
 
+- NUCLEO-F030R8/J-Link STLink/SWD: прошли 17/17 сценариев, LD2 подтверждён;
+  обновлён подмодуль (mapping F030/J-Link), добавлены шаблон и протокол
+  F030_JLINK_VALIDATION.md. Host65 и повторный pinned boot/offline — PASS.
+
+
 - F030R8: target Cortex-M0, 17 подготовленных сценариев / 9 контрактов,
   preset с тестами и отдельный шаблон встроенного ST-Link. HW пока ожидается.
 - Общая offline-проверка профиля: manifest/ELF/требования/HAL preflight без сервера,

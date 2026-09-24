@@ -1,4 +1,4 @@
-"""Prepared scenarios; execution on Nucleo is still pending."""
+"""Validated on Nucleo F030R8 via onboard J-Link STLink/SWD."""
 from stm32_gdbtest import case
 from Tests.scenarios import board, power
 from Tests.scenarios import peripheral_runtime as runtime

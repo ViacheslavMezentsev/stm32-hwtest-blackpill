@@ -56,7 +56,7 @@
 
 ## Стенды и доказательства
 
-- Текущие стенды подтверждены владельцем: F411CE + ST-Link/SWD и F103C8 + J-Link/SWD.
+- Текущие стенды подтверждены владельцем: F411CE + ST-Link/SWD, F103C8 + J-Link/SWD и NUCLEO-F030R8 + встроенный J-Link STLink/SWD.
   Опыты К1921ВГ015 завершены, его стенд разобран; не запускать его HW-команды.
   Перед каждым HW набором назвать плату/MCU, отладчик, backend и соединения, явно
   сказать оставить или изменить стенд. При подтверждённом текущем стенде повторное
@@ -117,9 +117,10 @@
   стендах. Снимать env image policy для обычного режима; docs/FULL_IMAGE_CRC.md.
 
 - F030R8: offline preset f030r8-debug, CubeF0 V1.11.6, LED PA5 active-high,
-  hadc/TIM3, ADC scan IN16/17. target/contracts/M0 review подготовлены, HW PENDING.
+  hadc/TIM3, ADC scan IN16/17. target/contracts/M0 review и J-Link STLink/SWD 17/17 PASS.
   TS_CAL1 + типовой slope, quality=3; не читать TS_CAL2 по общему LL header.
   User HAL-free, Platform обслуживает HAL callbacks через app_* callbacks.
   Общие Python-сценарии используют adc_handle/timer_handle/timer_enabled из EXPECTED.
-  Плата ещё не подключена; nucleo-f030r8.local.toml создаётся только после выбора её serial.
-  Перед HW дождаться подтверждения. Offline: tools/check_profile_offline.py --session build/.../hwtest/session.json.
+  Nucleo подключена к встроенному J-Link STLink: явно выбирать
+  Tests/stands/nucleo-f030r8-jlink.local.toml; LD2 подтверждён, MCU running.
+  Не путать с BluePill J-Link; firmware отладчика не менять. Offline: tools/check_profile_offline.py --session build/.../hwtest/session.json.

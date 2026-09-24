@@ -11,8 +11,9 @@
   и расчёт по TS_CAL1 (одна температурная точка).
 - [x] F030R8: target/identity/Cortex-M0 диагностика, 9 HAL contracts, 17 сценариев,
   параметризация hadc/TIM3, offline manifest/ELF/traceability, шаблон stand.
-- [ ] F030R8: подтверждение подключения Nucleo, serial встроенного ST-Link,
-  первый запуск boot/GPIO, затем ADC/DMA/TIM3/RTC/Sleep и отрицательные сценарии.
+- [x] F030R8: подтверждение подключения Nucleo, serial встроенного J-Link STLink,
+  boot/GPIO, ADC/DMA/TIM3/RTC/Sleep и отрицательные сценарии: 17/17 PASS.
+- [ ] F030R8: после отдельного возврата firmware ST-Link проверить OpenOCD/ST server.
   Подробности: profiles/f030r8/README.md.
 
 
