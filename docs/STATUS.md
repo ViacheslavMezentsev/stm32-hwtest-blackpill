@@ -27,6 +27,10 @@ Flash 12744 B, SRAM 1896 B, CCM 0. Подготовлены 22 сценария 
 traceability и offline ELF/HAL preflight PASS. Через OpenOCD выполнены 22/22 HW,
 весь CTest 25/25, LD3 подтверждён. [Протокол](F429_OPENOCD_VALIDATION.md).
 
+ST GDB Server 7.14.0: 18 PASS + USB error, после переподключения оставшиеся 4 PASS;
+запись O0/Og, verify-only и timeout/recovery проверены. Непрерывные 22/22 пока
+подтверждены только для OpenOCD. [Протокол ST](F429_STLINK_VALIDATION.md).
+
 ## F030R8 и граница User/Platform
 
 [NUCLEO-F030R8](../profiles/f030r8/README.md) проверен аппаратно через J-Link STLink:

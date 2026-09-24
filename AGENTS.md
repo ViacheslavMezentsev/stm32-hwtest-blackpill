@@ -130,3 +130,8 @@
   TIM2 7999/99, RTC127/249, ADC IN18/17; factory30/110°C. Сборка/offline PASS,
   22/22 HW PASS, LD3 подтверждён. Стенд подключён и подтверждён владельцем;
   stand disco-f429zi.local.toml, OpenOCD. DMA-буфер только SRAM, не CCM.
+
+- F429/ST server7.14: 18 PASS, USB error до готовности сервера, после переподключения
+  ещё4 PASS; непрерывные22/22 только OpenOCD. ST Flash O0→Og/verify-only/timeout
+  recovery проверены, штатный Og восстановлен и running. ST stand явно
+  disco-f429zi-stlink.local.toml. Причина USB-сбоя не установлена, firmware не менять.

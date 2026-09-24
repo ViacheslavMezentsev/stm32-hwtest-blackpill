@@ -7,6 +7,10 @@
 
 ### Added
 
+- F429ZI/ST GDB Server: все 22 сценария получили PASS (18+4 после USB reconnect),
+  запись/восстановление Og, verify-only и timeout/recovery; шаблон стенда и протокол
+  F429_STLINK_VALIDATION.md с сохранением исходных четырёх USB ERROR.
+
 - STM32F429I-DISCO/ST-Link V2/OpenOCD: 22/22 аппаратных сценария и 3/3 host
   проверки PASS, DEV_ID0x419/Flash2MiB, LD3 подтверждён; протокол F429_OPENOCD_VALIDATION.md.
 

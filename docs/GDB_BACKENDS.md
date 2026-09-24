@@ -8,6 +8,10 @@
 Реализация выбора находится в отдельном модуле. J-Link V8.32 проверен на BluePill:
 [настройка, результаты и Commander](JLINK.md).
 
+F429ZI DISCO также проверена через ST: 18 PASS, USB-сбой, затем 4 PASS после
+переподключения; Flash/verify-only/timeout/recovery выполнены.
+[Протокол и границы](F429_STLINK_VALIDATION.md).
+
 ## Запуск ST-LINK на BluePill
 
 Скопировать `Tests/stands/bluepill-stlink.example.toml` в

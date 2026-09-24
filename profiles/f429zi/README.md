@@ -8,6 +8,9 @@ IOC использует шаблон STM32F429I-DISC1: это метаданн�
 Зелёный пользовательский LD3 подключён к PG13, активный уровень высокий.
 Источник: [UM1670](https://www.st.com/resource/en/user_manual/um1670-discovery-kit-with-stm32f429zi-mcu-stmicroelectronics.pdf).
 
+ST GDB Server также проверен: все 22 сценария получили PASS с переподключением USB
+после 18-го; запись/verify-only/recovery выполнены. [Подробности и сбой](../../docs/F429_STLINK_VALIDATION.md).
+
 ## Конфигурация
 
 - CubeF4 V1.28.3, GCC 13.3.1, Debug -Og -g3; общий User без изменений.
