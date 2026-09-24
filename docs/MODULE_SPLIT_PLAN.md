@@ -73,3 +73,22 @@ Schema/API_VERSION независимы от release version; gitlink всегд
 Внешний host-контроллер оборудования отложен в TODO обоих проектов. Его драйверы
 останутся у потребителя; будущий общий интерфейс должен обеспечить синхронизацию,
 таймауты, cleanup и ожидаемый power-cycle/reconnect.
+
+
+## Текущее состояние после создания remote
+
+Владелец создал https://github.com/ViacheslavMezentsev/stm32-gdbtest;
+ls-remote успешно завершился без refs (пустой remote на момент проверки).
+В build/module-ready/stm32-gdbtest создан отдельный репозиторий с одним root commit
+`f9d9f53`, веткой main и origin на указанный URL. Начальный снимок взят из чистого
+2851520; runtime bytes сверены с проверенным export. Перед commit только README
+получил фактический URL, его hash обновлён в EXPORT_MANIFEST с preparation note.
+Никакого переноса старой истории, push, тега или gitlink ещё нет.
+
+Каталог расположен в build, поэтому **не очищать build/module-ready до отправки
+нового main**. Он игнорируется родительским Git и пока не имеет удалённой копии.
+Git может запросить safe.directory из-за владельца каталога CodexSandboxOffline;
+использовать точечное `git -c safe.directory=<absolute-module-path>` на время команды,
+не менять глобальную конфигурацию. Следующий шаг: владелец push -u origin main из
+этого отдельного репозитория; затем сверить SHA remote и перейти к шагу4.
+Версия остаётся0.1.0.dev0, релизные теги не созданы. HW в этом этапе не использовался.

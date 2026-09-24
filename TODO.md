@@ -140,8 +140,9 @@ H503 остаётся отложенным до сообщения владел�
 
 - [x] Подготовить шаблоны distribution/stm32-gdbtest и export tool; автономные host44,
   минимальный пример build/offline2/2 PASS, без рабочей profiles основного проекта.
-- [ ] Владелец создаёт пустой репозиторий stm32-gdbtest без README/LICENSE/.gitignore и сообщает URL.
-- [ ] Подготовить свежий снимок и начальный commit новой истории локально внутри этого workspace; push выполняет владелец.
+- [x] Владелец создал пустой https://github.com/ViacheslavMezentsev/stm32-gdbtest; remote refs проверены.
+- [x] Подготовлена новая история внутри build/module-ready/stm32-gdbtest: main, initial commit f9d9f53, origin настроен.
+- [ ] Владелец отправляет main нового репозитория; сверить remote SHA перед submodule add.
 - [ ] Подключить modules/stm32-gdbtest закреплённым gitlink, убрать дубли ядра только после проверки зависимостей.
 - [ ] Проверить новый consumer/submodule: host/build/offline и согласованный HW/recovery.
 - [ ] Подготовить первый кандидат v0.1.0-rc.1, затем v0.1.0; до проверки новых связей тегов нет.

@@ -7,6 +7,11 @@
 
 ### Changed
 
+- Создана новая локальная история stm32-gdbtest в build/module-ready/stm32-gdbtest:
+  один initial commit f9d9f53, main, origin на созданный владельцем GitHub remote.
+  Runtime совпадает с проверенным снимком; README уточняет URL. Push ожидается
+  от владельца; submodule/gitlink и релизные теги пока не создавались.
+
 - Подготовлен состав отдельного Git-модуля: distribution/stm32-gdbtest с README,
   CHANGELOG, TODO, AGENTS и инструкциями автору тестов/версионированием; MIT сохранена.
 - Host-тесты отделены от рабочих MCU-профилей через Tests/fixtures. Export tool
