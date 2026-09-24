@@ -7,6 +7,7 @@
 
 | Область | Владелец / источник |
 | --- | --- |
+| Текущее состояние и точный объём проверки | [стенд](STATUS.md), [модуль](../modules/stm32-gdbtest/docs/STATUS.md) |
 | API/CLI/CMake, миграция namespace | [модуль: API](../modules/stm32-gdbtest/docs/API.md) |
 | Ручное и агентное написание тестов | [модуль: TEST_AUTHORING](../modules/stm32-gdbtest/docs/TEST_AUTHORING.md) |
 | ELF/HAL contracts, macro preflight | [модуль: CONTRACTS](../modules/stm32-gdbtest/docs/CONTRACTS.md), [HAL_MACRO_GUIDE](../modules/stm32-gdbtest/docs/HAL_MACRO_GUIDE.md) |

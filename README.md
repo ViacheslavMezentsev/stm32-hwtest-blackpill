@@ -1,84 +1,65 @@
 # stm32-hwtest-blackpill
 
-Стендовый проект для проверки и развития [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest).
-Здесь находятся реальные прошивки, профили MCU, сценарии периферии и результаты
-экспериментов. Ядро тестирования развивается отдельно и подключается закреплённым
-Git-подмодулем. Тестовые hooks в прошивку не добавляются; halt/reset и инъекции
-через отладчик всё же влияют на выполнение MCU.
+Примеры и аппаратный стенд для проверки прошивок STM32 через
+[stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest).
+Python-сценарии на ПК управляют GDB и проверяют приложение на реальной плате
+через SWD. Репозиторий помогает освоить этот подход и проверять изменения
+самого модуля на разных MCU и отладчиках.
 
-## Платы и стенды
+## Зачем создан проект
 
-| Плата | MCU / профиль | LED | Проект производителя |
-| --- | --- | --- | --- |
-| WeAct BlackPill V3.1 | STM32F411CEU6 / f411ce | PC13 | [MiniSTM32F4x1](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1) |
-| WeAct BluePill V1.1 / BluePill-Plus | STM32F103C8T6 / f103c8 | PB2 | [BluePill-Plus](https://github.com/WeActStudio/BluePill-Plus) |
-| WeAct BlackPill v3.0 | маркировка STM32F401CCU6 / f401cc | PC13 | [MiniSTM32F4x1](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1) |
-| WeAct STM32H503 Core Board | STM32H503CBT6 / h503cb | требует сверки | [STM32H503CoreBoard](https://github.com/WeActStudio/WeActStudio.STM32H503CoreBoard) |
+Проверка чистой арифметики на ПК не показывает, правильно ли настроены GPIO,
+DMA, таймеры и прерывания реального MCU. Ручная отладка позволяет это увидеть,
+но её трудно повторять после каждого изменения. Проект вырос из опытов
+автоматизации таких проверок через GDB-Python: общая инфраструктура выделена
+в stm32-gdbtest, а здесь остались прошивки, сценарии и практические результаты.
 
-Ревизии и маркировки — по экземплярам владельца. F401 проверен на двух экземплярах
-с различными DEV_ID; [результаты и ограничения](docs/TARGET_IDENTITY.md).
-H503 приостановлен: генерация сохранена, профиль ещё не включён в сборку.
+Тесты не компилируются в прошивку. Они используют её ELF с отладочной информацией,
+останавливают MCU в выбранных точках, читают переменные и регистры, проверяют
+поведение. Остановки и инъекции влияют на выполнение — это часть метода,
+которую нужно учитывать при проверке времени, IRQ и энергопотребления.
 
-Текущие подключённые стенды: F411CE + ST-Link/SWD и F103C8 + J-Link/SWD.
-Для каждого аппаратного запуска явно выбирать profile и локальный stand TOML.
-Перед сменой платы/отладчика/проводки согласовать замену. UART/VCOM не подключён.
-
-## Что проверено
-
-Общий `User/` выполняет LED blink, ADC temperature/VREFINT через DMA, TIM2 IRQ,
-RTC alarm и Sleep/WFI с SysTick. Адаптация MCU — `profiles/<MCU>/Platform`.
-CubeMX генерирует код отдельно внутри каждого профиля. Stop пока не реализован.
-
-После подключения отдельного модуля: три профиля собраны и прошли offline-контракты;
-F411/OpenOCD и F103/J-Link — по **24/24 CTest** (22 HW + 2 host), host-модуль —
-44 unittest. Минимальный consumer, read-only dependency, timeout/recovery и
-восстановление основной прошивки также проверены. Это объём сценариев, не процент
-покрытия кода и не гарантия всех STM32. Последняя аппаратная проверка F401 была
-до переноса macro-сценариев; повтор новых сценариев требует согласованного стенда.
-
-## Сборка и зависимости
-
-Windows, PowerShell, Git, CMake/Ninja, Mike Farah yq v4. Presets требуют CMake >=3.21;
-HW-интеграция и минимальный consumer — CMake >=3.25, host Python >=3.11.
-Базовый toolchain — xPack ARM GCC 13.3.1-1.1 с GDB-Python; GCC14/15 — отдельные presets.
-CubeF4 V1.28.3 и CubeF1 V1.8.7 берутся из установленного STM32Cube Repository.
-Toolchain/Cube по умолчанию ищутся в USERPROFILE, локальные пути не коммитить.
-
-Подмодули `stm32-cmake`, `stm32-cmake-yml` и `stm32-gdbtest` закреплены gitlink
-основного репозитория; точные коммиты показывает `git submodule status`.
-Обновление зависимости — отдельное изменение с регрессией, не автоматическая часть configure.
-
-```powershell
-git submodule update --init --recursive
-cmake --preset f411ce-debug-hwtest
-cmake --build --preset f411ce-debug-hwtest
-ctest --preset f411ce-host
+```mermaid
+flowchart LR
+    F["Прошивка и профиль MCU"] --> E["ELF с отладочной информацией"]
+    E --> T["stm32-gdbtest + Python-сценарии"]
+    T <--> G["GDB / сервер / отладчик"]
+    G <-->|SWD| B["Плата STM32"]
+    T --> R["Результаты и отчёты"]
 ```
 
-Для других MCU: `f103c8-debug-hwtest`, `f401cc-debug-hwtest` и соответствующие host presets.
-Обычная сборка без HWTEST: `f411ce-debug`; другие варианты — `cmake --list-presets`.
-Debug использует `-Og -g3`. Макросы из debug info не сохраняют неиспользуемые функции.
-Каждый MCU/toolchain имеет отдельный build; после замены компилятора нужна чистая сборка.
+## Что находится в репозитории
 
-Локальные настройки — игнорируемый `CMakeUserPresets.json`, наследование от точного
-preset, например `f411ce-debug`, переменные `CMAKE_USER_HOME` и `STM32_TOOLCHAIN_PATH`.
-В VS Code выбрать configure preset, собрать; Cortex-Debug и SVD настроены по профилям.
-SVD находятся в `resources`; руководство GDB 19, раздел 23.3 — `docs/gdb.pdf`.
-Фактический GDB 14.2.90 проверяется по наличию API, а не по номеру GCC.
+- `User/` — общая логика примера: LED, ADC, DMA, таймеры, RTC и Sleep.
+- `profiles/` — отдельные CubeMX-проекты, адаптеры MCU и ожидания тестов.
+- `Tests/` — сценарии приложения, требования и шаблоны стендов.
+- `examples/minimal-consumer/` — небольшой пример подключения без YAML-фреймворка.
+- `modules/` — закреплённые зависимости сборки и тестирования.
+- `docs/` — методика, архитектура, настройки и протоколы опытов.
 
-## Тесты и документация
+Рабочие профили: WeAct BlackPill V3.1 (STM32F411CEU6), BlackPill v3.0
+(STM32F401CCU6) и BluePill V1.1 / BluePill-Plus (STM32F103C8T6).
+Профиль STM32H503CBT6 подготовлен частично и ещё не включён в сборку.
+Точные сочетания плат/серверов, результаты и ограничения — в [текущем состоянии](docs/STATUS.md).
 
-Команды аппаратных запусков, TOML стендов и восстановление: [HWTEST](docs/HWTEST.md).
-CLI проекта — `python -B tools/gdbtest.py`; host ядра — `python -B tools/test_module_host.py`.
-Профильные `Tests/board` и `Tests/scenarios` остаются здесь; runtime/API — в подмодуле.
-`python -m stm32_gdbtest` из корня приложения без настройки import path не используется.
+## Зависимости и начало работы
 
-- [Навигация и владельцы документов](docs/README.md).
-- [API модуля](modules/stm32-gdbtest/docs/API.md) и [написание тестов человеком/агентом](modules/stm32-gdbtest/docs/TEST_AUTHORING.md).
-- [Фактическая архитектура v2](docs/HWTEST_ARCHITECTURE_V2.md) и [практика/ограничения](docs/STM32_TESTING_METHODS.md).
-- [План периферии](docs/PERIPHERAL_PLAN.md), [TODO](TODO.md), [CHANGELOG](CHANGELOG.md).
-- [Минимальный consumer](examples/minimal-consumer/README.md) и [протокол его проверки](docs/CONSUMER_VALIDATION.md).
-- [Сборочные артефакты и очистка](docs/BUILD_ARTIFACTS.md).
+Основная среда — Windows, PowerShell и VS Code. Нужны Git, CMake/Ninja,
+Python 3.11+, yq v4, ARM GCC с GDB-Python и соответствующие STM32Cube-пакеты.
+Для аппаратных проверок — плата, SWD-отладчик ST-Link либо J-Link и совместимый
+GDB-сервер. Зависимости сборки подключаются Git-подмодулями; Cube-пакеты и
+инструменты устанавливаются отдельно.
 
-Этот репозиторий проверяет изменения модуля на оборудовании. Общий механизм не
-дублируется здесь; результаты положительных и отрицательных опытов остаются здесь.
+Начните с [сборки и проверенных версий инструментов](docs/STATUS.md#сборка-и-зависимости),
+затем настройте свой стенд по [инструкции запуска тестов](docs/HWTEST.md).
+Для написания собственных сценариев есть [руководство автора](modules/stm32-gdbtest/docs/TEST_AUTHORING.md).
+
+## Документация и связанные проекты
+
+- [Карта документации](docs/README.md), [архитектура](docs/HWTEST_ARCHITECTURE_V2.md) и [методы тестирования](docs/STM32_TESTING_METHODS.md).
+- [Состояние и проверенные возможности](docs/STATUS.md), [планы](TODO.md), [история изменений](CHANGELOG.md).
+- [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest) — самостоятельная инфраструктура тестирования.
+- [stm32-cmake-yml](https://github.com/ViacheslavMezentsev/stm32-cmake-yml) — конфигурация сборки STM32 через YAML.
+- Проекты плат WeAct: [BlackPill F4x1](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1), [BluePill-Plus](https://github.com/WeActStudio/BluePill-Plus), [H503 Core Board](https://github.com/WeActStudio/WeActStudio.STM32H503CoreBoard).
+
+[Лицензия](LICENSE). Для изменений с участием агентов — [AGENTS.md](AGENTS.md).
