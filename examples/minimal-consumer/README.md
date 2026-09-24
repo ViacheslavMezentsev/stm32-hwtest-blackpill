@@ -32,9 +32,11 @@ ctest --preset offline
 Startup минимален: core vectors, data/bss; периферийные IRQ и HAL не используются.
 Задержка не является калиброванным временем. Test hooks в прошивке отсутствуют.
 Тест `HW_CONSUMER_GPIO` проверяет clock/output mode при входе в `app_loop`.
-Аппаратное выполнение этого примера **ещё не проверено**.
+Аппаратно проверено на F411CE + ST-Link/OpenOCD: Flash, verify-only, timeout/recovery
+и повторный успешный тест. Основная прошивка восстановлена.
+Результаты и команда воспроизведения: [CONSUMER_VALIDATION](../../docs/CONSUMER_VALIDATION.md).
 
-Stand по умолчанию пустой. Для будущего HW запуска нужно явно выбрать локальный
+Stand по умолчанию пустой. Для HW запуска нужно явно выбрать локальный
 TOML через `--stand`, `HWTEST_STAND` или CMake cache. Такой запуск может прошить
 этот ELF вместо основного приложения; после проверки требуется восстановить его.
 `ctest --preset offline` исключает HW; обычный CTest и `check-hw` включают его.

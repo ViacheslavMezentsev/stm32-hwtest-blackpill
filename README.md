@@ -202,5 +202,6 @@ F401CC на текущей плате: 24/24 CTest через OpenOCD и ST GDB 
 
 Рабочее имя — **stm32-gdbtest**. [Минимальный потребитель](examples/minimal-consumer/README.md)
 собирается без stm32-cmake-yml, использует свои firmware/profile/tests и проходит offline
-проверки без платы. Аппаратный lifecycle примера пока не проверен.
+проверки без платы. [Аппаратный lifecycle](docs/CONSUMER_VALIDATION.md) проверен
+на F411CE/ST-Link/OpenOCD, включая timeout/recovery и восстановление основной прошивки.
 Границы, результаты и следующие шаги: [MODULE_EXTRACTION](docs/MODULE_EXTRACTION.md).

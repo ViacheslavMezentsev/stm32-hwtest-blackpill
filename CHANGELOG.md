@@ -7,6 +7,11 @@
 
 ### Changed
 
+- Минимальный consumer аппаратно проверен на F411CE/ST-Link/OpenOCD: Flash,
+  verify-only, намеренный Python timeout и host recovery, повторный PASS.
+  Добавлен воспроизводимый check_consumer_lifecycle.py с восстановлением основной
+  прошивки в finally; HW_BOOT/HW_BLINK/live Sleep PASS. Отчёт CONSUMER_VALIDATION.md.
+
 - Согласовано рабочее имя stm32-gdbtest; добавлен самостоятельный minimal-consumer
   без stm32-cmake-yml (собственные firmware/profile/tests). Build и 2/2 offline CTest PASS.
 - CMake/runner разделяют корни модуля и потребителя; YAML необязателен для manifest,

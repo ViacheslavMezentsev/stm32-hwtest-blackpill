@@ -19,7 +19,9 @@
 
 > Подготовка выделения **stm32-gdbtest**: [MODULE_EXTRACTION](MODULE_EXTRACTION.md).
 > Самостоятельный consumer без YAML/framework собран, build/offline проверки PASS;
-> module/consumer paths разделены. HW lifecycle и межпроектные locks ещё требуют проверки/доработки.
+> module/consumer paths разделены. [HW lifecycle F411/ST-Link/OpenOCD](CONSUMER_VALIDATION.md)
+> проверен с timeout/recovery и восстановлением основной прошивки; перенос checkout и
+> межпроектные locks ещё требуют проверки/доработки.
 
 ## 1. Назначение и текущий масштаб
 

@@ -783,6 +783,10 @@ C-файла и linker; offline GDB раскрывает CMSIS macros в app_loo
 запрещён. Host37 и ELF regression трёх основных профилей проходят.
 
 Предел доказательства: сборка и offline GDB не проверяют reset/startup/Flash/SWD,
-видимое мигание и recovery. HW lifecycle потребителя ещё предстоит проверить.
+видимое мигание и recovery. Последующий [аппаратный опыт](CONSUMER_VALIDATION.md)
+подтвердил Flash/verify-only/timeout/recovery и импорт helper на F411/OpenOCD.
+Timeout создавался задержкой Python после breakpoint, без изменения firmware.
+Основная прошивка восстановлена и проверена HW_BOOT/HW_BLINK/live Sleep; визуальная
+оценка LED в этот опыт не входит.
 Project-local locks не координируют разные проекты; независимая поставка требует
 решения этой задачи. Детали границ и план — [MODULE_EXTRACTION](MODULE_EXTRACTION.md).
