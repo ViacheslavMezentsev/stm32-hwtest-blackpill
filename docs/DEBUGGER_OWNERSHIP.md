@@ -1,6 +1,6 @@
 # Проверка владения отладчиком между проектами
 
-Механизм и ограничения: [stm32-gdbtest](../modules/stm32-gdbtest/docs/DEBUGGER_OWNERSHIP.md).
+Механизм и ограничения: [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/DEBUGGER_OWNERSHIP.md).
 Здесь сохранён протокол опыта на стенде. Числа ниже относятся к этапу введения mutex;
 последующая интеграция подмодуля проверена с 44 host-тестами. observe_sleep участвует
 в том же протоколе через импорт из закреплённого модуля.

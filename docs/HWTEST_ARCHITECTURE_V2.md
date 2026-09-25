@@ -4,7 +4,7 @@
 модуль пока 0.1.0.dev0, API_VERSION=1, релиз не выпущен.
 [Исходный замысел](HWTEST_ARCHITECTURE.md) сохранён без изменений.
 Этот общий документ описывает взаимодействие двух самостоятельных проектов;
-детальный API принадлежит [stm32-gdbtest](../modules/stm32-gdbtest/docs/API.md).
+детальный API принадлежит [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/API.md).
 
 ## Ответственность проектов
 
@@ -73,15 +73,15 @@ Attach создаёт session/CTest и post-link manifest. Runner выбирае
 
 Совместимость — конкретная комбинация MCU/платы, HAL/CMSIS, compiler/ABI,
 GDB/Python, backend/прошивки отладчика. API presence, build manifest и выборочный
-ELF/HAL preflight — три разных доказательства. Их [форматы и ограничения](../modules/stm32-gdbtest/docs/MANIFESTS.md)
+ELF/HAL preflight — три разных доказательства. Их [форматы и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/MANIFESTS.md)
 не подтверждают всю семантику HAL, карту памяти или корректность генерации CubeMX.
-[Контракты](../modules/stm32-gdbtest/docs/CONTRACTS.md) требуют осмысленных source_reviews;
-обновлять hash без анализа нельзя. [-g3 и HAL-макросы](../modules/stm32-gdbtest/docs/HAL_MACRO_GUIDE.md)
+[Контракты](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/CONTRACTS.md) требуют осмысленных source_reviews;
+обновлять hash без анализа нельзя. [-g3 и HAL-макросы](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/HAL_MACRO_GUIDE.md)
 дают контекст debug info, но не сохраняют неиспользуемые функции.
 
 DEV_ID mismatch по умолчанию предупреждает, strict отказывает до Flash. Выбранный
 target не меняется автоматически; размер образа ограничен и профилем, и прочитанным
-размером Flash. [Политика модуля](../modules/stm32-gdbtest/docs/TARGET_IDENTITY.md),
+размером Flash. [Политика модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/TARGET_IDENTITY.md),
 [опыты на экземплярах](TARGET_IDENTITY.md).
 
 Hardware BP имеют ограниченный бюджет; pending/optimized-out и неверные причины
@@ -94,7 +94,7 @@ PASS/FAIL/ERROR различаются в JSON/JUnit; SKIP/NOT_APPLICABLE пок
 Named mutex координирует участвующие процессы в одной Windows-сессии, включая
 OpenOCD/ST server с одним ST-Link. VS Code/vendor tools не участвуют автоматически.
 После crash освобождение mutex не доказывает завершение серверов; Job Object ещё планируется.
-[Детали владения](../modules/stm32-gdbtest/docs/DEBUGGER_OWNERSHIP.md).
+[Детали владения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/DEBUGGER_OWNERSHIP.md).
 
 ## Доказанная область
 
@@ -126,7 +126,7 @@ MCU identity/memory adapter и проверка ELF по load regions. STM32-я�
 5. Позже: host-контроллер питания/реле/кнопок с протоколом синхронизации GDB,
    reconnect/повторной identity и владением ресурсами. Драйверы приборов принадлежат стенду.
 
-Полные планы: [проект](../TODO.md), [модуль](../modules/stm32-gdbtest/TODO.md).
+Полные планы: [проект](../TODO.md), [модуль](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/TODO.md).
 Практика и ограничения: [STM32_TESTING_METHODS](STM32_TESTING_METHODS.md).
 Навигация по всем деталям: [карта документации](README.md).
 
@@ -135,7 +135,7 @@ MCU identity/memory adapter и проверка ELF по load regions. STM32-я�
 Модуль сравнивает только загружаемые ELF-секции по LMA. BIN нормализуется
 заполнением промежутков 0xFF, но исходный GDB load ELF их не гарантирует.
 Проверка полной области/CRC требует отдельного контракта и режима записи.
-[Механизм модуля](../modules/stm32-gdbtest/docs/IMAGES.md),
+[Механизм модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/IMAGES.md),
 [проверки на текущих STM32-стендах](ELF_LOAD_REGIONS.md).
 
 ### Полный образ как отдельный вход runner
@@ -143,5 +143,5 @@ MCU identity/memory adapter и проверка ELF по load regions. STM32-я�
 Опциональный TOML image policy задаёт диапазон и fill. Ядро создаёт canonical BIN
 и односекционный ELF для GDB, сохраняет исходный ELF для символов, сравнивает весь
 readback и CRC-32/ISO-HDLC на ПК. Это не MCU CRC и не встроенное CRC-поле firmware.
-Умолчание остаётся load sections. [Контракт](../modules/stm32-gdbtest/docs/IMAGES.md),
+Умолчание остаётся load sections. [Контракт](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/IMAGES.md),
 [реальная проверка](FULL_IMAGE_CRC.md).

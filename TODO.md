@@ -1,7 +1,7 @@
 # Дорожная карта стендового проекта
 
-Назначение: проверка и развитие отдельного [stm32-gdbtest](modules/stm32-gdbtest/README.md).
-План ядра и выпуска версий — [TODO модуля](modules/stm32-gdbtest/TODO.md).
+Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/README.md).
+План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/TODO.md).
 История завершённых этапов — CHANGELOG и профильные протоколы в docs.
 
 ## Ближайшие шаги

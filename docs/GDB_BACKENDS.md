@@ -1,6 +1,6 @@
 # Серверы GDB: OpenOCD, ST-LINK и J-Link
 
-Общие правила серверов и диалекты перенесены в [stm32-gdbtest](../modules/stm32-gdbtest/docs/BACKENDS.md).
+Общие правила серверов и диалекты перенесены в [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/BACKENDS.md).
 Здесь — настройка наших стендов и аппаратные результаты.
 
 Общие тесты работают через GDB-Python и RSP. Backend задаёт запуск сервера,
@@ -75,7 +75,7 @@ Option bytes, mass erase и обновление firmware отладчика н�
 
 Оба сервера проверены на BlackPill F411 + ST-Link: по 24/24 CTest на одном ELF,
 включая build manifest, семь HAL-контрактов, ADC/Sleep и timeout/recovery.
-[Доказательства и ограничения](STM32_TESTING_METHODS.md#f411ce-hal-контракты-и-два-сервера-st-link-2026-09-24).
+[Доказательства и ограничения](STM32_TESTING_METHODS.md#f411-hal-контракты-и-два-сервера-st-link-2026-09-24).
 Для ST используйте копию `Tests/stands/blackpill-stlink.example.toml` в
 `blackpill-stlink.local.toml` с локальными путями и serial. Для OpenOCD —
 `blackpill.local.toml`. Выбирать файл явно через STM32_GDBTEST_STAND; аппаратный профиль

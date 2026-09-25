@@ -20,7 +20,7 @@ build; существующий каталог не перезаписывает
 - SOURCE.md/EXPORT_MANIFEST.json: исходный commit, dirty-состояние и hashes файлов.
 
 README/AGENTS и инструкции для человека/агента находятся в
-[distribution/stm32-gdbtest](../modules/stm32-gdbtest/README.md). Fixtures —
+[distribution/stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/README.md). Fixtures —
 синтетические/замороженные входные данные host-тестов; не HW-профили и не evidence HAL.
 Рабочие MCU-профили, application User, HAL/CMSIS, Cube/toolchains, SVD, gdb.pdf,
 локальные конфиги/serial, ELF/логи и Git metadata не экспортируются.
@@ -70,7 +70,7 @@ commit в отдельном локальном Git-репозитории вн�
 До1.0 PATCH — совместимые исправления, MINOR — возможности/изменения API с миграцией.
 После1.0 несовместимый API увеличивает MAJOR. Released tags не перемещаются.
 Это политика проекта на основе [SemVer2.0.0](https://semver.org/spec/v2.0.0.html);
-[подробности](../modules/stm32-gdbtest/docs/VERSIONING.md).
+[подробности](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/VERSIONING.md).
 Schema/API_VERSION независимы от release version; gitlink всегда фиксирует SHA.
 
 Внешний host-контроллер оборудования отложен в TODO обоих проектов. Его драйверы
