@@ -4,6 +4,10 @@
   Ядро и его документация принадлежат отдельному проекту. Сначала читать README.md,
   docs/README.md, docs/HWTEST_ARCHITECTURE_V2.md и TODO.md. История опытов — в docs,
   старые значения числа тестов/планы внутри протоколов не заменяют текущий статус.
+- Целевое состояние после CMSIS-миграции: здесь только F411-consumer на сопровождении;
+  другие минимальные примеры и общая матрица регрессии — в stm32-gdbtest.
+  Переход пока не выполнен; порядок и приёмка описаны в TODO.md. Не удалять
+  HAL-профили и протоколы до проверки замены, не считать CMSIS проверкой HAL API.
 - Основная среда: Windows, PowerShell, VS Code, CMake/Ninja, xPack ARM GCC.
   Собирать через presets; MCU/toolchain имеют отдельные build. Базово:
   cmake --preset f411ce-debug, cmake --build --preset f411ce-debug.
