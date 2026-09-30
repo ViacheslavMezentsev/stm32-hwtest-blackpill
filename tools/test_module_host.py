@@ -9,11 +9,13 @@ import uuid
 ROOT = Path(__file__).resolve().parents[1]
 module = ROOT / "modules/stm32-gdbtest"
 files = subprocess.check_output(["git", "-c", "safe.directory=" + module.as_posix(),
-    "-C", str(module), "ls-files", "stm32_gdbtest", "Tests/host", "Tests/fixtures",
+    "-C", str(module), "ls-files", "stm32_gdbtest", "tests/host", "tests/fixtures",
     "examples/minimal-consumer", "tools/linux-stand.lock.json",
     "ci/dependencies.lock.json"], text=True, timeout=15).splitlines()
 if not files:
     raise SystemExit("Initialize dependency: git submodule update --init --recursive")
+if not any(name.startswith("tests/host/test_") and name.endswith(".py") for name in files):
+    raise SystemExit("Dependency host tests are missing: expected tests/host/test_*.py")
 copy = ROOT / "build/module-host" / uuid.uuid4().hex
 copy.mkdir(parents=True)
 for name in files:
@@ -30,7 +32,7 @@ env.update(TEMP=str(temp), TMP=str(temp), PYTHONDONTWRITEBYTECODE="1")
 env.pop("PYTHONPATH", None)
 with (copy / "build/host.log").open("wb") as log:
     result = subprocess.run([sys.executable, "-B", "-m", "unittest", "discover", "-s",
-        "Tests/host", "-v"], cwd=copy, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=120)
+        "tests/host", "-v"], cwd=copy, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=120)
 print((copy / "build/host.log").read_text(encoding="utf-8", errors="replace"))
 print("Host evidence: " + str(copy / "build/host.log"))
 raise SystemExit(result.returncode)

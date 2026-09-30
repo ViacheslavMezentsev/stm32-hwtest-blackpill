@@ -1,8 +1,13 @@
 # Дорожная карта стендового проекта
 
-Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/bc0762502cd7d82c9e44aee8ec7740bea72564f1/README.md).
-План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/bc0762502cd7d82c9e44aee8ec7740bea72564f1/TODO.md).
+Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/46018881d62ce43f80fd79947a31631d745e7f3b/README.md).
+План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/46018881d62ce43f80fd79947a31631d745e7f3b/TODO.md).
 История завершённых этапов — CHANGELOG и профильные протоколы в docs.
+
+Текущая интеграция: модуль `4601888`, корневой каталог `tests`; обёртка обновлена.
+В модуле оформлены план и инвентаризация F030 (ТЗ 0.27). Следующий шаг —
+CMSIS boot/clock/GPIO/blink F030, без дублирования существующего tests/firmware.
+Оптимизация CI остаётся отложенной до переноса примеров.
 
 ## Целевое разделение после перехода на CMSIS
 

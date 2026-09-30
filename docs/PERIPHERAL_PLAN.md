@@ -3,7 +3,7 @@
 Срез конфигурации: 2026-09-25. План относится ко всем пяти активным профилям:
 `f103c8`, `f401cc`, `f411ce`, `f030r8`, `f429zi`. `h503cb` приостановлен владельцем.
 Цель — проверять одинаковые требования на разных MCU, выявлять границы переносимости
-и развивать методы для самостоятельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/bc0762502cd7d82c9e44aee8ec7740bea72564f1/README.md).
+и развивать методы для самостоятельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/46018881d62ce43f80fd79947a31631d745e7f3b/README.md).
 План не является указанием немедленно менять IOC или переподключать платы.
 
 Этот документ описывает направления и критерии готовности. Точные аппаратные результаты
@@ -192,8 +192,8 @@ IOC генерирует init, но не рабочий обмен/повтор�
 `-g3` сохраняет macro debug info, но не удерживает неиспользуемые функции при
 оптимизации/линковке. Проверять готовый ELF и контекст макросов в Platform.
 GDB call HAL-функции — отдельный опыт с периферией; он не доказывает, что приложение
-само вызывает её правильно. См. [HAL contracts](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/bc0762502cd7d82c9e44aee8ec7740bea72564f1/docs/ru/CONTRACTS.md)
-и [рекомендации по макросам](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/bc0762502cd7d82c9e44aee8ec7740bea72564f1/docs/ru/HAL_MACRO_GUIDE.md).
+само вызывает её правильно. См. [HAL contracts](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/46018881d62ce43f80fd79947a31631d745e7f3b/docs/ru/CONTRACTS.md)
+и [рекомендации по макросам](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/46018881d62ce43f80fd79947a31631d745e7f3b/docs/ru/HAL_MACRO_GUIDE.md).
 
 ## Расширения отдельных плат и H503
 

@@ -2,6 +2,19 @@
 
 Срез: 2026-09-30. [Назначение проекта](../README.md).
 
+## Интеграция переименования tests
+
+Ветка `codex/module-tests-path`: gitlink stm32-gdbtest обновлён до
+`46018881d62ce43f80fd79947a31631d745e7f3b`, опубликованного в main модуля.
+Обёртка копирует tests/host и tests/fixtures; отсутствие файлов host-тестов
+отклоняется до запуска (отрицательная проверка PASS).
+Windows host: 96 тестов, 8 platform-specific skips, OK.
+Linux Docker/GCC13: пять сборок и 120/120 CTest (105 prepare) PASS.
+Логи/JUnit/ELF hashes — `build/ci-reports/`; Windows —
+`build/module-tests-path/windows-host.log`. Проверены 49 ссылок на файлы модуля.
+Firmware/API не менялись, новый HW-прогон не выполнялся.
+Публикация этой интеграционной ветки и её GitHub CI ещё предстоят.
+
 ## Первый Linux CI build/prepare
 
 Ветка `codex/offline-ci`: [workflow и локальный запуск](CI.md), Docker Linux/amd64,
