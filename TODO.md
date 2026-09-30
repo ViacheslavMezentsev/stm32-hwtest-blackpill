@@ -1,16 +1,16 @@
 # Дорожная карта стендового проекта
 
-Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/f494ab1a3189de05b3b0c0417623b1bb61abfe26/README.md).
-План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/f494ab1a3189de05b3b0c0417623b1bb61abfe26/TODO.md).
+Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/README.md).
+План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/TODO.md).
 История завершённых этапов — CHANGELOG и профильные протоколы в docs.
 
-Текущая интеграция: модуль `f494ab1`, ТЗ 0.32. В модуле приняты CMSIS
-boot/clock/GPIO/blink, TIM3/IRQ, ADC/DMA, физические единицы и Sleep F030.
-На NUCLEO-F030R8/ST-Link/OpenOCD новые Sleep-сценарии 2/2 PASS;
-предыдущие 12 сценариев проверены ранее на том же ELF, повторно не запускались.
-HAL восстановлен. [Протокол Sleep и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/f494ab1a3189de05b3b0c0417623b1bb61abfe26/docs/ru/F030_CMSIS_SLEEP.md).
-Проверен контекст прерываний после WFI, но не ток или длительность сна.
-Далее RTC и оставшиеся отказы; полная CMSIS-миграция ещё не завершена.
+Текущая интеграция: модуль `5d09823`, ТЗ 0.33. В модуле приняты CMSIS
+boot/clock/GPIO/blink, TIM3/IRQ, ADC/DMA, физические единицы, Sleep и RTC F030.
+На NUCLEO-F030R8/ST-Link/OpenOCD полный текущий набор 16/16 HW PASS
+на новом ELF; HAL восстановлен. [Протокол RTC и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/F030_CMSIS_RTC.md).
+RTC Alarm A работает от LSI через EXTI17/IRQ; точность часов и backup retention
+не проверены. Далее отказные сценарии и итоговая сверка HAL→CMSIS для F030;
+полная миграция ещё не завершена.
 Оптимизация CI остаётся отложенной до переноса примеров.
 
 ## Целевое разделение после перехода на CMSIS
