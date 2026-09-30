@@ -55,7 +55,27 @@ STM32CubeCLT и сообщал об отсутствии executable. Повто�
 `f411ce-openocd.log` и `f411ce-stlink-access.log` того же каталога. JSON в
 `build/f411ce-debug-hwtest/hwtest/runs/`, начиная с
 `20260930T082259.544617Z-HW_BOOT-12744`; JUnit — `hwtest/module-refresh-*-junit.xml`.
-Следующий стенд — F103C8/J-Link/SWD; остальные профили аппаратно ещё ожидаются.
+Результат следующего стенда F103C8/J-Link приведён ниже.
+
+### WeAct BluePill-Plus / F103C8 / J-Link, 2026-09-30
+
+Владелец уточнил название подключённой платы: **WeAct BluePill-Plus**, LED PB2.
+Выбран прежний профиль `f103c8` (STM32F103C8T6, 64 KiB), SWD,
+`bluepill-jlink.local.toml`; название платы не является основанием менять MCU-профиль.
+Код потребителя `d9636a4`, модуль `bc07625`; опубликованный SHA потребителя сверён.
+ELF SHA-256: `d919d062e99ec90c4a61e4776513d8681128a0c05c180d001b3b5e6f27e2c0dd`.
+
+Полный CTest `-L hw -j 1 --stop-on-failure` — **22/22 PASS**, все отчёты содержат
+`teardown=reset_run`. MCU оставлен работающим. Первый HW_BOOT записал отличавшийся
+образ и проверил ELF load sections; full-image CRC и отдельный внешний timeout/recovery
+не повторялись. DEV_ID=0x410 совпал; регистр Flash показал 128 KiB при профиле 64 KiB.
+Получено ожидаемое WARNING, образ помещается в обе границы. Linker не расширялся,
+верхние 64 KiB не проверялись, маркировка MCU из этого показания не выводится.
+
+Лог — `build/module-refresh/f103c8-jlink.log`, JUnit —
+`build/f103c8-debug-hwtest/hwtest/module-refresh-jlink-junit.xml`, JSON —
+`hwtest/runs/` той же сборки, начиная с `20260930T082955.143719Z-HW_BOOT-13108`.
+Следующий стенд — NUCLEO-F030R8 со встроенным J-Link STLink; F401/F429 также ожидаются.
 
 ## Платы и стенды
 

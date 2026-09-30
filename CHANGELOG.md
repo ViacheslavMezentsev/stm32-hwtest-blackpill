@@ -13,6 +13,9 @@
 
 ### Added
 
+- Регрессия `bc07625` на WeAct BluePill-Plus, профиль f103c8/J-Link/SWD: 22/22 PASS,
+  запись и проверка секций, ожидаемое WARNING Flash128/профиль64 KiB, reset_run.
+
 - Регрессия интеграции `bc07625`: F411CE/ST-Link — 22/22 через OpenOCD и 22/22
   через ST GDB Server, запись/проверка ELF-секций и завершение reset_run.
   Отдельный первоначальный ERROR доступа sandbox к CubeCLT сохранён в протоколе.
