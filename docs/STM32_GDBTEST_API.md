@@ -1,8 +1,8 @@
 # Подключение API stm32-gdbtest в стендовом проекте
 
 Каноническое описание API, CLI, CMake и миграции находится в
-[отдельном модуле](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/API.md).
-Инструкция для человека и агента: [написание тестов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/b76d909f903df513156019a32479c5e3c2b2e0c3/docs/TEST_AUTHORING.md).
+[отдельном модуле](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/bc0762502cd7d82c9e44aee8ec7740bea72564f1/docs/ru/API.md).
+Инструкция для человека и агента: [написание тестов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/bc0762502cd7d82c9e44aee8ec7740bea72564f1/docs/ru/TEST_AUTHORING.md).
 
 Здесь используется `tools/gdbtest.py`, который импортирует закреплённый подмодуль.
 Проектные сценарии находятся в `Tests/scenarios`, требования и контракты —

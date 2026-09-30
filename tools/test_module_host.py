@@ -10,7 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 module = ROOT / "modules/stm32-gdbtest"
 files = subprocess.check_output(["git", "-c", "safe.directory=" + module.as_posix(),
     "-C", str(module), "ls-files", "stm32_gdbtest", "Tests/host", "Tests/fixtures",
-    "examples/minimal-consumer"], text=True, timeout=15).splitlines()
+    "examples/minimal-consumer", "tools/linux-stand.lock.json",
+    "ci/dependencies.lock.json"], text=True, timeout=15).splitlines()
 if not files:
     raise SystemExit("Initialize dependency: git submodule update --init --recursive")
 copy = ROOT / "build/module-host" / uuid.uuid4().hex
