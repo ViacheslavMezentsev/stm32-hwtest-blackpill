@@ -1,6 +1,6 @@
 # Применение HAL-макросов в стендовых сценариях
 
-Правила выбора и offline-проверки перенесены в [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/40fafac8b069efd22b49037a99fb67165c68eed8/docs/ru/HAL_MACRO_GUIDE.md).
+Правила выбора и offline-проверки перенесены в [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5883316189bf9c47e74aebfa121dd0b690044832/docs/ru/HAL_MACRO_GUIDE.md).
 Этот документ фиксирует применение в f103c8/f401cc/f411ce.
 
 ## Внедрённый объём и оставшаяся работа

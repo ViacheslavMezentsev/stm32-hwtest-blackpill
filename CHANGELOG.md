@@ -7,6 +7,11 @@
 
 ### Changed
 
+- stm32-gdbtest обновлён до `5883316`: принят CMSIS TIM3/IRQ F030 в модуле,
+  обновлены ссылки и ближайший план. Ядро/API и firmware потребителя не менялись.
+  Windows host: 96 (8 skips), F030 build и 20/20 host/prepare PASS.
+
+
 - stm32-gdbtest обновлён до `40fafac`: первый CMSIS baseline F030 принят в модуле.
   Обновлены закреплённые ссылки; ядро/API и прошивки этого потребителя не менялись.
   Локально: Windows host 96 (8 skips), F030 build и host/prepare 20/20 PASS.

@@ -2,16 +2,28 @@
 
 Срез: 2026-09-30. [Назначение проекта](../README.md).
 
+## Интеграция CMSIS TIM3/IRQ модуля
+
+Ветка `codex/module-f030-cmsis-timer`: gitlink обновлён до `5883316`,
+подтверждённого в main модуля после успешных Docs и всех пяти jobs Offline.
+[Протокол TIM3/IRQ](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5883316189bf9c47e74aebfa121dd0b690044832/docs/ru/F030_CMSIS_TIMER.md).
+Ядро не изменилось относительно `40fafac`; firmware потребителя не менялась.
+Локально Windows host 96 (8 skips), F030 build, CTest host 20/20
+(17 prepare) PASS. Лог — build/module-f030-cmsis-timer-host.log,
+JUnit — build/f030r8-debug-hwtest/module-f030-cmsis-timer.xml.
+Аппаратный запуск при обновлении gitlink не выполнялся. Полная матрица
+интеграции будет проверена GitHub CI после публикации ветки.
+
 ## Интеграция CMSIS baseline модуля
 
 Ветка `codex/module-f030-cmsis-baseline`: gitlink обновлён до `40fafac`,
 подтверждённого в main stm32-gdbtest. Его Docs и Offline (пять jobs) прошли.
-[CMSIS F030: протокол и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/40fafac8b069efd22b49037a99fb67165c68eed8/docs/ru/F030_CMSIS_BASELINE.md).
+[CMSIS F030: протокол и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5883316189bf9c47e74aebfa121dd0b690044832/docs/ru/F030_CMSIS_BASELINE.md).
 Ядро модуля не изменилось относительно `4601888`; firmware этого проекта также
 не менялась. Локально Windows host: 96 тестов (8 skips), сборка F030 и
 20/20 host CTest, включая 17 prepare, PASS. Новый аппаратный прогон не нужен
-для изменения ссылок/gitlink и не выполнялся. GitHub CI интеграционной ветки
-предстоит проверить после публикации; полная локальная матрица не повторялась.
+для изменения ссылок/gitlink и не выполнялся. GitHub CI [36715492319](https://github.com/ViacheslavMezentsev/stm32-hwtest-blackpill/actions/runs/36715492319)
+прошёл на `b986b1a`: пять профилей PASS, отчёты сохранены. Ветка включена в main.
 
 ## Интеграция переименования tests
 
