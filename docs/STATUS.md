@@ -100,7 +100,26 @@ JSON в `hwtest/runs/` той же сборки: ошибка
 `20260930T083707.053326Z-HW_CLOCK-30568`, повторный набор начинается
 с `20260930T083812.526015Z-HW_BOOT-28740`.
 Перед дальнейшими сериями J-Link STLink подтверждать окно условий SEGGER.
-Следующий стенд — STM32F429I-DISCO, встроенный ST-Link/V2, USB CN1.
+Возврат Nucleo к штатной firmware ST-Link владелец выполнит самостоятельно;
+новый backend/USB-идентификатор пока не подтверждены.
+
+### STM32F429I-DISCO / ST-Link/V2, 2026-09-30
+
+Код потребителя `fed7335`, модуль `bc07625`; встроенный ST-Link/V2, USB CN1.
+Явные стенды `disco-f429zi.local.toml` и `disco-f429zi-stlink.local.toml`.
+ELF SHA-256: `d7346f72b1f29ea6864258d13e906cbd87c0ff1b494053b61565d3383f2e9641`.
+DEV_ID=0x419, регистр Flash — 2048 KiB.
+
+Полные последовательные наборы CTest `-L hw -j 1 --stop-on-failure`:
+OpenOCD **22/22 PASS**, затем ST-LINK GDB Server **22/22 PASS**.
+Все 44 отчёта содержат `teardown=reset_run`; MCU оставлен работающим.
+USB-сбоя в этих наборах не было; это не доказывает устранение ранее наблюдавшейся
+нестабильности длинных серий. Отдельные full-image и timeout/recovery не повторялись.
+
+Логи: `build/module-refresh/f429zi-openocd.log` и `f429zi-stlink.log`.
+JUnit: `build/f429zi-debug-hwtest/hwtest/module-refresh-openocd-junit.xml`
+и `module-refresh-stlink-junit.xml`; JSON — `hwtest/runs/` той же сборки.
+Из пяти активных профилей аппаратная регрессия на новой ревизии остаётся для F401CC.
 
 ## Платы и стенды
 

@@ -18,7 +18,8 @@
   Промежуточный результат: `bc07625` после RC, пять сборок и host/prepare PASS;
   F411CE/ST-Link — OpenOCD22/22 и ST server22/22 PASS; WeAct BluePill-Plus,
   f103c8/J-Link — 22/22 PASS; F030R8/J-Link STLink — повторный набор17/17 PASS
-  после окна SEGGER (первоначальный startup ERROR сохранён). Далее F429/F401.
+  после окна SEGGER (первоначальный startup ERROR сохранён); F429ZI — OpenOCD22/22
+  и ST server22/22 PASS. Остался F401CC; Nucleo после смены backend проверять отдельно.
   Подробности и ELF — docs/STATUS.md.
 - [ ] 2. Добавить CI сборки и штатного `prepare` для пяти активных профилей:
   сначала один GCC, затем матрица toolchain; сохранять отчёты и артефакты.
@@ -144,6 +145,8 @@ GDB API остаётся в главном потоке каждого GDB. Уп
 - [x] F030R8: подтверждение подключения Nucleo, serial встроенного J-Link STLink,
   boot/GPIO, ADC/DMA/TIM3/RTC/Sleep и отрицательные сценарии: 17/17 PASS.
 - [ ] F030R8: после отдельного возврата firmware ST-Link проверить OpenOCD/ST server.
+  Владелец выполняет восстановление сам; агент не перепрошивает отладчик.
+  После сообщения о завершении заново определить USB/serial и локальные stand TOML.
   Подробности: profiles/f030r8/README.md.
 
 
