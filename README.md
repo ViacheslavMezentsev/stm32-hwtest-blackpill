@@ -57,7 +57,7 @@ GDB-сервер. Зависимости сборки подключаются G
 
 Начните с [сборки и проверенных версий инструментов](docs/STATUS.md#сборка-и-зависимости),
 затем настройте свой стенд по [инструкции запуска тестов](docs/HWTEST.md).
-Для написания собственных сценариев есть [руководство автора](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a84b74254c9f48c1e521af23dad03ec91a2d10ad/docs/ru/TEST_AUTHORING.md).
+Для написания собственных сценариев есть [руководство автора](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/f494ab1a3189de05b3b0c0417623b1bb61abfe26/docs/ru/TEST_AUTHORING.md).
 
 ## Документация и связанные проекты
 
