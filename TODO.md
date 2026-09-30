@@ -1,15 +1,22 @@
 # Дорожная карта стендового проекта
 
-Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/README.md).
-План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/TODO.md).
+Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/README.md).
+План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/TODO.md).
 История завершённых этапов — CHANGELOG и профильные протоколы в docs.
 
-Текущая интеграция: модуль `7f3c65b`, ТЗ 0.40. Пакет fixture → CI →
-HW validation включён в main модуля после Docs и полного Offline для каждой ветки.
-В модуле сохранены автономный HAL F030 fixture, каталог техник TECH-001…008,
-отдельный CI на GCC13 и [аппаратная приёмка](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_HAL_VALIDATION.md).
-Исходные профили потребителя пока сохранены; новый gitlink не означает повторную
-аппаратную проверку всех плат.
+Текущая интеграция: кандидат модуля `67b7431`, Python 0.1.0rc2, API_VERSION=1, ТЗ 0.44.
+Ветка потребителя `codex/integrate-gdbtest-rc2` основана на main a48c944 и зависит
+от выпускной ветки модуля `codex/release-0.1.0-rc.2`. Порядок land: сначала
+финализированный модуль, затем потребитель с окончательным gitlink; до этого не сливать.
+После финальных документальных коммитов модуля обновить gitlink и ссылки,
+повторить затронутые проверки и CI потребителя.
+
+- [x] Windows F411 build/host/prepare, 22/22 HW через закреплённый модуль,
+  entered-loop timeout/recovery и финальный ADC/boot/blink PASS.
+- [x] Linux Docker: пять сборок, 120/120 CTest (105 prepare) PASS.
+- [ ] Опубликовать интеграционную ветку и проверить её полный GitHub Offline.
+- [ ] После финализации модуля обновить окончательный gitlink и выполнить land
+  потребителя только после land модуля и CI соответствующего SHA.
 
 - [x] Обновить модуль после пакета из четырёх веток; унифицировать каталоги
   тестов потребителя как `tests`, пути и импорты, игнорировать `remote.toml`.

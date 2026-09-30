@@ -10,22 +10,22 @@
 
 | Область | Владелец / источник |
 | --- | --- |
-| Сохранённая HAL-регрессия F030 | [fixture и аппаратная приёмка](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_HAL_VALIDATION.md) |
-| Каталог приёмов HAL/CMSIS | [TECH-001…008](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/TESTING_TECHNIQUES.md) |
+| Сохранённая HAL-регрессия F030 | [fixture и аппаратная приёмка](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/F030_HAL_VALIDATION.md) |
+| Каталог приёмов HAL/CMSIS | [TECH-001…008](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/TESTING_TECHNIQUES.md) |
 | CI build/prepare, Docker и планы QEMU/Renode | [CI](CI.md) |
-| Приёмка F030 HAL → CMSIS | [соответствие и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_CMSIS_ACCEPTANCE.md) |
-| CMSIS-миграция и пробелы F030 | [план и инвентаризация модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/CMSIS_MIGRATION.md) |
-| Текущее состояние и точный объём проверки | [стенд](STATUS.md), [модуль](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/STATUS.md) |
+| Приёмка F030 HAL → CMSIS | [соответствие и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/F030_CMSIS_ACCEPTANCE.md) |
+| CMSIS-миграция и пробелы F030 | [план и инвентаризация модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/CMSIS_MIGRATION.md) |
+| Текущее состояние и точный объём проверки | [стенд](STATUS.md), [модуль](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/STATUS.md) |
 | Эксперимент переноса на RISC-V | [К1921ВГ015 PoC](K1921VG015_POC.md), [пример](../examples/k1921vg015-poc/README.md) |
 | Проверка errata и библиотек RISC-V | [from_chars / К1921ВГ015](K1921VG015_ERRATA.md) |
-| Полный образ / CRC по readback | [проверка на стендах](FULL_IMAGE_CRC.md), [политика модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/IMAGES.md) |
-| ELF load sections и полный образ/CRC | [протокол](ELF_LOAD_REGIONS.md), [контракт модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/IMAGES.md) |
-| API/CLI/CMake, миграция namespace | [модуль: API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/API.md) |
-| Ручное и агентное написание тестов | [модуль: TEST_AUTHORING](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/TEST_AUTHORING.md) |
-| ELF/HAL contracts, macro preflight | [модуль: CONTRACTS](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/CONTRACTS.md), [HAL_MACRO_GUIDE](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/HAL_MACRO_GUIDE.md) |
-| Build/runtime metadata | [модуль: MANIFESTS](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/MANIFESTS.md) |
-| Серверные диалекты, identity/Flash, mutex | [BACKENDS](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/BACKENDS.md), [TARGET_IDENTITY](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/TARGET_IDENTITY.md), [DEBUGGER_OWNERSHIP](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/DEBUGGER_OWNERSHIP.md) |
-| Версии и релизы модуля | [модуль: VERSIONING](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/VERSIONING.md), [TODO](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/TODO.md) |
+| Полный образ / CRC по readback | [проверка на стендах](FULL_IMAGE_CRC.md), [политика модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/IMAGES.md) |
+| ELF load sections и полный образ/CRC | [протокол](ELF_LOAD_REGIONS.md), [контракт модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/IMAGES.md) |
+| API/CLI/CMake, миграция namespace | [модуль: API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/API.md) |
+| Ручное и агентное написание тестов | [модуль: TEST_AUTHORING](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/TEST_AUTHORING.md) |
+| ELF/HAL contracts, macro preflight | [модуль: CONTRACTS](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/CONTRACTS.md), [HAL_MACRO_GUIDE](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/HAL_MACRO_GUIDE.md) |
+| Build/runtime metadata | [модуль: MANIFESTS](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/MANIFESTS.md) |
+| Серверные диалекты, identity/Flash, mutex | [BACKENDS](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/BACKENDS.md), [TARGET_IDENTITY](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/TARGET_IDENTITY.md), [DEBUGGER_OWNERSHIP](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/DEBUGGER_OWNERSHIP.md) |
+| Версии и релизы модуля | [модуль: VERSIONING](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/VERSIONING.md), [TODO](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/TODO.md) |
 | Сборка/стенды/запуски приложения | [README](../README.md), [HWTEST](HWTEST.md), [BUILD_ARTIFACTS](BUILD_ARTIFACTS.md) |
 | Nucleo F030 / адаптация приложения | [профиль F030R8](../profiles/f030r8/README.md) и [аппаратный протокол](F030_JLINK_VALIDATION.md) — 17/17 через J-Link STLink |
 | Discovery F429ZI | [профиль и настройки](../profiles/f429zi/README.md) — [22/22 HW через OpenOCD](F429_OPENOCD_VALIDATION.md) |

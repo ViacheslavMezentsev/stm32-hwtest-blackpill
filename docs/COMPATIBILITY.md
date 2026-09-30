@@ -1,8 +1,8 @@
 # Совместимость тестовой системы STM32
 
 Общий документ двух проектов: модель совместимости и примеры стенда.
-Форматы runtime/build metadata принадлежат [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/MANIFESTS.md).
-Контракты: [модуль](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/CONTRACTS.md), [результаты профилей](HAL_CONTRACTS.md).
+Форматы runtime/build metadata принадлежат [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/MANIFESTS.md).
+Контракты: [модуль](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/CONTRACTS.md), [результаты профилей](HAL_CONTRACTS.md).
 
 Общее API управления GDB не означает одинакового HAL API или одинаковой периферии.
 Совместимость относится к конкретной проверенной комбинации платы, MCU, прошивки,
