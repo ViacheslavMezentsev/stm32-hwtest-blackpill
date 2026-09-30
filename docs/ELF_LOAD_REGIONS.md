@@ -11,7 +11,7 @@
 образа во Flash; `.bss` и debug sections не сравниваются. Промежутки в BIN
 заполняются 0xFF, но их содержимое на MCU не предполагается и не проверяется.
 Подробный контракт и план полного образа/CRC принадлежат
-[модулю: IMAGES](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/IMAGES.md).
+[модулю: IMAGES](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/IMAGES.md).
 
 Обязательные проверки до сервера: корректный список, отсутствие перекрытий,
 Flash-границы профиля и совпадение диапазона BIN. После подключения сохранён

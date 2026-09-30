@@ -1,6 +1,6 @@
 # J-Link: backend и приёмы Commander
 
-Общий документ двух проектов: методы и история опытов сохраняются здесь. Механизм тестирования теперь принадлежит отдельному [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/README.md). Разделы с прежними планами и числом тестов — журнал этапов; актуальные границы и планы: [архитектура v2](HWTEST_ARCHITECTURE_V2.md), [TODO](../TODO.md).
+Общий документ двух проектов: методы и история опытов сохраняются здесь. Механизм тестирования теперь принадлежит отдельному [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/README.md). Разделы с прежними планами и числом тестов — журнал этапов; актуальные границы и планы: [архитектура v2](HWTEST_ARCHITECTURE_V2.md), [TODO](../TODO.md).
 
 Проверено на BluePill STM32F103C8T6 / LED PB2, J-Link V9 (hardware V9.60),
 пакет SEGGER V8.32, GDB 14.2.90.20240526-git / Python 3.11.4.

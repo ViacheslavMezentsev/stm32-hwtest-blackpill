@@ -79,9 +79,9 @@ python -B tools/gdbtest.py run --session build/f411ce-debug-hwtest/hwtest/sessio
 ## Разделение проектов
 
 Runner/agent/Target/backend/CMake находятся в отдельном закреплённом подмодуле.
-Описание [API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/API.md),
-[backend](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/BACKENDS.md) и
-[контрактов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/CONTRACTS.md) ведётся там.
+Описание [API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/API.md),
+[backend](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/BACKENDS.md) и
+[контрактов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/CONTRACTS.md) ведётся там.
 Здесь остаются `profiles/<MCU>/tests`, `tests/scenarios`, локальные стенды,
 CLI-обёртка `tools/gdbtest.py` и протоколы аппаратных опытов.
 

@@ -1,13 +1,30 @@
 # Текущее состояние стендового проекта
 
-Срез: 2026-09-30. [Назначение проекта](../README.md).
+Срез: 2026-10-01. [Назначение проекта](../README.md).
+
+## Интеграция автономной HAL-регрессии
+
+Закреплён stm32-gdbtest `7f3c65b`, ТЗ 0.40. Три ветки fixture → CI → validation
+включены в main модуля; Docs и полный Offline проверены для каждой ревизии.
+В модуле теперь находятся [17 HAL-сценариев F030 и их приёмка](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_HAL_VALIDATION.md),
+а также [каталог техник](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/TESTING_TECHNIQUES.md).
+Ядро stm32_gdbtest не менялось относительно cea01f9; API_VERSION=1.
+Firmware и активные профили этого потребителя сохранены.
+
+Локальная проверка интеграции: Windows host 97 (8 платформенных skips) PASS;
+247 локальных и закреплённых ссылок на файлы проверены без ошибок.
+Linux Docker: пять сборок и 120/120 CTest (105 prepare) PASS.
+Результаты — build/ci-reports/summary.json и JUnit/logs рядом.
+На этой интеграционной ветке аппаратные тесты не запускались. NUCLEO-F030R8
+остаётся с восстановленной исходной HAL-прошивкой после приёмки fixture.
+Проверку GitHub Offline для нового SHA потребителя выполнить после push, до land.
 
 ## Интеграция пакета F030 и единых имён каталогов
 
 Ветка `codex/module-f030-batch-tests`: gitlink `cea01f9`, ТЗ модуля 0.37.
 Четыре ветки модуля включены в его main после проверки опубликованных SHA,
 Docs и всех пяти jobs Offline. Добавлены ADC busy, RTC deadline и
-[таблица приёмки 17 HAL → 18 CMSIS](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/F030_CMSIS_ACCEPTANCE.md).
+[таблица приёмки 17 HAL → 18 CMSIS](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_CMSIS_ACCEPTANCE.md).
 HAL-профили здесь сохраняются до отдельной HAL fixture в модуле.
 
 Каталоги тестов потребителя и minimal-consumer переименованы в `tests`,
@@ -33,7 +50,7 @@ CI этой ветки нужно проверить после push, до land.
 
 Ветка `codex/module-f030-cmsis-rtc`: gitlink обновлён до `5d09823`,
 подтверждённого в main модуля после Docs и всех пяти jobs Offline SUCCESS.
-[Протокол RTC Alarm A и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/F030_CMSIS_RTC.md).
+[Протокол RTC Alarm A и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_CMSIS_RTC.md).
 Ядро не изменилось относительно `f494ab1`; firmware потребителя не менялась.
 В модуле на новом ELF прошли 16/16 HW-сценариев, включая RTC и регрессию
 прежних четырнадцати; HAL-прошивка стенда восстановлена.
@@ -48,7 +65,7 @@ JUnit — build/f030r8-debug-hwtest/module-f030-cmsis-rtc.xml.
 
 Ветка `codex/module-f030-cmsis-sleep`: gitlink обновлён до `f494ab1`,
 подтверждённого в main модуля после Docs и всех пяти jobs Offline SUCCESS.
-[Протокол Sleep/WFI и границы доказательств](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/F030_CMSIS_SLEEP.md).
+[Протокол Sleep/WFI и границы доказательств](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_CMSIS_SLEEP.md).
 Ядро не изменилось относительно `a84b742`; firmware потребителя не менялась.
 В модуле аппаратно прошли два новых сценария: SysTick и TIM3 с проверкой
 прерванного контекста после WFI. Предыдущие 12 сценариев выполнялись ранее
@@ -64,7 +81,7 @@ JUnit — build/f030r8-debug-hwtest/module-f030-cmsis-sleep.xml.
 
 Ветка `codex/module-f030-cmsis-adc-units`: gitlink обновлён до `a84b742`,
 подтверждённого в main модуля после Docs и всех пяти jobs Offline SUCCESS.
-[Протокол физических единиц и численных тестов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/F030_CMSIS_ADC_UNITS.md).
+[Протокол физических единиц и численных тестов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_CMSIS_ADC_UNITS.md).
 Ядро не изменилось относительно `a6c0426`; firmware потребителя не менялась.
 Локально Windows host 96 (8 skips), F030 build и CTest host 20/20
 (17 prepare) PASS. Лог — build/module-f030-cmsis-adc-units-host.log;
@@ -77,7 +94,7 @@ JUnit — build/f030r8-debug-hwtest/module-f030-cmsis-adc-units.xml.
 
 Ветка `codex/module-f030-cmsis-adc-dma`: gitlink обновлён до `a6c0426`,
 подтверждённого в main модуля после Docs и всех пяти jobs Offline SUCCESS.
-[Протокол ADC/DMA и границы](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/F030_CMSIS_ADC_DMA.md).
+[Протокол ADC/DMA и границы](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_CMSIS_ADC_DMA.md).
 Ядро не изменилось относительно `5883316`; firmware потребителя не менялась.
 Локально Windows host 96 (8 skips), F030 build и CTest host 20/20
 (17 prepare) PASS. Лог — build/module-f030-cmsis-adc-dma-host.log;
@@ -90,7 +107,7 @@ JUnit — build/f030r8-debug-hwtest/module-f030-cmsis-adc-dma.xml.
 
 Ветка `codex/module-f030-cmsis-timer`: gitlink обновлён до `5883316`,
 подтверждённого в main модуля после успешных Docs и всех пяти jobs Offline.
-[Протокол TIM3/IRQ](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/F030_CMSIS_TIMER.md).
+[Протокол TIM3/IRQ](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_CMSIS_TIMER.md).
 Ядро не изменилось относительно `40fafac`; firmware потребителя не менялась.
 Локально Windows host 96 (8 skips), F030 build, CTest host 20/20
 (17 prepare) PASS. Лог — build/module-f030-cmsis-timer-host.log,
@@ -103,7 +120,7 @@ JUnit — build/f030r8-debug-hwtest/module-f030-cmsis-timer.xml.
 
 Ветка `codex/module-f030-cmsis-baseline`: gitlink обновлён до `40fafac`,
 подтверждённого в main stm32-gdbtest. Его Docs и Offline (пять jobs) прошли.
-[CMSIS F030: протокол и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/F030_CMSIS_BASELINE.md).
+[CMSIS F030: протокол и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_CMSIS_BASELINE.md).
 Ядро модуля не изменилось относительно `4601888`; firmware этого проекта также
 не менялась. Локально Windows host: 96 тестов (8 skips), сборка F030 и
 20/20 host CTest, включая 17 prepare, PASS. Новый аппаратный прогон не нужен

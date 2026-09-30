@@ -1,18 +1,19 @@
 # Дорожная карта стендового проекта
 
-Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/README.md).
-План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/TODO.md).
+Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/README.md).
+План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/TODO.md).
 История завершённых этапов — CHANGELOG и профильные протоколы в docs.
 
-Текущая интеграция: модуль `cea01f9`, ТЗ 0.37. В модуле приняты два
-отказных сценария F030 (ADC busy, RTC deadline) и таблица соответствия
-17 HAL → 18 CMSIS сценариев. Это 16 прежних и два новых аппаратных результата
-на одном ELF, а не единый повтор 18/18. HAL-прошивка восстановлена.
-[Приёмка и границы замены](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/F030_CMSIS_ACCEPTANCE.md).
+Текущая интеграция: модуль `7f3c65b`, ТЗ 0.40. Пакет fixture → CI →
+HW validation включён в main модуля после Docs и полного Offline для каждой ветки.
+В модуле сохранены автономный HAL F030 fixture, каталог техник TECH-001…008,
+отдельный CI на GCC13 и [аппаратная приёмка](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/F030_HAL_VALIDATION.md).
+Исходные профили потребителя пока сохранены; новый gitlink не означает повторную
+аппаратную проверку всех плат.
 
 - [x] Обновить модуль после пакета из четырёх веток; унифицировать каталоги
   тестов потребителя как `tests`, пути и импорты, игнорировать `remote.toml`.
-- [ ] До удаления HAL-профилей сохранить в модуле HAL fixture для макросов,
+- [x] До удаления HAL-профилей сохранить в модуле HAL fixture для макросов,
   contracts, callbacks/handles и force_return; CMSIS не проверяет эти API.
 - [ ] Продолжить CMSIS-перенос F103/F411 с согласованием подключаемой платы;
   дополнительные отказы ADC/RTC остаются в плане модуля.

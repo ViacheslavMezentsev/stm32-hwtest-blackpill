@@ -39,7 +39,7 @@ flowchart LR
 
 Рабочие профили: WeAct BlackPill V3.1 (STM32F411CEU6), BlackPill v3.0
 (STM32F401CCU6) и BluePill V1.1 / BluePill-Plus (STM32F103C8T6).
-[NUCLEO-F030R8](profiles/f030r8/README.md) проверен через встроенный J-Link STLink/SWD.
+[NUCLEO-F030R8](profiles/f030r8/README.md) проверен через встроенный отладчик; сейчас восстановлена родная прошивка ST-Link/SWD.
 [STM32F429I-DISCO](profiles/f429zi/README.md) проверен через встроенный ST-Link/V2/OpenOCD.
 Профиль STM32H503CBT6 подготовлен частично и ещё не включён в сборку.
 Точные сочетания плат/серверов, результаты и ограничения — в [текущем состоянии](docs/STATUS.md).
@@ -57,7 +57,7 @@ GDB-сервер. Зависимости сборки подключаются G
 
 Начните с [сборки и проверенных версий инструментов](docs/STATUS.md#сборка-и-зависимости),
 затем настройте свой стенд по [инструкции запуска тестов](docs/HWTEST.md).
-Для написания собственных сценариев есть [руководство автора](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/TEST_AUTHORING.md).
+Для написания собственных сценариев есть [руководство автора](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/TEST_AUTHORING.md).
 
 ## Документация и связанные проекты
 

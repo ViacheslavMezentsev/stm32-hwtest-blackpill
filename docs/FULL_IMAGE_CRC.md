@@ -3,7 +3,7 @@
 Реализован опциональный режим отдельного stm32-gdbtest: явный диапазон,
 заполнение дырок/хвоста, программирование полного payload и сравнение всех
 байтов вместе с CRC-32/ISO-HDLC. Обычный режим ELF load sections сохранён.
-Канонический контракт — [IMAGES модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/IMAGES.md).
+Канонический контракт — [IMAGES модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/IMAGES.md).
 
 ## Конфигурация стенда
 

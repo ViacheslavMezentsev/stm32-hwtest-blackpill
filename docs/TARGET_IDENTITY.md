@@ -1,6 +1,6 @@
 # Идентификация экземпляров MCU на стенде
 
-Политика warn/strict и Flash guard принадлежат [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/TARGET_IDENTITY.md).
+Политика warn/strict и Flash guard принадлежат [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/7f3c65b5c2b848e67309af63615152385de8976f/docs/ru/TARGET_IDENTITY.md).
 Здесь остаются команды и фактические результаты F401CC/F103C8/F411CE.
 Разделы ниже — последовательный журнал: утверждения «ещё не проверено» относятся к соответствующему этапу.
 
