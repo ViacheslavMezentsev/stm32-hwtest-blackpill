@@ -1,14 +1,15 @@
 # Дорожная карта стендового проекта
 
-Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a6c04267f81bcba01feeee463af4d2091448137a/README.md).
-План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a6c04267f81bcba01feeee463af4d2091448137a/TODO.md).
+Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a84b74254c9f48c1e521af23dad03ec91a2d10ad/README.md).
+План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a84b74254c9f48c1e521af23dad03ec91a2d10ad/TODO.md).
 История завершённых этапов — CHANGELOG и профильные протоколы в docs.
 
-Текущая интеграция: модуль `a6c0426`, ТЗ 0.30. В модуле приняты CMSIS
-boot/clock/GPIO/blink, TIM3/IRQ и ADC/DMA raw с таймаутом завершения F030:
-9/9 HW PASS на NUCLEO-F030R8 со штатным ST-Link/OpenOCD; HAL восстановлен.
-[Протокол и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a6c04267f81bcba01feeee463af4d2091448137a/docs/ru/F030_CMSIS_ADC_DMA.md).
-Далее преобразование ADC в температуру/VDDA и численные векторы, RTC и Sleep.
+Текущая интеграция: модуль `a84b742`, ТЗ 0.31. В модуле приняты CMSIS
+boot/clock/GPIO/blink, TIM3/IRQ, ADC/DMA и физические единицы F030:
+12/12 HW PASS на NUCLEO-F030R8 со штатным ST-Link/OpenOCD; HAL восстановлен.
+[Протокол и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a84b74254c9f48c1e521af23dad03ec91a2d10ad/docs/ru/F030_CMSIS_ADC_UNITS.md).
+Семь численных и 14 невалидных наборов проверены на ARM/GCC13;
+GCC14/15 пока подтверждены сборкой и prepare. Далее RTC/Sleep и оставшиеся отказы.
 Оптимизация CI остаётся отложенной до переноса примеров.
 
 ## Целевое разделение после перехода на CMSIS

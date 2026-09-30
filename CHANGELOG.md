@@ -7,6 +7,11 @@
 
 ### Changed
 
+- stm32-gdbtest обновлён до `a84b742`: приняты преобразование ADC F030 и
+  численные сценарии в модуле. Обновлены ссылки и план; ядро/API и firmware
+  потребителя не менялись. Windows host 96 (8 skips), F030 host/prepare 20/20 PASS.
+
+
 - stm32-gdbtest обновлён до `a6c0426`: принят CMSIS ADC/DMA raw и timeout F030
   в модуле. Обновлены ссылки и план; ядро/API и firmware потребителя не менялись.
   Windows host 96 (8 skips), F030 build и host/prepare 20/20 PASS.
