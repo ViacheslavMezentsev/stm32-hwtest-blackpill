@@ -1,0 +1,8 @@
+# Restored onboard ST-Link; select this stand explicitly before hardware runs.
+[probe]
+backend = "stlink"
+serial = "REPLACE_WITH_NUCLEO_STLINK_SERIAL"
+executable = "ST-LINK_gdbserver"
+programmer_dir = "/absolute/path/to/STM32CubeProgrammer/bin"
+speed_khz = 1000
+flash = "if-different"

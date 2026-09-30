@@ -13,6 +13,10 @@
 
 ### Added
 
+- NUCLEO-F030R8 после восстановления ST-Link владельцем: OpenOCD17/17 и ST server17/17
+  PASS без окна SEGGER. Добавлен шаблон ST server, CMake default F030 переключён
+  на OpenOCD; локальные serial не публикуются, история J-Link сохранена.
+
 - Завершена базовая регрессия пяти профилей на `bc07625`: F401CC/ST-Link прошёл
   OpenOCD22/22 и ST server22/22, включая macro-сценарии; DEV_ID0x423/Flash256 KiB
   совпали, MCU running. Итоговая матрица и границы проверки записаны в STATUS.

@@ -146,9 +146,9 @@ GDB API остаётся в главном потоке каждого GDB. Уп
   параметризация hadc/TIM3, offline manifest/ELF/traceability, шаблон stand.
 - [x] F030R8: подтверждение подключения Nucleo, serial встроенного J-Link STLink,
   boot/GPIO, ADC/DMA/TIM3/RTC/Sleep и отрицательные сценарии: 17/17 PASS.
-- [ ] F030R8: после отдельного возврата firmware ST-Link проверить OpenOCD/ST server.
-  Владелец выполняет восстановление сам; агент не перепрошивает отладчик.
-  После сообщения о завершении заново определить USB/serial и локальные stand TOML.
+- [x] F030R8: владелец восстановил firmware ST-Link V2J45M31; локальные stand TOML
+  обновлены по новому serial. OpenOCD17/17 и ST server17/17 PASS без окна SEGGER.
+  Агент не перепрошивал отладчик; старый J-Link шаблон сохранён для истории.
   Подробности: profiles/f030r8/README.md.
 
 

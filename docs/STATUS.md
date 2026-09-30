@@ -148,6 +148,31 @@ F030 — полный повтор17/17 через встроенный J-Link S
 
 ## Платы и стенды
 
+### Восстановленный ST-Link NUCLEO-F030R8, 2026-09-30
+
+Владелец самостоятельно восстановил штатную firmware **V2J45M31** и подключил
+только Nucleo. Новый serial хранится исключительно в локальных stand TOML.
+На модуле `bc07625`, базе потребителя `e1038ea` проверены полные наборы:
+**OpenOCD17/17 PASS**, **ST-LINK GDB Server17/17 PASS**, без окна SEGGER.
+Все 34 отчёта содержат `teardown=reset_run`; MCU оставлен работающим.
+DEV_ID=0x440, Flash64 KiB; ELF не менялся:
+`cdf421fdad7c6b2637e1c8ce0a257097b373db084c7bb702587b423a3e1323d6`.
+
+Явные стенды: `nucleo-f030r8.local.toml` (OpenOCD) и
+`nucleo-f030r8-stlink.local.toml` (ST server из CubeCLT1.22.0).
+Версия CubeProgrammer2.23.0 в сообщении владельца относится к его USB-инвентаризации,
+а не к инструментам этих тестовых запусков. Firmware отладчика агент не менял.
+CMake default для новых F030 build переключён на OpenOCD; существующий cache
+обновлён явно и проверено поле stand в session.json. Старый J-Link шаблон и протокол
+сохранены; пользоваться его прежним serial для текущей платы нельзя.
+
+Логи — `build/module-refresh/f030r8-restored-openocd.log` и
+`f030r8-restored-stlink.log`; JUnit — `build/f030r8-debug-hwtest/hwtest/`
+`stlink-restore-openocd-junit.xml` и `stlink-restore-stlink-junit.xml`.
+JSON — `hwtest/runs/` той же сборки, начиная с
+`20260930T094132.018831Z-HW_BOOT-32340`. Full-image и внешний timeout/recovery
+в этой проверке смены backend отдельно не выполнялись.
+
 | Плата | MCU / профиль | LED | Проект производителя |
 | --- | --- | --- | --- |
 | WeAct BlackPill V3.1 | STM32F411CEU6 / f411ce | PC13 | [MiniSTM32F4x1](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1) |
@@ -159,7 +184,8 @@ F030 — полный повтор17/17 через встроенный J-Link S
 с различными DEV_ID; [результаты и ограничения](TARGET_IDENTITY.md).
 H503 приостановлен: генерация сохранена, профиль ещё не включён в сборку.
 
-Текущие подтверждённые стенды: F411CE + ST-Link/SWD, F103C8 + J-Link/SWD и NUCLEO-F030R8 + встроенный J-Link STLink/SWD.
+Сейчас владелец подключил только NUCLEO-F030R8 со штатным ST-Link/SWD.
+Другие стенды перед новым запуском требуют подтверждения подключения.
 Опыты К1921ВГ015 завершены, его стенд разобран владельцем.
 Для каждого аппаратного запуска явно выбирать profile и локальный stand TOML.
 Перед сменой платы/отладчика/проводки согласовать замену. UART/VCOM не подключён.

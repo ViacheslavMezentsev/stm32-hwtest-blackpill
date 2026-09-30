@@ -27,16 +27,20 @@ host.profile_offline проверяет manifest/ELF, сбор сценарие�
 Функции/макросы проверяются офлайн, семантика MMIO/IRQ требует платы.
 Запуск CTest без фильтра включает аппаратные сценарии — выбирать stand явно.
 
-Для действующей платы: Tests/stands/nucleo-f030r8-jlink.example.toml →
-nucleo-f030r8-jlink.local.toml с её decimal serial. Не копировать serial BluePill.
+Владелец восстановил штатный ST-Link (V2J45M31). Для действующей платы:
+Tests/stands/nucleo-f030r8.example.toml → nucleo-f030r8.local.toml с новым
+ST-Link serial; старый decimal serial J-Link больше не использовать.
 
 ```powershell
-$env:STM32_GDBTEST_STAND = "$PWD/Tests/stands/nucleo-f030r8-jlink.local.toml"
+$env:STM32_GDBTEST_STAND = "$PWD/Tests/stands/nucleo-f030r8.local.toml"
 ctest --test-dir build/f030r8-debug-hwtest -L hw --output-on-failure
 ```
 
-Шаблон nucleo-f030r8.example.toml предназначен для OpenOCD после возврата ST-Link
-firmware и ещё не проверен аппаратно. Встроенный отладчик выбирается явно.
+Для ST-LINK GDB Server предусмотрен nucleo-f030r8-stlink.example.toml;
+в локальной копии задать путь к серверу и каталогу CubeProgrammer/bin.
+Старый J-Link шаблон сохранён для истории. Встроенный отладчик выбирается явно.
+В существующем CMake cache может остаться прежний stand: передавать его явно
+через окружение или обновить STM32_GDBTEST_STAND при конфигурации.
 
 ## Проверенная генерация CubeMX
 
