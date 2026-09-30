@@ -13,6 +13,10 @@
 
 ### Added
 
+- Регрессия `bc07625` на NUCLEO-F030R8/J-Link STLink: полный повтор17/17 PASS,
+  reset_run; первоначальный startup timeout и подтверждение окна SEGGER владельцем
+  сохранены в протоколе, прошивка отладчика не менялась.
+
 - Регрессия `bc07625` на WeAct BluePill-Plus, профиль f103c8/J-Link/SWD: 22/22 PASS,
   запись и проверка секций, ожидаемое WARNING Flash128/профиль64 KiB, reset_run.
 

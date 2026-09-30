@@ -17,7 +17,8 @@
   Результаты фиксировать с commit модуля/проекта, ELF и выбранным стендом.
   Промежуточный результат: `bc07625` после RC, пять сборок и host/prepare PASS;
   F411CE/ST-Link — OpenOCD22/22 и ST server22/22 PASS; WeAct BluePill-Plus,
-  f103c8/J-Link — 22/22 PASS. Следующий F030R8/J-Link STLink, затем F429/F401.
+  f103c8/J-Link — 22/22 PASS; F030R8/J-Link STLink — повторный набор17/17 PASS
+  после окна SEGGER (первоначальный startup ERROR сохранён). Далее F429/F401.
   Подробности и ELF — docs/STATUS.md.
 - [ ] 2. Добавить CI сборки и штатного `prepare` для пяти активных профилей:
   сначала один GCC, затем матрица toolchain; сохранять отчёты и артефакты.

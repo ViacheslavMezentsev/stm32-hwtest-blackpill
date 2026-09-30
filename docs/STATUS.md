@@ -75,7 +75,32 @@ ELF SHA-256: `d919d062e99ec90c4a61e4776513d8681128a0c05c180d001b3b5e6f27e2c0dd`.
 Лог — `build/module-refresh/f103c8-jlink.log`, JUnit —
 `build/f103c8-debug-hwtest/hwtest/module-refresh-jlink-junit.xml`, JSON —
 `hwtest/runs/` той же сборки, начиная с `20260930T082955.143719Z-HW_BOOT-13108`.
-Следующий стенд — NUCLEO-F030R8 со встроенным J-Link STLink; F401/F429 также ожидаются.
+Результат NUCLEO-F030R8 приведён ниже; F401/F429 также ожидаются.
+
+### NUCLEO-F030R8 / встроенный J-Link STLink, 2026-09-30
+
+Код потребителя `db033af`, модуль `bc07625`; публикация ветки сверена.
+SWD, J-Link GDB Server 8.32, firmware J-Link STLink V21 без обновления,
+явный stand `nucleo-f030r8-jlink.local.toml`. DEV_ID=0x440, Flash64 KiB совпали.
+ELF SHA-256: `cdf421fdad7c6b2637e1c8ce0a257097b373db084c7bb702587b423a3e1323d6`.
+
+Первый набор: HW_BOOT PASS, затем HW_CLOCK ERROR до готовности GDB-сервера
+(10 с, последняя строка `Connecting to target...`). Набор остановлен.
+Повтор HW_CLOCK в пользовательском окружении — PASS; владелец подтвердил,
+что поставил галочку в окне SEGGER. После этого полный повторный набор
+CTest `-L hw -j 1 --stop-on-failure` завершён: **17/17 PASS**, все отчёты
+содержат `teardown=reset_run`, MCU оставлен работающим.
+Таймаут согласуется с известным ожиданием подтверждения условий J-Link STLink;
+это не FAIL проверки тактирования. Само повышение прав не объявляется исправлением.
+
+Исходный лог `build/module-refresh/f030r8-jlink.log` сохранён; успешный повтор —
+`f030r8-jlink-repeat.log`. JUnit в `build/f030r8-debug-hwtest/hwtest/`:
+`module-refresh-jlink-junit.xml` и `module-refresh-jlink-repeat-junit.xml`.
+JSON в `hwtest/runs/` той же сборки: ошибка
+`20260930T083707.053326Z-HW_CLOCK-30568`, повторный набор начинается
+с `20260930T083812.526015Z-HW_BOOT-28740`.
+Перед дальнейшими сериями J-Link STLink подтверждать окно условий SEGGER.
+Следующий стенд — STM32F429I-DISCO, встроенный ST-Link/V2, USB CN1.
 
 ## Платы и стенды
 
