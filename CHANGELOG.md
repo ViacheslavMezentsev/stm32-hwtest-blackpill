@@ -7,6 +7,11 @@
 
 ### Changed
 
+- stm32-gdbtest обновлён до `a6c0426`: принят CMSIS ADC/DMA raw и timeout F030
+  в модуле. Обновлены ссылки и план; ядро/API и firmware потребителя не менялись.
+  Windows host 96 (8 skips), F030 build и host/prepare 20/20 PASS.
+
+
 - stm32-gdbtest обновлён до `5883316`: принят CMSIS TIM3/IRQ F030 в модуле,
   обновлены ссылки и ближайший план. Ядро/API и firmware потребителя не менялись.
   Windows host: 96 (8 skips), F030 build и 20/20 host/prepare PASS.

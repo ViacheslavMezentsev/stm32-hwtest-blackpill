@@ -1,14 +1,14 @@
 # Дорожная карта стендового проекта
 
-Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5883316189bf9c47e74aebfa121dd0b690044832/README.md).
-План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5883316189bf9c47e74aebfa121dd0b690044832/TODO.md).
+Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a6c04267f81bcba01feeee463af4d2091448137a/README.md).
+План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a6c04267f81bcba01feeee463af4d2091448137a/TODO.md).
 История завершённых этапов — CHANGELOG и профильные протоколы в docs.
 
-Текущая интеграция: модуль `5883316`, ТЗ 0.29. В модуле приняты CMSIS
-boot/clock/GPIO/blink и TIM3/IRQ для F030: 6/6 HW PASS на NUCLEO-F030R8
-со штатным ST-Link/OpenOCD; HAL-приложение восстановлено.
-[Протокол и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5883316189bf9c47e74aebfa121dd0b690044832/docs/ru/F030_CMSIS_TIMER.md).
-Далее ADC/DMA/арифметика, RTC и Sleep; периферийная миграция ещё не завершена.
+Текущая интеграция: модуль `a6c0426`, ТЗ 0.30. В модуле приняты CMSIS
+boot/clock/GPIO/blink, TIM3/IRQ и ADC/DMA raw с таймаутом завершения F030:
+9/9 HW PASS на NUCLEO-F030R8 со штатным ST-Link/OpenOCD; HAL восстановлен.
+[Протокол и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a6c04267f81bcba01feeee463af4d2091448137a/docs/ru/F030_CMSIS_ADC_DMA.md).
+Далее преобразование ADC в температуру/VDDA и численные векторы, RTC и Sleep.
 Оптимизация CI остаётся отложенной до переноса примеров.
 
 ## Целевое разделение после перехода на CMSIS

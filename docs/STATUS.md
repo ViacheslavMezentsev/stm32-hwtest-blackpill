@@ -2,23 +2,36 @@
 
 Срез: 2026-09-30. [Назначение проекта](../README.md).
 
+## Интеграция CMSIS ADC/DMA модуля
+
+Ветка `codex/module-f030-cmsis-adc-dma`: gitlink обновлён до `a6c0426`,
+подтверждённого в main модуля после Docs и всех пяти jobs Offline SUCCESS.
+[Протокол ADC/DMA и границы](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a6c04267f81bcba01feeee463af4d2091448137a/docs/ru/F030_CMSIS_ADC_DMA.md).
+Ядро не изменилось относительно `5883316`; firmware потребителя не менялась.
+Локально Windows host 96 (8 skips), F030 build и CTest host 20/20
+(17 prepare) PASS. Лог — build/module-f030-cmsis-adc-dma-host.log;
+JUnit — build/f030r8-debug-hwtest/module-f030-cmsis-adc-dma.xml.
+Аппаратный запуск при обновлении gitlink не выполнялся; полную матрицу
+интеграции предстоит проверить в GitHub CI после публикации ветки.
+
 ## Интеграция CMSIS TIM3/IRQ модуля
 
 Ветка `codex/module-f030-cmsis-timer`: gitlink обновлён до `5883316`,
 подтверждённого в main модуля после успешных Docs и всех пяти jobs Offline.
-[Протокол TIM3/IRQ](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5883316189bf9c47e74aebfa121dd0b690044832/docs/ru/F030_CMSIS_TIMER.md).
+[Протокол TIM3/IRQ](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a6c04267f81bcba01feeee463af4d2091448137a/docs/ru/F030_CMSIS_TIMER.md).
 Ядро не изменилось относительно `40fafac`; firmware потребителя не менялась.
 Локально Windows host 96 (8 skips), F030 build, CTest host 20/20
 (17 prepare) PASS. Лог — build/module-f030-cmsis-timer-host.log,
 JUnit — build/f030r8-debug-hwtest/module-f030-cmsis-timer.xml.
-Аппаратный запуск при обновлении gitlink не выполнялся. Полная матрица
-интеграции будет проверена GitHub CI после публикации ветки.
+Аппаратный запуск при обновлении gitlink не выполнялся. GitHub CI
+[36723196223](https://github.com/ViacheslavMezentsev/stm32-hwtest-blackpill/actions/runs/36723196223)
+на `be4a196`: пять профилей PASS, отчёты сохранены, ветка включена в main.
 
 ## Интеграция CMSIS baseline модуля
 
 Ветка `codex/module-f030-cmsis-baseline`: gitlink обновлён до `40fafac`,
 подтверждённого в main stm32-gdbtest. Его Docs и Offline (пять jobs) прошли.
-[CMSIS F030: протокол и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5883316189bf9c47e74aebfa121dd0b690044832/docs/ru/F030_CMSIS_BASELINE.md).
+[CMSIS F030: протокол и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a6c04267f81bcba01feeee463af4d2091448137a/docs/ru/F030_CMSIS_BASELINE.md).
 Ядро модуля не изменилось относительно `4601888`; firmware этого проекта также
 не менялась. Локально Windows host: 96 тестов (8 skips), сборка F030 и
 20/20 host CTest, включая 17 prepare, PASS. Новый аппаратный прогон не нужен
