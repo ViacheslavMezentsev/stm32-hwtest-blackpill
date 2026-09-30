@@ -21,14 +21,14 @@ Keep User Code, генерация пар `.c/.h` для периферии. SWD
 и две host-проверки (24/24 CTest), включая ADC/DMA, TIM2 IRQ и повторный RTC alarm.
 
 `target.toml` проверен на подключённой плате (DBGMCU device ID 0x410).
-`Tests/board` содержит отдельные F103-ожидания; F411-тесты автоматически не наследуются.
+`tests/board` содержит отдельные F103-ожидания; F411-тесты автоматически не наследуются.
 Не подключайте BluePill к F411 debug/hwtest preset.
 
 Предлагаемые периферийные настройки: [план опытов](../../docs/PERIPHERAL_PLAN.md).
 
 ## Аппаратный запуск
 
-Создайте `Tests/stands/bluepill.local.toml` по `bluepill.example.toml`, задайте
+Создайте `tests/stands/bluepill.local.toml` по `bluepill.example.toml`, задайте
 свой ST-Link и путь OpenOCD. Локальный файл не хранится в Git.
 
 ```powershell

@@ -1,6 +1,6 @@
 # Предварительные проверки ELF/HAL-контрактов
 
-Описание механизма/schema перенесено в [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/CONTRACTS.md).
+Описание механизма/schema перенесено в [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/CONTRACTS.md).
 Ниже — ожидания HAL конкретных профилей и история проверок; ранние числа тестов исторические.
 
 Сценарий объявляет необходимые контракты литерально:
@@ -12,7 +12,7 @@ def rcc_osc_null(t):
 ```
 
 AST-сборщик читает имена без импорта тестового кода. Определения находятся в
-`profiles/<MCU>/Tests/contracts.json`, schema 1. Заполнены F103C8/F401CC/F411CE: семь прежних
+`profiles/<MCU>/tests/contracts.json`, schema 1. Заполнены F103C8/F401CC/F411CE: семь прежних
 сценариев функций/типов плюс HW_CLOCK, HW_GPIO, HW_TIM2_INIT с макросами. Другие сценарии явно имеют `contracts.status=NOT_REQUESTED`.
 Это статус метаданных, не новый результат теста: протокол остаётся PASS/FAIL/ERROR.
 
@@ -39,8 +39,8 @@ ERROR без аппаратной неисправности. Полная се�
 После сборки выбранного профиля:
 
 ```powershell
-python -B Tests/experiments/check_contract_preflight.py --session build/f103c8-debug-hwtest/hwtest/session.json
-python -B Tests/experiments/check_contract_preflight.py --session build/f411ce-debug-hwtest/hwtest/session.json
+python -B tests/experiments/check_contract_preflight.py --session build/f103c8-debug-hwtest/hwtest/session.json
+python -B tests/experiments/check_contract_preflight.py --session build/f411ce-debug-hwtest/hwtest/session.json
 ```
 
 Скрипт использует GDB и ELF сессии; отчёты — build/contract-validation/<profile>. Проверяет

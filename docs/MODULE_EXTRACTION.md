@@ -3,7 +3,7 @@
 Отделение завершено: [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest)
 имеет отдельную историю и подключается как `modules/stm32-gdbtest` с закреплённым
 gitlink. Это основная форма поставки; pip/console executable пока не реализованы.
-Версия runtime 0.1.0.dev0; правила релизов — [в модуле](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/VERSIONING.md).
+Версия runtime 0.1.0.dev0; правила релизов — [в модуле](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/VERSIONING.md).
 
 Модуль владеет runner/agent/Target, контрактами, backend, отчётами и CMake attach.
 Этот проект владеет прошивкой, платами, MCU-профилями и сценариями требований.

@@ -76,7 +76,7 @@ ADC и DMA по текущему статическому анализу мен�
    Добавлять вызовы только в USER CODE-секции, не переносить бизнес-логику в Core.
 3. Создать target.toml: Flash 256 KiB, корректная F401 identity, регистры/ловушки;
    identity сверить с RM0368 и фактическим MCU, не копировать F411 DEV_ID.
-4. Добавить Tests/requirements, expectations и контракты. Отличия APB1/APB2 меняют
+4. Добавить tests/requirements, expectations и контракты. Отличия APB1/APB2 меняют
    RCC/ADC ожидания; TIM2 при данных делителях сохраняет период 100 ms.
 5. Проверить F401 factory ADC constants. [Datasheet ST F401xB/xC](https://www.st.com/resource/en/datasheet/stm32f401vc.pdf)
    задаёт TS_CAL1 30°C по 0x1FFF7A2C и TS_CAL2 110°C по 0x1FFF7A2E при VDDA 3.3 V.

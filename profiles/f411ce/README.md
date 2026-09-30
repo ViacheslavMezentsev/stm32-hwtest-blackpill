@@ -7,7 +7,7 @@ IOC: `profiles/f411ce/stm32-hwtest-blackpill.ioc`.
 Открывайте перенесённый файл и генерируйте CubeMX-код в эту папку, чтобы Core/Src
 и Core/Inc оставались здесь. Сохраняйте USER CODE; toolchain Makefile.
 Общий `../../User` содержит прикладную прошивку, Platform — адаптер F411,
-Tests — сценарии и требования,
+tests — сценарии и требования,
 target.toml — параметры цели HWTEST. Cube F4 V1.28.3, 512 KiB Flash / 128 KiB RAM.
 
 Прежние presets `debug`, `release`, `debug-gcc14`, `debug-gcc15`, `debug-hwtest`

@@ -7,7 +7,7 @@
 /.cortex-debug*
 /.vscode/*.log
 /.vscode/browse.vc.db*
-/Tests/stands/*.local.toml
+/tests/stands/*.local.toml
 __pycache__/
 *.pyc
 *.bak
@@ -17,3 +17,7 @@ __pycache__/
 /examples/minimal-consumer/CMakeUserPresets.json
 
 /.work/
+
+# Private remote stand configuration; remote.example.toml stays tracked.
+remote.toml
+*-remote.toml

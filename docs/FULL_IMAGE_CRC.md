@@ -3,7 +3,7 @@
 Реализован опциональный режим отдельного stm32-gdbtest: явный диапазон,
 заполнение дырок/хвоста, программирование полного payload и сравнение всех
 байтов вместе с CRC-32/ISO-HDLC. Обычный режим ELF load sections сохранён.
-Канонический контракт — [IMAGES модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/IMAGES.md).
+Канонический контракт — [IMAGES модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/IMAGES.md).
 
 ## Конфигурация стенда
 
@@ -16,15 +16,15 @@ ELF за границу runner отклонит запуск до сервера
 16 KiB F411 и страницам F103. Не включать другие данные проекта в эту область.
 
 ```powershell
-python -B tools/gdbtest.py run --session build/f411ce-debug-hwtest/hwtest/session.json --test HW_GPIO --stand Tests/stands/blackpill.local.toml --image-policy profiles/f411ce/full-image.toml
-python -B tools/gdbtest.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_GPIO --stand Tests/stands/bluepill-jlink.local.toml --image-policy profiles/f103c8/full-image.toml
+python -B tools/gdbtest.py run --session build/f411ce-debug-hwtest/hwtest/session.json --test HW_GPIO --stand tests/stands/blackpill.local.toml --image-policy profiles/f411ce/full-image.toml
+python -B tools/gdbtest.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_GPIO --stand tests/stands/bluepill-jlink.local.toml --image-policy profiles/f103c8/full-image.toml
 ```
 
 Для CTest путь передавать абсолютным:
 
 ```powershell
 $env:STM32_GDBTEST_IMAGE_POLICY = (Resolve-Path profiles/f411ce/full-image.toml).Path
-$env:STM32_GDBTEST_STAND = (Resolve-Path Tests/stands/blackpill.local.toml).Path
+$env:STM32_GDBTEST_STAND = (Resolve-Path tests/stands/blackpill.local.toml).Path
 ctest --test-dir build/f411ce-debug-hwtest -R '^hw.HW_GPIO$' --output-on-failure
 Remove-Item Env:STM32_GDBTEST_IMAGE_POLICY
 Remove-Item Env:STM32_GDBTEST_STAND

@@ -13,14 +13,14 @@ Python-пакета остаётся дополнительным будущим
 build; существующий каталог не перезаписывается. Runtime не меняется. В поставке:
 
 - stm32_gdbtest: Python/CMake ядро;
-- Tests/host и Tests/fixtures: автономная регрессия, без рабочей profiles основного проекта;
+- tests/host и tests/fixtures: автономная регрессия, без рабочей profiles основного проекта;
 - examples/minimal-consumer, шаблон локального OpenOCD-стенда;
 - README.md, CHANGELOG.md, TODO.md, AGENTS.md, API/TEST_AUTHORING/VERSIONING;
 - LICENSE: точная копия существующей MIT License, Copyright2026 Viacheslav Mezentsev;
 - SOURCE.md/EXPORT_MANIFEST.json: исходный commit, dirty-состояние и hashes файлов.
 
 README/AGENTS и инструкции для человека/агента находятся в
-[distribution/stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/README.md). Fixtures —
+[distribution/stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/README.md). Fixtures —
 синтетические/замороженные входные данные host-тестов; не HW-профили и не evidence HAL.
 Рабочие MCU-профили, application User, HAL/CMSIS, Cube/toolchains, SVD, gdb.pdf,
 локальные конфиги/serial, ELF/логи и Git metadata не экспортируются.
@@ -70,7 +70,7 @@ commit в отдельном локальном Git-репозитории вн�
 До1.0 PATCH — совместимые исправления, MINOR — возможности/изменения API с миграцией.
 После1.0 несовместимый API увеличивает MAJOR. Released tags не перемещаются.
 Это политика проекта на основе [SemVer2.0.0](https://semver.org/spec/v2.0.0.html);
-[подробности](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/VERSIONING.md).
+[подробности](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/VERSIONING.md).
 Schema/API_VERSION независимы от release version; gitlink всегда фиксирует SHA.
 
 Внешний host-контроллер оборудования отложен в TODO обоих проектов. Его драйверы

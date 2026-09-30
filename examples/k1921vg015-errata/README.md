@@ -24,7 +24,7 @@ foreach ($variant in @('gcc13','gcc14','cloudbear14','gcc14-ram','cloudbear14-ra
 Из корня репозитория, только при подключённом согласованном стенде:
 
 ```powershell
-python -B examples/k1921vg015-errata/series.py --stand Tests/stands/k1921-jlink.local.toml
+python -B examples/k1921vg015-errata/series.py --stand tests/stands/k1921-jlink.local.toml
 ```
 
 Для offline-дизассемблирования и проверки ключа обхода:

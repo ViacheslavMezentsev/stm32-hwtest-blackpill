@@ -7,6 +7,14 @@
 
 ### Changed
 
+- stm32-gdbtest обновлён до `cea01f9`: два отказных CMSIS-сценария F030,
+  таблица HAL→CMSIS и поддержка единых имён каталогов. ТЗ модуля 0.37.
+- Собственные каталоги тестов, включая профили и minimal-consumer, переименованы
+  из `Tests` в `tests`; исправлены импорты, пути инструментов и документации.
+  Личные `remote.toml`/`*-remote.toml` исключены из Git. Генерируемый код не менялся.
+- Проверки: Linux пять сборок/120 CTest PASS, Windows host 97 (8 skips),
+  F030 20/20, minimal-consumer 3/3; импорты 22 модулей на обеих ОС PASS.
+
 - stm32-gdbtest обновлён до `5d09823`: принят CMSIS RTC Alarm A F030 в модуле.
   Обновлены ссылки и план; ядро/API и firmware потребителя не менялись.
   Windows host 96 (8 skips), F030 build и host/prepare 20/20 PASS.
@@ -205,7 +213,7 @@
 
 - Подготовлен состав отдельного Git-модуля: distribution/stm32-gdbtest с README,
   CHANGELOG, TODO, AGENTS и инструкциями автору тестов/версионированием; MIT сохранена.
-- Host-тесты отделены от рабочих MCU-профилей через Tests/fixtures. Export tool
+- Host-тесты отделены от рабочих MCU-профилей через tests/fixtures. Export tool
   формирует новый снимок внутри build без Git init/network/push. Автономные host44,
   минимальный consumer build/offline2/2, hashes/LICENSE/doc links PASS.
 - Согласован новый initial history и основной способ Git submodule; план MODULE_SPLIT_PLAN.md.
@@ -372,7 +380,7 @@
 - Три новых аппаратных сценария: реальные величины, известные опорные точки,
   некорректные отсчёты и восстановление. На BluePill 22/22 CTest PASS.
 - Native C++ проверки обеих формул, включая F411 interpolation/compensation и
-  повреждённые калибровочные параметры; отдельный preset Tests/native, 1/1 PASS.
+  повреждённые калибровочные параметры; отдельный preset tests/native, 1/1 PASS.
 
 - Набор F103: 17 аппаратных сценариев и требования, presets f103-debug-hwtest,
   f103-check-hw/f103-hw и пример локального стенда. На BluePill 19/19 CTest PASS.
@@ -425,8 +433,8 @@
 - План периферии актуализирован: оба текущих профиля существуют, Sleep F103 проверен;
   H503 отдельно обозначен как будущий и аппаратно непроверенный.
 
-- 14 прежних и три новых сценария используют Tests/scenarios; MCU-ожидания
-  остаются в profiles/<MCU>/Tests/expectations.py, специфичные init-проверки — в профилях.
+- 14 прежних и три новых сценария используют tests/scenarios; MCU-ожидания
+  остаются в profiles/<MCU>/tests/expectations.py, специфичные init-проверки — в профилях.
   Формат @case и универсальный hwtest не менялись. Обе прошивки собраны;
   аппаратная проверка нового пересчёта F411 ожидает согласованной замены платы.
 

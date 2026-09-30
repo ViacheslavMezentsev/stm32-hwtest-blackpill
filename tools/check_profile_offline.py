@@ -28,7 +28,7 @@ def main():
     profile_path = Path(session["profile"]).resolve()
     profile = load_profile(profile_path)
     tests = collect(session["tests"])
-    trace(tests, profile_path.parent / "Tests/requirements.md")
+    trace(tests, profile_path.parent / "tests/requirements.md")
     out = session_path.parent / "offline"
     out.mkdir(exist_ok=True)
     snapshot = out / "firmware.elf"
@@ -38,7 +38,7 @@ def main():
     names = sorted({name for test in tests for name in test.get("contracts", [])})
     if not names:
         raise ValueError("No contracts requested; no ELF compatibility claim is possible")
-    selected = select_contracts(profile_path.parent / "Tests/contracts.json", names, manifest)
+    selected = select_contracts(profile_path.parent / "tests/contracts.json", names, manifest)
     request, result = out / "request.json", out / "result.json"
     result.unlink(missing_ok=True)
     request.write_text(json.dumps(dict(elf=str(snapshot), result=str(result), selected=selected)),

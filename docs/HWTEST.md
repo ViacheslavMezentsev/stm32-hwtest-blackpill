@@ -20,12 +20,12 @@ JUnit-сервис CI и автоматический SKIP не заявлены
 ## Настройка
 
 ```powershell
-Copy-Item Tests/stands/blackpill.example.toml Tests/stands/blackpill.local.toml
+Copy-Item tests/stands/blackpill.example.toml tests/stands/blackpill.local.toml
 ```
 
 Указать в локальном TOML реальный `serial`, при необходимости путь `executable`
 к OpenOCD. Номер можно получить командой `STM32_Programmer_CLI -l stlink-only`.
-Локальные файлы `Tests/stands/*.local.toml` не включаются в Git.
+Локальные файлы `tests/stands/*.local.toml` не включаются в Git.
 
 `flash = "if-different"`: при несовпадении прошить ELF, проверить Flash чтением,
 затем начать тест. `flash = "verify-only"`: никогда не прошивать; несовпадение — ERROR.
@@ -69,7 +69,7 @@ ctest --preset f411ce-host
 # Отдельная проверка:
 ctest --preset f411ce-hw -R '^hw.HW_CLOCK$'
 # Host CLI, например с другим локальным стендом:
-python -B tools/gdbtest.py run --session build/f411ce-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/blackpill.local.toml
+python -B tools/gdbtest.py run --session build/f411ce-debug-hwtest/hwtest/session.json --test HW_BOOT --stand tests/stands/blackpill.local.toml
 ```
 
 Прямой `ctest` не собирает прошивку. Для цикла «изменить → собрать → проверить»
@@ -79,10 +79,10 @@ python -B tools/gdbtest.py run --session build/f411ce-debug-hwtest/hwtest/sessio
 ## Разделение проектов
 
 Runner/agent/Target/backend/CMake находятся в отдельном закреплённом подмодуле.
-Описание [API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/API.md),
-[backend](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/BACKENDS.md) и
-[контрактов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/CONTRACTS.md) ведётся там.
-Здесь остаются `profiles/<MCU>/Tests`, `Tests/scenarios`, локальные стенды,
+Описание [API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/API.md),
+[backend](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/BACKENDS.md) и
+[контрактов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/CONTRACTS.md) ведётся там.
+Здесь остаются `profiles/<MCU>/tests`, `tests/scenarios`, локальные стенды,
 CLI-обёртка `tools/gdbtest.py` и протоколы аппаратных опытов.
 
 ## Жизненный цикл и отчёты
@@ -156,7 +156,7 @@ Fault-handler для негативного сценария достигалс�
 
 ## BluePill F103 и форматирование User
 
-Для BluePill используйте `Tests/stands/bluepill.local.toml`, configure preset
+Для BluePill используйте `tests/stands/bluepill.local.toml`, configure preset
 `f103c8-debug-hwtest`, build preset `f103c8-check-hw`, test preset `f103c8-hw`.
 Не запускайте F411 preset на BluePill. Тесты/требования раздельные, IDs локальны
 профилю; отчёты сохраняются в соответствующем build-каталоге.
@@ -173,7 +173,7 @@ CubeMX/Core и зависимости в эту команду не входят
 Отдельная регрессия API GDB без платы (нужен GDB с Python):
 
 ```powershell
-arm-none-eabi-gdb-py3 -q -nx -batch -ex "source Tests/gdb/check_breakpoint.py"
+arm-none-eabi-gdb-py3 -q -nx -batch -ex "source tests/gdb/check_breakpoint.py"
 ```
 
 Проверяется немедленный отказ на неизвестный символ и удаление pending breakpoint.
@@ -183,9 +183,9 @@ arm-none-eabi-gdb-py3 -q -nx -batch -ex "source Tests/gdb/check_breakpoint.py"
 
 ## Общие проектные сценарии
 
-`Tests/scenarios` содержит общие проверки приложения. `profiles/<MCU>/Tests/board`
+`tests/scenarios` содержит общие проверки приложения. `profiles/<MCU>/tests/board`
 сохраняет функции с буквальными `@case` для AST-сбора; обёртки передают
-`Tests/expectations.py` своего профиля. Три init-теста остаются локальными:
+`tests/expectations.py` своего профиля. Три init-теста остаются локальными:
 они непосредственно описывают различные регистры ADC/DMA/TIM/RTC.
 При добавлении MCU не копируйте алгоритм сценария: задайте его ожидания и
 требования. При изменении поведения приложения меняйте общий сценарий и

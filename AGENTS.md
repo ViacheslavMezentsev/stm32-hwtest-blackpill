@@ -61,6 +61,11 @@
   обновляется в модуле; аппаратура/профили/измерения здесь. Общая архитектура/методика
   остаётся здесь со ссылками на независимый модуль. Навигация — docs/README.md.
 
+- Новые собственные каталоги называем в нижнем регистре; каталоги тестов — `tests`.
+  Имена сторонних/генерируемых каталогов (`Core` и т. п.) сохраняем; существующие
+  `User`/`Platform` не переименовываем в рамках этой миграции. Личный удалённый
+  стенд — `remote.toml` или `<profile>-remote.toml`, исключённый из Git.
+
 ## Firmware и тесты
 
 - Активные профили f103c8/f401cc/f411ce. CubeMX генерирует внутри profiles/<MCU>;
@@ -75,7 +80,7 @@
   Проверять API presence; -g3 сохраняет macro debug info, но не неиспользуемые функции.
   GDB API только в главном потоке, внешний timeout обязателен. Python breakpoint может
   быть pending вопреки CLI pending off: проверять явно.
-- Проектные сценарии Tests/scenarios, @case/ожидания/контракты — profiles/<MCU>/Tests.
+- Проектные сценарии tests/scenarios, @case/ожидания/контракты — profiles/<MCU>/tests.
   Не переносить app-specific логику в ядро. API/CLI/contracts/macros описаны в модуле.
   CLI приложения: python -B tools/gdbtest.py. Host ядра: python -B tools/test_module_host.py
   (65 тестов в отдельных build/module-host копиях). CMake attach здесь без SELF_TESTS.
@@ -88,7 +93,7 @@
   RTC IRQ мост F103 в Platform: при регенерации не допустить дубли handler/NVIC.
 - ADC: User/Src/adc_units.cpp — арифметика, Platform — калибровка. F103 TYPICAL,
   F411 FACTORY; м°C не означают точность 0.001°C. F401 channel16, F411 channel18
-  (HAL TEMPSENSOR у F411 содержит служебный флаг). Native tests — Tests/native.
+  (HAL TEMPSENSOR у F411 содержит служебный флаг). Native tests — tests/native.
 - app_idle — Sleep/WFI с SysTick, не Stop. SWD/DBGMCU влияют на clocks/потребление;
   S_SLEEP не измеряет ток. observe_sleep — проектный OpenOCD-only инструмент,
   передавать проектный root для output/temp, не писать в подмодуль.
@@ -112,7 +117,7 @@
   Перед каждым HW набором назвать плату/MCU, отладчик, backend и соединения, явно
   сказать оставить или изменить стенд. При подтверждённом текущем стенде повторное
   разрешение не нужно; смена требует ответа владельца. USB не подтверждает разводку.
-- F411 OpenOCD: Tests/stands/blackpill.local.toml; ST server: blackpill-stlink.local.toml.
+- F411 OpenOCD: tests/stands/blackpill.local.toml; ST server: blackpill-stlink.local.toml.
   F103 J-Link: bluepill-jlink.local.toml. Выбирать stand явно, не полагаться на default.
   UART/VCOM пока не подключать. Термин в русских текстах — «отладчик».
 - OpenOCD0.12.0/ST server7.14.0 (CubeCLT1.22.0), J-Link8.32 проверялись; диалекты
@@ -145,7 +150,7 @@
   Эмуляция, Release и матрица GCC пока не входят в этот workflow.
 
 - К1921 PoC — examples/k1921vg015-poc, внешний NIIET_DEVICE_DIR только читать;
-  build/k1921vg015-poc, explicit Tests/stands/k1921-jlink.local.toml. Собран GCC13.3.0-2,
+  build/k1921vg015-poc, explicit tests/stands/k1921-jlink.local.toml. Собран GCC13.3.0-2,
   GDB15.1/Python3.12.2 (-py3), -Og -g3. Не менять production STM32 guards ради запуска PoC.
   CHIPID0xDEADBEE1 по RM p300, Flash1MiB по разделу7 — документированная граница,
   не заводской размер. Проверка по ELF load regions, включая .data LMA; gaps не сравнивать.
@@ -178,7 +183,7 @@
   User HAL-free, Platform обслуживает HAL callbacks через app_* callbacks.
   Общие Python-сценарии используют adc_handle/timer_handle/timer_enabled из EXPECTED.
   Nucleo подключена к встроенному J-Link STLink: явно выбирать
-  Tests/stands/nucleo-f030r8-jlink.local.toml; LD2 подтверждён, MCU running.
+  tests/stands/nucleo-f030r8-jlink.local.toml; LD2 подтверждён, MCU running.
   Не путать с BluePill J-Link; firmware отладчика не менять. Offline: tools/check_profile_offline.py --session build/.../hwtest/session.json.
 
 - F429ZI: STM32F429I-DISCO (старый ST-Link/V2), IOC template DISC1 сохранён.

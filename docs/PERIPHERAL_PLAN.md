@@ -3,7 +3,7 @@
 Срез конфигурации: 2026-09-25. План относится ко всем пяти активным профилям:
 `f103c8`, `f401cc`, `f411ce`, `f030r8`, `f429zi`. `h503cb` приостановлен владельцем.
 Цель — проверять одинаковые требования на разных MCU, выявлять границы переносимости
-и развивать методы для самостоятельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/README.md).
+и развивать методы для самостоятельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/README.md).
 План не является указанием немедленно менять IOC или переподключать платы.
 
 Этот документ описывает направления и критерии готовности. Точные аппаратные результаты
@@ -136,8 +136,8 @@ OpenOCD и позднее непрерывно 22/22 через ST server. USB-�
 - `profiles/<MCU>/Platform`: конкретные HAL-вызовы, handles, callbacks и различия MCU;
   CubeMX/Core и IOC остаются согласованными. Не распространять HAL includes в User
   ради удобства тестов.
-- `Tests/scenarios`: общий ход проверки поведения; независимые ожидаемые величины.
-- `profiles/<MCU>/Tests`: @case, MCU-ожидания, requirements и HAL contracts, включая
+- `tests/scenarios`: общий ход проверки поведения; независимые ожидаемые величины.
+- `profiles/<MCU>/tests`: @case, MCU-ожидания, requirements и HAL contracts, включая
   контекст макросов. Маски из HAL помогают читать поля, но не заменяют требование.
 - Локальный стенд: отладчик и подтверждённые физические соединения. Текущий TOML
   описывает backend/serial, а не универсальную модель проводки/внешнего оборудования.
@@ -192,8 +192,8 @@ IOC генерирует init, но не рабочий обмен/повтор�
 `-g3` сохраняет macro debug info, но не удерживает неиспользуемые функции при
 оптимизации/линковке. Проверять готовый ELF и контекст макросов в Platform.
 GDB call HAL-функции — отдельный опыт с периферией; он не доказывает, что приложение
-само вызывает её правильно. См. [HAL contracts](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/CONTRACTS.md)
-и [рекомендации по макросам](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/HAL_MACRO_GUIDE.md).
+само вызывает её правильно. См. [HAL contracts](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/CONTRACTS.md)
+и [рекомендации по макросам](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/HAL_MACRO_GUIDE.md).
 
 ## Расширения отдельных плат и H503
 

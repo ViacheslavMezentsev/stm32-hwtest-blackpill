@@ -1,6 +1,6 @@
 # Аппаратная проверка минимального потребителя
 
-Общий документ двух проектов: методы и история опытов сохраняются здесь. Механизм тестирования теперь принадлежит отдельному [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/README.md). Разделы с прежними планами и числом тестов — журнал этапов; актуальные границы и планы: [архитектура v2](HWTEST_ARCHITECTURE_V2.md), [TODO](../TODO.md).
+Общий документ двух проектов: методы и история опытов сохраняются здесь. Механизм тестирования теперь принадлежит отдельному [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/README.md). Разделы с прежними планами и числом тестов — журнал этапов; актуальные границы и планы: [архитектура v2](HWTEST_ARCHITECTURE_V2.md), [TODO](../TODO.md).
 
 ## Стенд и границы
 
@@ -20,7 +20,7 @@ BluePill/J-Link не использовалась. Подключения и н�
 Затем из корня репозитория, после подтверждения указанного стенда:
 
 ```powershell
-python -B Tests/experiments/check_consumer_lifecycle.py --stand Tests/stands/blackpill.local.toml
+python -B tests/experiments/check_consumer_lifecycle.py --stand tests/stands/blackpill.local.toml
 ```
 
 Скрипт проверяет manifest **обоих** ELF до аппаратных действий. В блоке finally
@@ -78,19 +78,19 @@ namespace, общая блокировка отладчика между про�
 ## Перенос и read-only dependency: следующий опыт
 
 2026-09-24, тот же F411CE/ST-Link/OpenOCD, strict. Скрипт
-`Tests/experiments/check_readonly_consumer.ps1` создаёт две отдельные копии внутри
+`tests/experiments/check_readonly_consumer.ps1` создаёт две отдельные копии внутри
 `build/relocation validation/<id>`: `module checkout` и `consumer project`.
 Копируются только отслеживаемые исходники, без Git metadata, локальных стендов,
 сборок и Python cache. Это проверка переноса исходного дерева, не Git clone/install.
 
 ```powershell
-./Tests/experiments/check_readonly_consumer.ps1 -Stand Tests/stands/blackpill.local.toml
+./tests/experiments/check_readonly_consumer.ps1 -Stand tests/stands/blackpill.local.toml
 ```
 
 Перед запуском должны быть собраны артефакты основной прошивки f411ce-debug-hwtest
 для восстановления. Потребитель конфигурируется/собирается заново через presets,
 STM32_GDBTEST_SOURCE_DIR указывает на перенесённую копию только hwtest. Корневые User,
-profiles, Tests и stm32-cmake-yml не копируются в зависимость.
+profiles, tests и stm32-cmake-yml не копируются в зависимость.
 
 На копию модуля установлен наследуемый Windows ACL Deny Write/Delete для текущего
 пользователя. Контрольные попытки создать файл, изменить существующий файл,

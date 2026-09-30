@@ -52,7 +52,7 @@ Offline PASS означает согласованность manifest/ELF, тр�
 Подтверждённый владельцем стенд: DISCO + встроенный ST-Link/V2, SWD, backend OpenOCD.
 USB подключается к CN1 ST-LINK; обе перемычки CN4 и JP3 установлены в штатное
 положение ON. Внешний отладчик на CN2 не подключать одновременно.
-Скопировать Tests/stands/disco-f429zi.example.toml в disco-f429zi.local.toml,
+Скопировать tests/stands/disco-f429zi.example.toml в disco-f429zi.local.toml,
 указать serial именно встроенного отладчика и путь OpenOCD. Это важно при
 одновременно подключённом ST-Link BlackPill. Serial не включать в Git.
 Сначала identity/Flash, boot/GPIO и подтверждение LD3, затем остальные сценарии.

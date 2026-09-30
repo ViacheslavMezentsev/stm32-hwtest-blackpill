@@ -1,6 +1,6 @@
 # Серверы GDB: OpenOCD, ST-LINK и J-Link
 
-Общие правила серверов и диалекты перенесены в [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/BACKENDS.md).
+Общие правила серверов и диалекты перенесены в [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/BACKENDS.md).
 Здесь — настройка наших стендов и аппаратные результаты.
 
 Общие тесты работают через GDB-Python и RSP. Backend задаёт запуск сервера,
@@ -14,15 +14,15 @@ F429ZI DISCO также проверена через ST: 18 PASS, USB-сбой,
 
 ## Запуск ST-LINK на BluePill
 
-Скопировать `Tests/stands/bluepill-stlink.example.toml` в
-`Tests/stands/bluepill-stlink.local.toml`; указать свой serial, полный путь к
+Скопировать `tests/stands/bluepill-stlink.example.toml` в
+`tests/stands/bluepill-stlink.local.toml`; указать свой serial, полный путь к
 `ST-LINK_gdbserver.exe` и `programmer_dir` — каталог с `STM32_Programmer_CLI.exe`.
 Локальный TOML исключён из Git. Для текущей машины локальная копия уже подготовлена.
 
 Один тест:
 
 ```powershell
-python -B tools/gdbtest.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/bluepill-stlink.local.toml
+python -B tools/gdbtest.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_BOOT --stand tests/stands/bluepill-stlink.local.toml
 ```
 
 Полный набор (переменная только в текущем PowerShell; сохранить предыдущее значение):
@@ -30,7 +30,7 @@ python -B tools/gdbtest.py run --session build/f103c8-debug-hwtest/hwtest/sessio
 ```powershell
 $previousStand = $env:STM32_GDBTEST_STAND
 try {
-    $env:STM32_GDBTEST_STAND = (Resolve-Path Tests/stands/bluepill-stlink.local.toml).Path
+    $env:STM32_GDBTEST_STAND = (Resolve-Path tests/stands/bluepill-stlink.local.toml).Path
     cmake --build --preset f103c8-check-hw
 } finally {
     $env:STM32_GDBTEST_STAND = $previousStand
@@ -76,7 +76,7 @@ Option bytes, mass erase и обновление firmware отладчика н�
 Оба сервера проверены на BlackPill F411 + ST-Link: по 24/24 CTest на одном ELF,
 включая build manifest, семь HAL-контрактов, ADC/Sleep и timeout/recovery.
 [Доказательства и ограничения](STM32_TESTING_METHODS.md#f411-hal-контракты-и-два-сервера-st-link-2026-09-24).
-Для ST используйте копию `Tests/stands/blackpill-stlink.example.toml` в
+Для ST используйте копию `tests/stands/blackpill-stlink.example.toml` в
 `blackpill-stlink.local.toml` с локальными путями и serial. Для OpenOCD —
 `blackpill.local.toml`. Выбирать файл явно через STM32_GDBTEST_STAND; аппаратный профиль
 задаётся preset debug-hwtest. Два отладчика могут быть подключены одновременно,

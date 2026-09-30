@@ -94,7 +94,7 @@ def main():
             if not ready:
                 raise TimeoutError("OpenOCD startup timed out")
             client = subprocess.Popen(gdb_base + [str(args.elf.resolve()), "-x",
-                                      str(ROOT / "Tests/hardware_smoke.py")], env=env,
+                                      str(ROOT / "tests/hardware_smoke.py")], env=env,
                                       stdout=gdb_log, stderr=subprocess.STDOUT, creationflags=flags)
             code = client.wait(timeout=args.timeout)
         if not result.exists():

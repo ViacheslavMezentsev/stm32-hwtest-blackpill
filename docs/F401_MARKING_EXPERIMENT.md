@@ -15,7 +15,7 @@ ELF SHA-256: `415411b1213ac6240e132a8ecc4a881394e906e1f214733217b7e6a2097707bc`.
 Flash образа 12224 байта, STM32F401xC, начальный SP 0x20010000.
 Исходники, IOC, ELF, обычный target.toml и ожидания сценариев не изменялись.
 
-Отдельный скрипт `Tests/experiments/f401_marking.py` передаёт существующему
+Отдельный скрипт `tests/experiments/f401_marking.py` передаёт существующему
 исполнителю runtime-копию профиля с ожидаемым DEV_ID 0x431 вместо 0x423.
 Исходный профиль, причина эксперимента и override включены в JSON/JUnit.
 Manifest по-прежнему проверяется относительно исходного профиля и ELF;
@@ -70,7 +70,7 @@ PASS регистровой конфигурации ADC не доказывае
 Повторение выбранных проверок на подтверждённом стенде:
 
 ```powershell
-python -B Tests/experiments/f401_marking.py --stand Tests/stands/blackpill.local.toml --test HW_ADC_DMA_INIT --test HW_TIM2_INIT --test HW_RTC_INIT
+python -B tests/experiments/f401_marking.py --stand tests/stands/blackpill.local.toml --test HW_ADC_DMA_INIT --test HW_TIM2_INIT --test HW_RTC_INIT
 ```
 
 `--test ALL` останавливает набор на первом ERROR; FAIL сохраняется и позволяет

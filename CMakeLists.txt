@@ -56,7 +56,7 @@ if(ENABLE_HW_TESTING)
     else()
         set(default_stand bluepill)
     endif()
-    set(STM32_GDBTEST_STAND "${PROJECT_SOURCE_DIR}/Tests/stands/${default_stand}.local.toml" CACHE FILEPATH "Local stand TOML")
+    set(STM32_GDBTEST_STAND "${PROJECT_SOURCE_DIR}/tests/stands/${default_stand}.local.toml" CACHE FILEPATH "Local stand TOML")
     stm32_gdbtest_attach(${PROJECT_NAME} PROFILE_DIR "${BOARD_DIR}")
     find_package(Python3 3.11 COMPONENTS Interpreter REQUIRED)
     add_test(NAME host.profile_offline COMMAND "${Python3_EXECUTABLE}" -B

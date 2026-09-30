@@ -44,13 +44,13 @@ ISA `rv32imfc_zba_zbb_zbc_zbs_zicsr`, ABI ilp32f, `-Og -g3`.
 
 ## Аппаратный запуск
 
-Скопировать stand.example.toml в корневой `Tests/stands/k1921-jlink.local.toml`,
+Скопировать stand.example.toml в корневой `tests/stands/k1921-jlink.local.toml`,
 указать свой USB serial. Перед запуском подтвердить К1921ВГ015/J-Link/JTAG,
 закрыть использующую этот отладчик сессию IDE. Команды из **корня репозитория**:
 
 ```powershell
-python -B examples/k1921vg015-poc/run.py flash --stand Tests/stands/k1921-jlink.local.toml
-python -B examples/k1921vg015-poc/run.py verify --stand Tests/stands/k1921-jlink.local.toml
+python -B examples/k1921vg015-poc/run.py flash --stand tests/stands/k1921-jlink.local.toml
+python -B examples/k1921vg015-poc/run.py verify --stand tests/stands/k1921-jlink.local.toml
 ```
 
 flash записывает ELF при отличии загружаемых секций. verify не записывает Flash.
@@ -62,11 +62,11 @@ previous-image-range.bin сохраняет лишь затронутый диа
 Отказные опыты, на том же согласованном стенде:
 
 ```powershell
-python -B examples/k1921vg015-poc/run.py negative --stand Tests/stands/k1921-jlink.local.toml
+python -B examples/k1921vg015-poc/run.py negative --stand tests/stands/k1921-jlink.local.toml
 # Ожидаемый FAIL, exit 1: намеренно неверное ожидание PC0.
-python -B examples/k1921vg015-poc/run.py stall --stand Tests/stands/k1921-jlink.local.toml
+python -B examples/k1921vg015-poc/run.py stall --stand tests/stands/k1921-jlink.local.toml
 # Ожидаемый ERROR, exit 2: внешний timeout 12 s и отдельный recovery-клиент.
-python -B examples/k1921vg015-poc/run.py verify --stand Tests/stands/k1921-jlink.local.toml
+python -B examples/k1921vg015-poc/run.py verify --stand tests/stands/k1921-jlink.local.toml
 # После отказных опытов должен снова пройти положительный сценарий.
 ```
 

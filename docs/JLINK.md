@@ -1,6 +1,6 @@
 # J-Link: backend и приёмы Commander
 
-Общий документ двух проектов: методы и история опытов сохраняются здесь. Механизм тестирования теперь принадлежит отдельному [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/README.md). Разделы с прежними планами и числом тестов — журнал этапов; актуальные границы и планы: [архитектура v2](HWTEST_ARCHITECTURE_V2.md), [TODO](../TODO.md).
+Общий документ двух проектов: методы и история опытов сохраняются здесь. Механизм тестирования теперь принадлежит отдельному [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/README.md). Разделы с прежними планами и числом тестов — журнал этапов; актуальные границы и планы: [архитектура v2](HWTEST_ARCHITECTURE_V2.md), [TODO](../TODO.md).
 
 Проверено на BluePill STM32F103C8T6 / LED PB2, J-Link V9 (hardware V9.60),
 пакет SEGGER V8.32, GDB 14.2.90.20240526-git / Python 3.11.4.
@@ -8,14 +8,14 @@
 
 ## Запуск тестов
 
-Локальный `Tests/stands/bluepill-jlink.local.toml` уже подготовлен для стенда.
-Образец без serial — `Tests/stands/bluepill-jlink.example.toml`.
+Локальный `tests/stands/bluepill-jlink.local.toml` уже подготовлен для стенда.
+Образец без serial — `tests/stands/bluepill-jlink.example.toml`.
 Выбор MCU берётся из проверенного отображения в backend:
 STM32F103C8T6 → имя SEGGER STM32F103C8. Другие MCU пока отклоняются,
 а не подменяются «похожим» устройством.
 
 ```powershell
-python -B tools/gdbtest.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/bluepill-jlink.local.toml
+python -B tools/gdbtest.py run --session build/f103c8-debug-hwtest/hwtest/session.json --test HW_BOOT --stand tests/stands/bluepill-jlink.local.toml
 ```
 
 Полный набор:
@@ -23,7 +23,7 @@ python -B tools/gdbtest.py run --session build/f103c8-debug-hwtest/hwtest/sessio
 ```powershell
 $previousStand = $env:STM32_GDBTEST_STAND
 try {
-    $env:STM32_GDBTEST_STAND = (Resolve-Path Tests/stands/bluepill-jlink.local.toml).Path
+    $env:STM32_GDBTEST_STAND = (Resolve-Path tests/stands/bluepill-jlink.local.toml).Path
     cmake --build --preset f103c8-check-hw
 } finally {
     $env:STM32_GDBTEST_STAND = $previousStand

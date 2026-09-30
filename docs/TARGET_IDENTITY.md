@@ -1,6 +1,6 @@
 # Идентификация экземпляров MCU на стенде
 
-Политика warn/strict и Flash guard принадлежат [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/docs/ru/TARGET_IDENTITY.md).
+Политика warn/strict и Flash guard принадлежат [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/docs/ru/TARGET_IDENTITY.md).
 Здесь остаются команды и фактические результаты F401CC/F103C8/F411CE.
 Разделы ниже — последовательный журнал: утверждения «ещё не проверено» относятся к соответствующему этапу.
 
@@ -12,10 +12,10 @@
 ```powershell
 cmake --preset f401cc-debug-hwtest
 cmake --build --preset f401cc-debug-hwtest
-$env:STM32_GDBTEST_STAND = (Resolve-Path Tests/stands/blackpill.local.toml).Path
+$env:STM32_GDBTEST_STAND = (Resolve-Path tests/stands/blackpill.local.toml).Path
 cmake --build --preset f401cc-check-hw
 # Тот же ST-Link/SWD, другой backend:
-$env:STM32_GDBTEST_STAND = (Resolve-Path Tests/stands/blackpill-stlink.local.toml).Path
+$env:STM32_GDBTEST_STAND = (Resolve-Path tests/stands/blackpill-stlink.local.toml).Path
 cmake --build --preset f401cc-check-hw
 ```
 

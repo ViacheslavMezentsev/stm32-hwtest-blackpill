@@ -28,11 +28,11 @@ host.profile_offline проверяет manifest/ELF, сбор сценарие�
 Запуск CTest без фильтра включает аппаратные сценарии — выбирать stand явно.
 
 Владелец восстановил штатный ST-Link (V2J45M31). Для действующей платы:
-Tests/stands/nucleo-f030r8.example.toml → nucleo-f030r8.local.toml с новым
+tests/stands/nucleo-f030r8.example.toml → nucleo-f030r8.local.toml с новым
 ST-Link serial; старый decimal serial J-Link больше не использовать.
 
 ```powershell
-$env:STM32_GDBTEST_STAND = "$PWD/Tests/stands/nucleo-f030r8.local.toml"
+$env:STM32_GDBTEST_STAND = "$PWD/tests/stands/nucleo-f030r8.local.toml"
 ctest --test-dir build/f030r8-debug-hwtest -L hw --output-on-failure
 ```
 
@@ -71,7 +71,7 @@ ADC калибруется перед первым запуском. VDDA выч
 4.3 mV/C. TS_CAL2 для F030 не используется, даже если общий LL header F0
 объявляет такой адрес. ADC_FACTORY_SINGLE_POINT=3 означает одну заводскую
 точку и типовой наклон; это не точность двухточечной калибровки F411.
-Чистая арифметика проверяется в Tests/native.
+Чистая арифметика проверяется в tests/native.
 
 ## Цель и диагностика Cortex-M0
 

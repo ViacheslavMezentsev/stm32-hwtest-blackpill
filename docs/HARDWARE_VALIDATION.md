@@ -11,7 +11,7 @@
 Release и GCC 14/15 пока проверены только сборкой.
 
 Перед реализацией изучены `../buck-boost-course/99_BOARD_TEST/CMakeLists.txt`,
-`Tests/test_runner.cmd`, `Tests/.gdbinit`, CMake набора BOARD_TEST_01,
+`tests/test_runner.cmd`, `tests/.gdbinit`, CMake набора BOARD_TEST_01,
 Python-сценарии ADC 01_01/02/03 и примеры USART/SPI/clock из наборов 02/03/10.
 Сохранены остановки на функциях, чтение символов и инъекция ошибки HAL.
 Убраны зависимость от J-Link/двух МК, зашитые номера отладчиков, подавление stderr

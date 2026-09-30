@@ -64,7 +64,7 @@ Native тест компилирует тот же User/Src/adc_units.cpp без
 В PowerShell, с CMake/Ninja и g++/его runtime DLL в PATH:
 
 ```powershell
-Push-Location Tests/native
+Push-Location tests/native
 cmake --preset f411ce-host
 cmake --build --preset f411ce-host
 ctest --preset f411ce-host

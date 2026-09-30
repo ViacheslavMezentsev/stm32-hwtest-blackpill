@@ -7,7 +7,7 @@ Target API переиспользован без изменений, включ�
 Поэтому критерий образа должен учитывать Flash LMA загружаемых секций, включая .data.
 Отдельный экспериментальный lifecycle не означает поддержку MCU production-модулем.
 
-Общий документ двух проектов: методы и история опытов сохраняются здесь. Механизм тестирования теперь принадлежит отдельному [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/5d09823aa915d51d39969542f2184742eb63dad9/README.md). Разделы с прежними планами и числом тестов — журнал этапов; актуальные границы и планы: [архитектура v2](HWTEST_ARCHITECTURE_V2.md), [TODO](../TODO.md).
+Общий документ двух проектов: методы и история опытов сохраняются здесь. Механизм тестирования теперь принадлежит отдельному [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cea01f957f3b249f653cdf76bcc56e65da69f1f9/README.md). Разделы с прежними планами и числом тестов — журнал этапов; актуальные границы и планы: [архитектура v2](HWTEST_ARCHITECTURE_V2.md), [TODO](../TODO.md).
 
 Это развиваемая основа будущей отдельной системы hwtest. Здесь фиксируем методы,
 эксперименты, границы доказательства и решения для общего API. Архитектурное
@@ -118,7 +118,7 @@ t.reach("Error_Handler")
 в `mutations` JSON. После каждого теста reset/run восстанавливает штатное состояние.
 Применимость к другим версиям HAL проверять по исходникам заново.
 
-Рабочие рецепты находятся в [test_peripheral_methods.py](../profiles/f411ce/Tests/board/test_peripheral_methods.py).
+Рабочие рецепты находятся в [test_peripheral_methods.py](../profiles/f411ce/tests/board/test_peripheral_methods.py).
 Для ADC этот же шаблон может выбирать `hadc` + канал + ранг и проверять структуру
 на входе HAL, но реальное преобразование требует отдельного источника/эталона.
 Для SPI/UART проверка init должна дополняться передачей известных данных и проверкой
@@ -220,13 +220,13 @@ TogglePin с ODR13=0 и выбирает следующий с ODR13=1; посл
 JSON/JUnit и SHA ELF находятся в `build/f411ce-debug-hwtest/hwtest`, отрицательные опыты —
 `build/method-negative`. Артефакты локальные, в Git не включаются.
 
-Отрицательные примеры сохранены в [profiles/f411ce/Tests/experiments](../profiles/f411ce/Tests/experiments/test_api_negative.py)
+Отрицательные примеры сохранены в [profiles/f411ce/tests/experiments](../profiles/f411ce/tests/experiments/test_api_negative.py)
 и намеренно исключены из обычного CTest. Повторение из корня проекта после сборки:
 
 ```powershell
 New-Item -ItemType Directory -Force build/method-negative | Out-Null
 $session = Get-Content build/f411ce-debug-hwtest/hwtest/session.json -Raw | ConvertFrom-Json
-$session.tests = (Resolve-Path profiles/f411ce/Tests/experiments).Path
+$session.tests = (Resolve-Path profiles/f411ce/tests/experiments).Path
 $session.out = Join-Path (Resolve-Path build/method-negative).Path 'runs'
 $json = $session | ConvertTo-Json
 $destination = Join-Path (Resolve-Path build/method-negative).Path 'session.json'
@@ -360,7 +360,7 @@ User отформатирован clang-format 23.1.1 по существующ�
 
 ## E06 — общие сценарии и физические величины ADC
 
-14 прежних сценариев перенесены в Tests/scenarios, три регистровые init-проверки
+14 прежних сценариев перенесены в tests/scenarios, три регистровые init-проверки
 оставлены профилям. Общие алгоритмы получают явные MCU-ожидания; сборщик @case
 и универсальная инфраструктура не изменены. Это устраняет дублирование исполнения,
 но сохраняет отдельную регистрацию требований и специфичные условия аппаратуры.
@@ -695,7 +695,7 @@ DEV_ID и Flash size. Strict подтверждён отказом до запи
 
 На текущем ELF F411/GCC13/GDB14.2.90, CubeF4 V1.28.3, HAL1.8.5 проверено:
 `list loop`, `info macro`, `macro expand` без платы; затем отдельный опыт
-`Tests/experiments/check_f411_macros.py` через штатный runner/OpenOCD/ST-Link.
+`tests/experiments/check_f411_macros.py` через штатный runner/OpenOCD/ST-Link.
 После остановки в loop/User/Src/program.cpp получены значения:
 
 | Выражение | Значение |
@@ -750,7 +750,7 @@ macro define из текущих заголовков: это скрывает �
 Повторение отдельного опыта на подтверждённом F411/ST-Link:
 
 ```powershell
-python -B Tests/experiments/check_f411_macros.py --stand Tests/stands/blackpill.local.toml
+python -B tests/experiments/check_f411_macros.py --stand tests/stands/blackpill.local.toml
 ```
 
 ## Применение HAL/CMSIS в штатных сценариях

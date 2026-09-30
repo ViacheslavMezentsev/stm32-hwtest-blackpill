@@ -13,7 +13,7 @@ USB-сбой уже через OpenOCD. [Продолжение исследов
 ST GDB Server 7.14.0 из CubeCLT 1.22.0, CubeProgrammer 2.23.0,
 firmware ST-Link V2J43S0. Запрошено 1000 kHz, сервер сообщил 950 kHz и VTref 2.88 В.
 Обновление firmware не выполнялось. Явный serial только в локальном
-Tests/stands/disco-f429zi-stlink.local.toml. Шаблон — одноимённый example.toml.
+tests/stands/disco-f429zi-stlink.local.toml. Шаблон — одноимённый example.toml.
 Профиль/ELF/GDB и модуль не менялись относительно OpenOCD:
 ELF `d7346f72b1f29ea6864258d13e906cbd87c0ff1b494053b61565d3383f2e9641`.
 
@@ -68,11 +68,11 @@ LCD/SDRAM, внешние loaders, option bytes и firmware отладчика �
 
 ## Повторение
 
-Скопировать Tests/stands/disco-f429zi-stlink.example.toml в одноимённый
+Скопировать tests/stands/disco-f429zi-stlink.example.toml в одноимённый
 .local.toml и указать локальные пути/serial. Для одного сценария:
 
 ```powershell
-python -B tools/gdbtest.py run --session build/f429zi-debug-hwtest/hwtest/session.json --test HW_BOOT --stand Tests/stands/disco-f429zi-stlink.local.toml
+python -B tools/gdbtest.py run --session build/f429zi-debug-hwtest/hwtest/session.json --test HW_BOOT --stand tests/stands/disco-f429zi-stlink.local.toml
 ```
 
 Default CMake session остаётся OpenOCD; ST выбирается явно через --stand либо

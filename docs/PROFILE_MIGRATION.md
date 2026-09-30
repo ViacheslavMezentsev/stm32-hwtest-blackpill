@@ -32,7 +32,7 @@
 cmake --preset f401cc-debug-hwtest
 cmake --build --preset f401cc-debug-hwtest
 ctest --test-dir build/f401cc-debug-hwtest -L host --output-on-failure
-python -B Tests/experiments/check_contract_preflight.py --session build/f401cc-debug-hwtest/hwtest/session.json
+python -B tests/experiments/check_contract_preflight.py --session build/f401cc-debug-hwtest/hwtest/session.json
 ```
 
 Аналогично f411ce-debug-hwtest и f103c8-debug-hwtest. Аппаратные цели:
