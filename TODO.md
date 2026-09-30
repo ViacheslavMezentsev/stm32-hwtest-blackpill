@@ -1,13 +1,18 @@
 # Дорожная карта стендового проекта
 
-Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/46018881d62ce43f80fd79947a31631d745e7f3b/README.md).
-План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/46018881d62ce43f80fd79947a31631d745e7f3b/TODO.md).
+Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/40fafac8b069efd22b49037a99fb67165c68eed8/README.md).
+План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/40fafac8b069efd22b49037a99fb67165c68eed8/TODO.md).
 История завершённых этапов — CHANGELOG и профильные протоколы в docs.
 
 Текущая интеграция: модуль `4601888`, корневой каталог `tests`; обёртка обновлена.
 В модуле оформлены план и инвентаризация F030 (ТЗ 0.27). Следующий шаг —
 CMSIS boot/clock/GPIO/blink F030, без дублирования существующего tests/firmware.
 Оптимизация CI остаётся отложенной до переноса примеров.
+
+Первый этап F030 boot/clock/GPIO/blink принят в модуле (`40fafac`):
+4/4 HW PASS на NUCLEO-F030R8/ST-Link/OpenOCD; HAL-приложение восстановлено.
+[Протокол модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/40fafac8b069efd22b49037a99fb67165c68eed8/docs/ru/F030_CMSIS_BASELINE.md).
+Далее — CMSIS таймер/IRQ; периферийная миграция пока не завершена.
 
 ## Целевое разделение после перехода на CMSIS
 

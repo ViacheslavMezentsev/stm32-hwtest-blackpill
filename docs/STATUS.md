@@ -2,6 +2,17 @@
 
 Срез: 2026-09-30. [Назначение проекта](../README.md).
 
+## Интеграция CMSIS baseline модуля
+
+Ветка `codex/module-f030-cmsis-baseline`: gitlink обновлён до `40fafac`,
+подтверждённого в main stm32-gdbtest. Его Docs и Offline (пять jobs) прошли.
+[CMSIS F030: протокол и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/40fafac8b069efd22b49037a99fb67165c68eed8/docs/ru/F030_CMSIS_BASELINE.md).
+Ядро модуля не изменилось относительно `4601888`; firmware этого проекта также
+не менялась. Локально Windows host: 96 тестов (8 skips), сборка F030 и
+20/20 host CTest, включая 17 prepare, PASS. Новый аппаратный прогон не нужен
+для изменения ссылок/gitlink и не выполнялся. GitHub CI интеграционной ветки
+предстоит проверить после публикации; полная локальная матрица не повторялась.
+
 ## Интеграция переименования tests
 
 Ветка `codex/module-tests-path`: gitlink stm32-gdbtest обновлён до
@@ -13,7 +24,7 @@ Linux Docker/GCC13: пять сборок и 120/120 CTest (105 prepare) PASS.
 Логи/JUnit/ELF hashes — `build/ci-reports/`; Windows —
 `build/module-tests-path/windows-host.log`. Проверены 49 ссылок на файлы модуля.
 Firmware/API не менялись, новый HW-прогон не выполнялся.
-Публикация этой интеграционной ветки и её GitHub CI ещё предстоят.
+Ветка включена в main `8c5b212`; этот раздел сохраняет результаты предыдущего этапа.
 
 ## Первый Linux CI build/prepare
 
