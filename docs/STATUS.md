@@ -75,7 +75,7 @@ ELF SHA-256: `d919d062e99ec90c4a61e4776513d8681128a0c05c180d001b3b5e6f27e2c0dd`.
 Лог — `build/module-refresh/f103c8-jlink.log`, JUnit —
 `build/f103c8-debug-hwtest/hwtest/module-refresh-jlink-junit.xml`, JSON —
 `hwtest/runs/` той же сборки, начиная с `20260930T082955.143719Z-HW_BOOT-13108`.
-Результат NUCLEO-F030R8 приведён ниже; F401/F429 также ожидаются.
+Результаты NUCLEO-F030R8, F429 и F401 приведены ниже.
 
 ### NUCLEO-F030R8 / встроенный J-Link STLink, 2026-09-30
 
@@ -119,7 +119,32 @@ USB-сбоя в этих наборах не было; это не доказы�
 Логи: `build/module-refresh/f429zi-openocd.log` и `f429zi-stlink.log`.
 JUnit: `build/f429zi-debug-hwtest/hwtest/module-refresh-openocd-junit.xml`
 и `module-refresh-stlink-junit.xml`; JSON — `hwtest/runs/` той же сборки.
-Из пяти активных профилей аппаратная регрессия на новой ревизии остаётся для F401CC.
+Результат последнего профиля F401CC приведён ниже.
+
+### BlackPill F401CC / внешний ST-Link, 2026-09-30
+
+Владелец заменил F411 на плату STM32F401CCU6 у внешнего ST-Link, SWD.
+Код потребителя `53d9332`, модуль `bc07625`; выбран профиль f401cc и явные
+стенды `blackpill.local.toml` / `blackpill-stlink.local.toml`.
+ELF SHA-256: `05ae583ae8b3559f2f0b3b2c6f960eba821992f6a2c9e1185100479f736b95e1`.
+Этот экземпляр: DEV_ID=0x423 и Flash256 KiB совпали с профилем, предупреждений нет.
+Это не отменяет ранее зафиксированных отличий DEV_ID у других экземпляров F401.
+
+OpenOCD **22/22 PASS**, затем ST-LINK GDB Server **22/22 PASS**, включая новые
+macro-сценарии; все 44 отчёта — `teardown=reset_run`, MCU оставлен работающим.
+Логи: `build/module-refresh/f401cc-openocd.log` и `f401cc-stlink.log`.
+JUnit — `build/f401cc-debug-hwtest/hwtest/module-refresh-*-junit.xml`, JSON —
+`hwtest/runs/` той же сборки, начиная с `20260930T085031.248295Z-HW_BOOT-12964`.
+
+### Итог базовой регрессии bc07625
+
+Пять профилей: сборка и 120/120 CTest host/prepare PASS. Аппаратные наборы:
+F411/F401/F429 — по 22/22 через OpenOCD и ST server, F103 — 22/22 через J-Link,
+F030 — полный повтор17/17 через встроенный J-Link STLink после окна SEGGER.
+Первоначальные ошибки доступа к CubeCLT и запуска J-Link сохранены выше.
+Отдельные full-image/внешний timeout/recovery в эту базовую регрессию не входят.
+Следующий этап — CI потребителя. Перепрошивка отладчика Nucleo владельцем потребует
+отдельной проверки нового backend; сейчас внешний ST-Link занят F401, а не F411.
 
 ## Платы и стенды
 
@@ -166,7 +191,9 @@ User теперь не включает HAL. Адаптеры четырёх п�
 Native ADC: прежние формулы и F030 single-point, корректные и неверные входы — PASS.
 Собраны F030/F103/F401/F411. После исправления контекста макросов повторены
 F411CE/ST-Link/OpenOCD 22/22 и F103C8/J-Link 22/22; оба MCU оставлены running.
-Прогоны выполнены в режиме ELF load sections. Новые HW-проверки F401 ещё ожидаются; F030/J-Link — 17/17 PASS.
+Прогоны выполнены в режиме ELF load sections. На момент этого исторического этапа
+новые HW-проверки F401 ожидались; они завершены в регрессии bc07625 выше.
+F030/J-Link — 17/17 PASS.
 См. [наблюдение о контексте макросов](STM32_TESTING_METHODS.md#контекст-hal-макросов-после-отделения-platform).
 
 Текущий этап F030: общий offline checker прошёл на четырёх профилях, включая
