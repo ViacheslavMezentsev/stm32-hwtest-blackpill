@@ -10,6 +10,7 @@
 
 | Область | Владелец / источник |
 | --- | --- |
+| CI build/prepare, Docker и планы QEMU/Renode | [CI](CI.md) |
 | Текущее состояние и точный объём проверки | [стенд](STATUS.md), [модуль](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/bc0762502cd7d82c9e44aee8ec7740bea72564f1/docs/ru/STATUS.md) |
 | Эксперимент переноса на RISC-V | [К1921ВГ015 PoC](K1921VG015_POC.md), [пример](../examples/k1921vg015-poc/README.md) |
 | Проверка errata и библиотек RISC-V | [from_chars / К1921ВГ015](K1921VG015_ERRATA.md) |

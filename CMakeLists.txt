@@ -65,5 +65,6 @@ if(ENABLE_HW_TESTING)
     set_tests_properties(host.profile_offline PROPERTIES LABELS host TIMEOUT 45)
     add_test(NAME host.hwtest COMMAND "${Python3_EXECUTABLE}" -B
         "${PROJECT_SOURCE_DIR}/tools/test_module_host.py")
-    set_tests_properties(host.hwtest PROPERTIES LABELS host TIMEOUT 45)
+    # Linux remote lifecycle tests include real heartbeat expiry waits.
+    set_tests_properties(host.hwtest PROPERTIES LABELS host TIMEOUT 150)
 endif()

@@ -135,6 +135,11 @@
 
 - README — краткое пользовательское введение (зачем/что/как/зависимости/ссылки). Точные результаты, версии и ограничения поддерживать в docs/STATUS.md; хронологию — в CHANGELOG и протоколах. Не превращать README в журнал текущей работы.
 
+- CI Offline: ci/run_checks.py, Linux Docker и presets ci-<profile>; только
+  build/host/prepare без выбранного stand. Порядок запуска и границы — docs/CI.md.
+  После push проверять полный job profiles для опубликованного SHA до land.
+  Эмуляция, Release и матрица GCC пока не входят в этот workflow.
+
 - К1921 PoC — examples/k1921vg015-poc, внешний NIIET_DEVICE_DIR только читать;
   build/k1921vg015-poc, explicit Tests/stands/k1921-jlink.local.toml. Собран GCC13.3.0-2,
   GDB15.1/Python3.12.2 (-py3), -Og -g3. Не менять production STM32 guards ради запуска PoC.

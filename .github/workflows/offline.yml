@@ -1,0 +1,40 @@
+name: Offline
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: offline-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  profiles:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          submodules: recursive
+      - name: Build pinned environment
+        run: |
+          mkdir -p build/ci-reports
+          set -o pipefail
+          docker build --progress plain -f ci/docker/Dockerfile -t hwtest-ci . 2>&1 | tee build/ci-reports/image.log
+      - name: Build and prepare five profiles without hardware or network
+        run: |
+          docker run --rm --network none --user "$(id -u):$(id -g)" -e HOME=/workspace/build/ci-reports \
+            --mount "type=bind,source=$PWD,target=/workspace" hwtest-ci
+      - name: Keep reports and firmware
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: offline-${{ github.sha }}
+          path: |
+            build/ci-reports/
+            build/ci-*/*.elf
+            build/ci-*/*.hex
+            build/ci-*/*.bin
+            build/ci-*/*.map
+            build/ci-*/hwtest/
+          if-no-files-found: error

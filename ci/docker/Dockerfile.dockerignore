@@ -1,0 +1,6 @@
+**
+!ci/
+!ci/dependencies.lock.json
+!ci/docker/
+!ci/docker/install.py
+!ci/docker/Dockerfile

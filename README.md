@@ -62,6 +62,7 @@ GDB-сервер. Зависимости сборки подключаются G
 ## Документация и связанные проекты
 
 - [Карта документации](docs/README.md), [архитектура](docs/HWTEST_ARCHITECTURE_V2.md) и [методы тестирования](docs/STM32_TESTING_METHODS.md).
+- [CI без оборудования и планы QEMU/Renode](docs/CI.md).
 - [Состояние и проверенные возможности](docs/STATUS.md), [планы](TODO.md), [история изменений](CHANGELOG.md).
 - [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest) — самостоятельная инфраструктура тестирования.
 - [stm32-cmake-yml](https://github.com/ViacheslavMezentsev/stm32-cmake-yml) — конфигурация сборки STM32 через YAML.

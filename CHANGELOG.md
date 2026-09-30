@@ -13,6 +13,14 @@
 
 ### Added
 
+- Первый CI Offline: Docker/Linux, закреплённые GCC 13/CMake/Cube зависимости,
+  отдельные presets пяти профилей, host/prepare без сервера и оборудования,
+  проверка полного набора CTest/JUnit и сохранение firmware/отчётов.
+  Описаны границы и следующий слой QEMU/Renode с GDB; эмуляция пока не включена.
+  Таймаут host-suite увеличен для Linux heartbeat/lifecycle тестов.
+  HAL F1 v1.1.10 закреплён отдельно от gitlink CubeF1: обнаружено расхождение
+  RCC const API между GitHub и установленным CubeMX-пакетом той же версии.
+
 - NUCLEO-F030R8 после восстановления ST-Link владельцем: OpenOCD17/17 и ST server17/17
   PASS без окна SEGGER. Добавлен шаблон ST server, CMake default F030 переключён
   на OpenOCD; локальные serial не публикуются, история J-Link сохранена.

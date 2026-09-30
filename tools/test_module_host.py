@@ -30,7 +30,7 @@ env.update(TEMP=str(temp), TMP=str(temp), PYTHONDONTWRITEBYTECODE="1")
 env.pop("PYTHONPATH", None)
 with (copy / "build/host.log").open("wb") as log:
     result = subprocess.run([sys.executable, "-B", "-m", "unittest", "discover", "-s",
-        "Tests/host", "-v"], cwd=copy, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=30)
+        "Tests/host", "-v"], cwd=copy, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=120)
 print((copy / "build/host.log").read_text(encoding="utf-8", errors="replace"))
 print("Host evidence: " + str(copy / "build/host.log"))
 raise SystemExit(result.returncode)

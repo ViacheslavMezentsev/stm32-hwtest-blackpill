@@ -125,6 +125,56 @@
       "cacheVariables": {
         "ENABLE_HW_TESTING": true
       }
+    },
+    {
+      "name": "ci-base",
+      "hidden": true,
+      "inherits": "base",
+      "environment": {
+        "CMAKE_USER_HOME": "/opt"
+      },
+      "cacheVariables": {
+        "ENABLE_HW_TESTING": true,
+        "STM32_TOOLCHAIN_PATH": "/opt/xpack-arm-none-eabi-gcc-13.3.1-1.1",
+        "STM32_GDBTEST_STAND": "",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "STM32_GDBTEST_GDB": "/opt/xpack-arm-none-eabi-gcc-13.3.1-1.1/bin/arm-none-eabi-gdb-py3"
+      }
+    },
+    {
+      "name": "ci-f030r8",
+      "inherits": "ci-base",
+      "cacheVariables": {
+        "STM32_YML_PROFILE": "f030r8"
+      }
+    },
+    {
+      "name": "ci-f103c8",
+      "inherits": "ci-base",
+      "cacheVariables": {
+        "STM32_YML_PROFILE": "f103c8"
+      }
+    },
+    {
+      "name": "ci-f401cc",
+      "inherits": "ci-base",
+      "cacheVariables": {
+        "STM32_YML_PROFILE": "f401cc"
+      }
+    },
+    {
+      "name": "ci-f411ce",
+      "inherits": "ci-base",
+      "cacheVariables": {
+        "STM32_YML_PROFILE": "f411ce"
+      }
+    },
+    {
+      "name": "ci-f429zi",
+      "inherits": "ci-base",
+      "cacheVariables": {
+        "STM32_YML_PROFILE": "f429zi"
+      }
     }
   ],
   "buildPresets": [
@@ -200,6 +250,26 @@
     {
       "name": "f429zi-debug-hwtest",
       "configurePreset": "f429zi-debug-hwtest"
+    },
+    {
+      "name": "ci-f030r8",
+      "configurePreset": "ci-f030r8"
+    },
+    {
+      "name": "ci-f103c8",
+      "configurePreset": "ci-f103c8"
+    },
+    {
+      "name": "ci-f401cc",
+      "configurePreset": "ci-f401cc"
+    },
+    {
+      "name": "ci-f411ce",
+      "configurePreset": "ci-f411ce"
+    },
+    {
+      "name": "ci-f429zi",
+      "configurePreset": "ci-f429zi"
     }
   ],
   "testPresets": [
