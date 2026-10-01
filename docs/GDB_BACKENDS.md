@@ -1,6 +1,6 @@
 # Серверы GDB: OpenOCD, ST-LINK и J-Link
 
-Общие правила серверов и диалекты перенесены в [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a0d6547ba83b7c911f8f3028cb064aeedd3e5a36/docs/ru/BACKENDS.md).
+Общие правила серверов и диалекты перенесены в [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/docs/ru/BACKENDS.md).
 Здесь — настройка наших стендов и аппаратные результаты.
 
 Общие тесты работают через GDB-Python и RSP. Backend задаёт запуск сервера,
