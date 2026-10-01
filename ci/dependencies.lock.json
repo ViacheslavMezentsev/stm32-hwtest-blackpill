@@ -26,13 +26,6 @@
       "destination": "/opt/cmake-3.28.3"
     },
     {
-      "name": "yq-4.44.3",
-      "url": "https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64",
-      "sha256": "a2c097180dd884a8d50c956ee16a9cec070f30a7947cf4ebf87d5f36213e9ed7",
-      "kind": "executable",
-      "destination": "/usr/local/bin/yq"
-    },
-    {
       "name": "ninja-1.12.1",
       "url": "https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-linux.zip",
       "sha256": "6f98805688d19672bd699fbbfa2c2cf0fc054ac3df1f0e6a47664d963d530255",
@@ -40,63 +33,5 @@
       "destination": "/usr/local/bin"
     }
   ],
-  "sources": [
-    {
-      "name": "CubeF1-1.8.7",
-      "url": "https://github.com/STMicroelectronics/STM32CubeF1.git",
-      "commit": "d12e75247d5bcedc734f829b394517ab4c2726e3",
-      "submodule_commits": {
-        "Drivers/STM32F1xx_HAL_Driver": "77fbb30b7a1d02533980400083e48c559aae5a4f"
-      },
-      "destination": "/opt/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.7",
-      "submodules": [
-        "Drivers/CMSIS/Device/ST/STM32F1xx",
-        "Drivers/STM32F1xx_HAL_Driver"
-      ],
-      "required_files": [
-        "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h",
-        "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
-      ],
-      "sparse_exclude": [
-        "Projects",
-        "Utilities"
-      ]
-    },
-    {
-      "name": "CubeF4-1.28.3",
-      "url": "https://github.com/STMicroelectronics/STM32CubeF4.git",
-      "commit": "94cae6e83f00e276a11957e7833c01ac3d0bd7af",
-      "destination": "/opt/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3",
-      "submodules": [
-        "Drivers/CMSIS/Device/ST/STM32F4xx",
-        "Drivers/STM32F4xx_HAL_Driver"
-      ],
-      "required_files": [
-        "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h",
-        "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
-      ],
-      "sparse_exclude": [
-        "Projects",
-        "Utilities"
-      ]
-    },
-    {
-      "name": "CubeF0-1.11.6",
-      "url": "https://github.com/STMicroelectronics/STM32CubeF0.git",
-      "commit": "fe8158da86d94d295048faca799261947e40db83",
-      "destination": "/opt/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6",
-      "submodules": [
-        "Drivers/CMSIS/Device/ST/STM32F0xx",
-        "Drivers/STM32F0xx_HAL_Driver"
-      ],
-      "required_files": [
-        "Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h",
-        "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h"
-      ],
-      "sparse_exclude": [
-        "Projects",
-        "Utilities"
-      ]
-    }
-  ]
+  "sources": []
 }

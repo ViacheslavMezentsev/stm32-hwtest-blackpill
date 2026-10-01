@@ -2,83 +2,52 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "type": "cmake",
-      "label": "CMake: build",
-      "command": "build",
-      "targets": [
-        "all"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "CMake: configure f401cc",
-      "type": "shell",
+      "label": "Configure F411CE",
+      "type": "process",
       "command": "cmake",
       "args": [
         "--preset",
-        "f401cc-debug-hwtest"
+        "HIL_F411CE"
       ],
       "problemMatcher": []
     },
     {
-      "label": "CMake: build f401cc",
-      "type": "shell",
+      "label": "Build F411CE",
+      "type": "process",
       "command": "cmake",
       "args": [
         "--build",
         "--preset",
-        "f401cc-debug-hwtest"
+        "HIL_F411CE"
       ],
-      "dependsOn": "CMake: configure f401cc",
-      "problemMatcher": []
+      "dependsOn": "Configure F411CE",
+      "problemMatcher": [
+        "$gcc"
+      ]
     },
     {
-      "label": "CMake: configure f411ce",
-      "type": "shell",
+      "label": "Configure F401CC",
+      "type": "process",
       "command": "cmake",
       "args": [
         "--preset",
-        "f411ce-debug-hwtest"
+        "HIL_F401CC"
       ],
       "problemMatcher": []
     },
     {
-      "label": "CMake: build f411ce",
-      "type": "shell",
-      "command": "cmake",
-      "args": [
-        "--build",
-        "--preset",
-        "f411ce-debug-hwtest"
-      ],
-      "dependsOn": "CMake: configure f411ce",
-      "problemMatcher": []
-    },
-    {
-      "label": "CMake: configure f103c8",
-      "type": "shell",
-      "command": "cmake",
-      "args": [
-        "--preset",
-        "f103c8-debug-hwtest"
-      ],
-      "problemMatcher": []
-    },
-    {
-      "label": "CMake: build f103c8",
-      "type": "shell",
+      "label": "Build F401CC",
+      "type": "process",
       "command": "cmake",
       "args": [
         "--build",
         "--preset",
-        "f103c8-debug-hwtest"
+        "HIL_F401CC"
       ],
-      "dependsOn": "CMake: configure f103c8",
-      "problemMatcher": []
+      "dependsOn": "Configure F401CC",
+      "problemMatcher": [
+        "$gcc"
+      ]
     }
   ]
 }

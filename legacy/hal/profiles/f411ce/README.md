@@ -15,7 +15,7 @@ target.toml — параметры цели HWTEST. Cube F4 V1.28.3, 512 KiB Fla
 После добавления новых CubeMX-файлов обновлять Core/CMakeLists.txt и hal_components
 соответствующего YAML-профиля; файл IOC сам по себе не добавляет рабочий сценарий.
 
-[План периферии](../../docs/PERIPHERAL_PLAN.md) · [Методика](../../docs/STM32_TESTING_METHODS.md).
+[План периферии](../../../../docs/PERIPHERAL_PLAN.md) · [Методика](../../../../docs/STM32_TESTING_METHODS.md).
 
 Новый пересчёт ADC по заводским точкам собран; чистая арифметика проверена native-тестом.
 Три новых HW_ADC_UNITS/INVALID/VECTORS и перенесённые общие сценарии ожидают

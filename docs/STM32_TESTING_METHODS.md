@@ -118,7 +118,7 @@ t.reach("Error_Handler")
 в `mutations` JSON. После каждого теста reset/run восстанавливает штатное состояние.
 Применимость к другим версиям HAL проверять по исходникам заново.
 
-Рабочие рецепты находятся в [test_peripheral_methods.py](../profiles/f411ce/tests/board/test_peripheral_methods.py).
+Рабочие рецепты находятся в [test_peripheral_methods.py](../legacy/hal/profiles/f411ce/tests/board/test_peripheral_methods.py).
 Для ADC этот же шаблон может выбирать `hadc` + канал + ранг и проверять структуру
 на входе HAL, но реальное преобразование требует отдельного источника/эталона.
 Для SPI/UART проверка init должна дополняться передачей известных данных и проверкой
@@ -220,7 +220,7 @@ TogglePin с ODR13=0 и выбирает следующий с ODR13=1; посл
 JSON/JUnit и SHA ELF находятся в `build/f411ce-debug-hwtest/hwtest`, отрицательные опыты —
 `build/method-negative`. Артефакты локальные, в Git не включаются.
 
-Отрицательные примеры сохранены в [profiles/f411ce/tests/experiments](../profiles/f411ce/tests/experiments/test_api_negative.py)
+Отрицательные примеры сохранены в [profiles/f411ce/tests/experiments](../legacy/hal/profiles/f411ce/tests/experiments/test_api_negative.py)
 и намеренно исключены из обычного CTest. Повторение из корня проекта после сборки:
 
 ```powershell

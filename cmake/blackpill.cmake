@@ -1,6 +1,9 @@
-set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/arm-gcc.cmake")
-project(stm32_hwtest_blackpill LANGUAGES C CXX ASM)
 set(BOARD "F411CE" CACHE STRING "F411CE or F401CC")
+if(DEFINED BLACKPILL_CONFIGURED_BOARD AND NOT BLACKPILL_CONFIGURED_BOARD STREQUAL BOARD)
+ message(FATAL_ERROR "Use a separate build directory for each BOARD")
+endif()
+set(BLACKPILL_CONFIGURED_BOARD "${BOARD}" CACHE INTERNAL "Configured MCU")
+set_property(CACHE BOARD PROPERTY STRINGS F411CE F401CC)
 if(BOARD STREQUAL "F411CE")
  set(device STM32F411xE)
  set(FLASH_SIZE 512K)
@@ -24,6 +27,15 @@ target_compile_options(${PROJECT_NAME} PRIVATE ${arch} -g3 -fno-lto -ffunction-s
 target_link_options(${PROJECT_NAME} PRIVATE ${arch} -nostdlib "-T${CMAKE_BINARY_DIR}/firmware.ld" -Wl,--gc-sections "-Wl,-Map=${CMAKE_BINARY_DIR}/firmware.map")
 target_link_libraries(${PROJECT_NAME} PRIVATE gcc)
 set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY LINK_DEPENDS "${CMAKE_BINARY_DIR}/firmware.ld")
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+ COMMAND "${CMAKE_OBJCOPY}" -O ihex "$<TARGET_FILE:${PROJECT_NAME}>" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.hex"
+ COMMAND "${CMAKE_OBJCOPY}" -O binary --gap-fill 0xFF "$<TARGET_FILE:${PROJECT_NAME}>" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bin"
+ VERBATIM)
+
+option(BLACKPILL_HIL "Enable GDB scenarios and offline prepare" OFF)
+if(BLACKPILL_HIL)
+set(Python3_FIND_REGISTRY LAST)
 enable_testing()
 include(modules/stm32-gdbtest/stm32_gdbtest/cmake/STM32GDBTest.cmake)
 stm32_gdbtest_attach(${PROJECT_NAME} PROFILE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/hil" PROFILE "${CMAKE_CURRENT_SOURCE_DIR}/hil/profiles/${profile}.toml" MANIFEST_INPUTS "${CMAKE_BINARY_DIR}/firmware.ld" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/blackpill.cmake")
+endif()

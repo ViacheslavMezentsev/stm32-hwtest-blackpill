@@ -5,6 +5,20 @@
 
 ## [Unreleased]
 
+- HAL-исходники архивированы в legacy/hal; активны только F411CE/F401CC.
+  Старые build-подмодули исключены, CI больше не загружает Cube/HAL/yq.
+  Native ADC сохранён в hil/tests/native; шесть firmware-сборок и 31 CTest.
+- Archived HAL sources under legacy/hal; retained F411CE/F401CC as active profiles.
+  Removed obsolete build dependencies and Cube/HAL/yq downloads; preserved native
+  ADC tests. CI now builds six firmware variants and runs 31 CTest checks.
+
+
+- CMSIS стал сборкой по умолчанию; добавлены отдельные HIL presets, BIN/HEX,
+  README RU/EN, выбор MCU/SVD/serial в VS Code. Старые HAL-файлы пока сохранены.
+- CMSIS is now the default build; dedicated HIL presets, BIN/HEX outputs,
+  RU/EN README and board/SVD/debugger selection in VS Code. Legacy HAL files remain.
+
+
 - Добавлена опциональная CMSIS-сборка общего приложения F411CE/F401CC в
   src/cmsis/ld/cmake/hil, отдельные Debug/Release presets и CI build/prepare.
   На обоих MCU проверены 14 сценариев, повторы после инъекций и timeout/recovery.

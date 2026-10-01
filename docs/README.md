@@ -11,6 +11,7 @@
 
 | Область | Владелец / источник |
 | --- | --- |
+| Архив прежних HAL-исходников и зависимостей | [состав переноса](LEGACY_LAYOUT_REVIEW.md), [архив](../legacy/hal/README.md) |
 | CMSIS-приложение BlackPill F411CE/F401CC | [приёмка и границы проверки](BLACKPILL_CMSIS_APPLICATION.md) |
 | Интеграция CMSIS fixtures, границы и оставшийся перенос | [аудит F030/F103/F411 и план F401/F429](CMSIS_INTEGRATION.md) |
 | Сохранённая HAL-регрессия F030 | [fixture и аппаратная приёмка](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/F030_HAL_VALIDATION.md) |
@@ -30,8 +31,8 @@
 | Серверные диалекты, identity/Flash, mutex | [BACKENDS](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/BACKENDS.md), [TARGET_IDENTITY](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/TARGET_IDENTITY.md), [DEBUGGER_OWNERSHIP](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/DEBUGGER_OWNERSHIP.md) |
 | Версии и релизы модуля | [модуль: VERSIONING](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/VERSIONING.md), [TODO](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/TODO.md) |
 | Сборка/стенды/запуски приложения | [README](../README.md), [HWTEST](HWTEST.md), [BUILD_ARTIFACTS](BUILD_ARTIFACTS.md) |
-| Nucleo F030 / адаптация приложения | [профиль F030R8](../profiles/f030r8/README.md) и [аппаратный протокол](F030_JLINK_VALIDATION.md) — 17/17 через J-Link STLink |
-| Discovery F429ZI | [профиль и настройки](../profiles/f429zi/README.md) — [22/22 HW через OpenOCD](F429_OPENOCD_VALIDATION.md) |
+| Nucleo F030 / адаптация приложения | [профиль F030R8](../legacy/hal/profiles/f030r8/README.md) и [аппаратный протокол](F030_JLINK_VALIDATION.md) — 17/17 через J-Link STLink |
+| Discovery F429ZI | [профиль и настройки](../legacy/hal/profiles/f429zi/README.md) — [22/22 HW через OpenOCD](F429_OPENOCD_VALIDATION.md) |
 | Discovery F429 / ST server | [протокол, USB-сбой и восстановление](F429_STLINK_VALIDATION.md) |
 | Повторные запуски F429 | [сравнение ST/OpenOCD, USB и пауз](F429_SERVER_STABILITY.md) |
 | MCU, CubeMX, периферия | [Общая матрица пяти профилей, уровни стенда и пакеты P1–P8](PERIPHERAL_PLAN.md), [H503_CUBEMX](H503_CUBEMX.md), profiles/*/README.md |

@@ -21,3 +21,10 @@ __pycache__/
 # Private remote stand configuration; remote.example.toml stays tracked.
 remote.toml
 *-remote.toml
+
+/hil/stands/*.local.toml
+
+# Retained local historical checkouts, no longer build dependencies.
+/modules/stm32-cmake/
+/modules/stm32-cmake-yml/
+/legacy/hal/profiles/*/Makefile

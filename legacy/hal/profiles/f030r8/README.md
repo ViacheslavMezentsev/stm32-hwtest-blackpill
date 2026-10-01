@@ -3,7 +3,7 @@
 STM32F030R8T6, Cortex-M0, Flash 64 KiB, RAM 8 KiB. CubeF0 V1.11.6.
 Профиль сборки и 17 аппаратных сценариев подготовлены для stm32-gdbtest.
 На Nucleo с встроенным **J-Link STLink** через SWD выполнены **17/17 PASS**.
-Мигание LD2 подтверждено владельцем. [Протокол](../../docs/F030_JLINK_VALIDATION.md).
+Мигание LD2 подтверждено владельцем. [Протокол](../../../../docs/F030_JLINK_VALIDATION.md).
 
 ## Сборка
 

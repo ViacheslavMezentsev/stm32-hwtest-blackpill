@@ -24,11 +24,11 @@ def main():
     for board in ("F411CE", "F401CC"):
         record = {"board": board, "status": "ERROR"}
         try:
-            for config in ("Debug", "Release"):
+            for config in ("Debug", "Release", "HIL"):
                 preset = config + "_" + board
                 run(["cmake", "--preset", preset, "-DSTM32_GDBTEST_STAND="], preset + "-configure")
                 run(["cmake", "--build", "--preset", preset], preset + "-build")
-            build = ROOT / "build" / ("Debug_" + board)
+            build = ROOT / "build" / ("HIL_" + board)
             session = json.loads((build / "hwtest/session.json").read_text())
             if session["stand"]:
                 raise ValueError("Offline session must not select a hardware stand")
@@ -59,6 +59,26 @@ def main():
         summary.append(record)
         (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
         print(record["status"], board, flush=True)
+    record = {"board": "native-adc", "status": "ERROR"}
+    try:
+        build = ROOT / "build/native-adc"
+        run(["cmake", "-S", str(ROOT / "hil/tests/native"), "-B", str(build),
+             "-G", "Ninja"], "native-configure")
+        run(["cmake", "--build", str(build)], "native-build")
+        junit = out / "native-junit.xml"
+        junit.unlink(missing_ok=True)
+        run(["ctest", "--test-dir", str(build), "--no-tests=error",
+             "--output-on-failure", "--output-junit", str(junit)], "native-tests")
+        cases = ET.parse(junit).getroot().findall(".//testcase")
+        if len(cases) != 1 or cases[0].attrib["name"] != "adc.units" or any(
+                cases[0].find(tag) is not None for tag in ("failure", "error", "skipped")):
+            raise ValueError("Incomplete native ADC result")
+        record.update(status="PASS", tests=1)
+    except (OSError, ValueError, KeyError, subprocess.SubprocessError, ET.ParseError) as error:
+        record["error"] = str(error)
+    summary.append(record)
+    (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    print(record["status"], "native-adc", flush=True)
     return int(any(record["status"] != "PASS" for record in summary))
 
 

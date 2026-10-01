@@ -2,7 +2,21 @@
 
 Срез: 2026-10-01. [Назначение проекта](../README.md).
 
-## Текущая интеграция da42cd7
+## CMSIS consumer F411CE/F401CC
+
+Пакет `314982a` принят в main после полного CI (154 CTest).
+Обе платы прошли 14 HW-сценариев, повторы после инъекций и timeout/recovery;
+[протокол](BLACKPILL_CMSIS_APPLICATION.md). В рабочем пакете оформления добавлены
+отдельные Debug/Release/HIL presets и README RU/EN. Загружаемый HIL-образ каждого
+MCU побайтово совпадает с сохранённой аппаратно проверенной прошивкой.
+HAL-исходники перенесены в legacy/hal, build-зависимости исключены из gitlinks:
+[состав архива](LEGACY_LAYOUT_REVIEW.md). Новый CI: шесть CMSIS-сборок и 31 CTest,
+включая native ADC. Windows и новый Docker/Linux прошли (шесть сборок и 31 CTest
+в каждой среде); опубликованный CI нового SHA ещё требуется.
+Загружаемые образы совпадают с аппаратно принятыми, новые HW-запуски не выполнялись.
+VS Code JSON/SVD/пути проверены по конфигурации; интерактивный запуск редактора не проверялся.
+
+## Историческая начальная интеграция da42cd7
 
 Подмодуль обновлён до принятой ревизии da42cd7, ТЗ0.58. Пять CMSIS fixtures
 и 22 HAL F030 cases находятся в модуле. Здесь начальная CMSIS-интеграция F411:
@@ -421,7 +435,7 @@ H503 приостановлен: генерация сохранена, проф
 
 ## F429ZI через встроенный ST-Link/V2
 
-[STM32F429I-DISCO](../profiles/f429zi/README.md): сборка GCC13/CubeF4 V1.28.3,
+[STM32F429I-DISCO](../legacy/hal/profiles/f429zi/README.md): сборка GCC13/CubeF4 V1.28.3,
 Flash 12744 B, SRAM 1896 B, CCM 0. Подготовлены 22 сценария / 10 контрактов;
 traceability и offline ELF/HAL preflight PASS. Через OpenOCD выполнены 22/22 HW,
 весь CTest 25/25, LD3 подтверждён. [Протокол](F429_OPENOCD_VALIDATION.md).
@@ -434,7 +448,7 @@ OpenOCD22 PASS и USB ERROR на23-м. Причина не установлен�
 
 ## F030R8 и граница User/Platform
 
-[NUCLEO-F030R8](../profiles/f030r8/README.md) проверен аппаратно через J-Link STLink:
+[NUCLEO-F030R8](../legacy/hal/profiles/f030r8/README.md) проверен аппаратно через J-Link STLink:
 GCC13/CubeF0 V1.11.6, Flash 11348 B / 64 KiB, RAM 1888 B / 8 KiB
 (включая linker reserve heap/stack). На Nucleo/J-Link STLink/SWD выполнены 17/17 HW, LD2 подтверждён.
 Подготовлены target Cortex-M0, 17 сценариев и 9 контрактов; offline-проверка PASS.

@@ -4,7 +4,9 @@
 
 Решение владельца 01.10.2026: после переноса прочих минимальных примеров в
 stm32-gdbtest в BlackPill остаются **F411CE и F401CC**, а не один F411.
-Это план следующего пакета; текущая структура ещё не перестроена.
+План реализован в рабочем пакете: CMSIS src/hil, два MCU, отдельные presets,
+README RU/EN и VS Code. Старые HAL-исходники сохранены в legacy/hal;
+[состав архива](LEGACY_LAYOUT_REVIEW.md). Ниже — исходное обоснование перехода.
 Сравнены локальные README, CMake, hil/README и cmsis/README проекта
 на ревизии `61793451666ab371aae12b055ce56e8c2031b82a`
 [stm32-hwtest-bluepill](https://github.com/ViacheslavMezentsev/stm32-hwtest-bluepill).

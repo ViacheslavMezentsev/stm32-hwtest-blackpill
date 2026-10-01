@@ -2,11 +2,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "BlackPill / ST-Link / OpenOCD",
+      "name": "F411CE / ST-Link / OpenOCD",
       "type": "cortex-debug",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "executable": "${workspaceFolder}/build/f411ce-debug-hwtest/stm32-hwtest-blackpill.elf",
+      "executable": "${workspaceFolder}/build/HIL_F411CE/stm32_hwtest_blackpill.elf",
       "servertype": "openocd",
       "device": "STM32F411CE",
       "interface": "swd",
@@ -14,33 +14,19 @@
         "interface/stlink.cfg",
         "target/stm32f4x.cfg"
       ],
-      "preLaunchTask": "CMake: build f411ce",
+      "preLaunchTask": "Build F411CE",
       "runToEntryPoint": "main",
-      "svdFile": "${workspaceFolder}/resources/STM32F411.svd"
+      "svdFile": "${workspaceFolder}/resources/STM32F411.svd",
+      "openOCDLaunchCommands": [
+        "adapter serial ${input:stlinkSerial}"
+      ]
     },
     {
-      "name": "BluePill F103 / ST-Link / OpenOCD",
+      "name": "F401CC / ST-Link / OpenOCD",
       "type": "cortex-debug",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "executable": "${workspaceFolder}/build/f103c8-debug-hwtest/stm32-hwtest-bluepill.elf",
-      "servertype": "openocd",
-      "device": "STM32F103C8",
-      "interface": "swd",
-      "configFiles": [
-        "interface/stlink.cfg",
-        "target/stm32f1x.cfg"
-      ],
-      "preLaunchTask": "CMake: build f103c8",
-      "runToEntryPoint": "main",
-      "svdFile": "${workspaceFolder}/resources/STM32F103.svd"
-    },
-    {
-      "name": "BlackPill F401CC / ST-Link / OpenOCD",
-      "type": "cortex-debug",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "executable": "${workspaceFolder}/build/f401cc-debug-hwtest/stm32-hwtest-f401cc.elf",
+      "executable": "${workspaceFolder}/build/HIL_F401CC/stm32_hwtest_blackpill.elf",
       "servertype": "openocd",
       "device": "STM32F401CC",
       "interface": "swd",
@@ -48,9 +34,19 @@
         "interface/stlink.cfg",
         "target/stm32f4x.cfg"
       ],
-      "preLaunchTask": "CMake: build f401cc",
+      "preLaunchTask": "Build F401CC",
       "runToEntryPoint": "main",
-      "svdFile": "${workspaceFolder}/resources/STM32F401.svd"
+      "svdFile": "${workspaceFolder}/resources/STM32F401.svd",
+      "openOCDLaunchCommands": [
+        "adapter serial ${input:stlinkSerial}"
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "stlinkSerial",
+      "type": "promptString",
+      "description": "ST-Link serial for the selected board"
     }
   ]
 }

@@ -16,13 +16,13 @@ BlackPill consumer с профилями F411CE/F401CC в режиме сопр�
 матрица проверки модуля переходят в stm32-gdbtest. Последовательность и условия
 приёмки — [TODO](../TODO.md#целевое-разделение-после-перехода-на-cmsis).
 Исторические HAL-протоколы сохраняются, их результаты не доказывают CMSIS-регрессию.
-Пять CMSIS fixtures и HAL-техники приняты в модуле; преобразование этого
-репозитория в двухпрофильный CMSIS consumer ещё впереди. [Аудит переноса](CMSIS_INTEGRATION.md).
+Пять CMSIS fixtures и HAL-техники приняты в модуле. Активный consumer теперь
+использует src/cmsis/ld/cmake/hil и F411CE/F401CC; прежние HAL-исходники — legacy/hal. [Аудит переноса](CMSIS_INTEGRATION.md).
 
 | Проект / слой | Ответственность |
 | --- | --- |
 | stm32-gdbtest | CMake attach, AST collection, host runner, offline contracts, backend, GDB agent/Target, отчёты, владение отладчиком |
-| stm32-hwtest-blackpill | User/Platform/Core, CubeMX/YAML, MCU-профили, требования и сценарии периферии, инструменты экспериментов, аппаратные доказательства |
+| stm32-hwtest-blackpill | CMSIS-приложение src, hil-профили, требования и сценарии периферии, инструменты экспериментов, аппаратные доказательства |
 | stm32-cmake-yml | Сборка firmware по YAML; не зависимость публичного API тестового модуля |
 | Локальный стенд | Выбранная плата, SWD/питание, serial/executable отладчика в игнорируемом TOML |
 

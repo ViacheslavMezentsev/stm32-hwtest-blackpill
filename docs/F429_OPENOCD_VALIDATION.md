@@ -46,4 +46,4 @@ hwtest/f429zi-validation.xml внутри той же build-папки. Serial �
 ST GDB Server/J-Link на F429 и recovery при физическом обрыве ещё не проверялись.
 Firmware отладчика, option bytes и защита Flash не менялись.
 
-Настройки и команды: [профиль](../profiles/f429zi/README.md).
+Настройки и команды: [профиль](../legacy/hal/profiles/f429zi/README.md).

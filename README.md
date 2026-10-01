@@ -1,76 +1,90 @@
 # stm32-hwtest-blackpill
 
-Примеры и аппаратный стенд для проверки прошивок STM32 через
-[stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest).
-Python-сценарии на ПК управляют GDB и проверяют приложение на реальной плате
-через SWD. Репозиторий помогает освоить этот подход и проверять изменения
-самого модуля на разных MCU и отладчиках.
+[English](README.en.md)
 
-## Зачем создан проект
+Пример проверки работающей прошивки WeAct BlackPill через **GDB-Python и SWD**.
+Отдельный модуль [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest)
+запускает Python-сценарии на ПК: они останавливают MCU, читают переменные и
+регистры, проверяют результаты и вводят ошибки. Тестовые hooks в прошивку не добавляются.
 
-Проверка чистой арифметики на ПК не показывает, правильно ли настроены GPIO,
-DMA, таймеры и прерывания реального MCU. Ручная отладка позволяет это увидеть,
-но её трудно повторять после каждого изменения. Проект вырос из опытов
-автоматизации таких проверок через GDB-Python: общая инфраструктура выделена
-в stm32-gdbtest, а здесь остались прошивки, сценарии и практические результаты.
-
-Тесты не компилируются в прошивку. Они используют её ELF с отладочной информацией,
-останавливают MCU в выбранных точках, читают переменные и регистры, проверяют
-поведение. Остановки и инъекции влияют на выполнение — это часть метода,
-которую нужно учитывать при проверке времени, IRQ и энергопотребления.
+Проект вырос из опытов с HAL на нескольких STM32. Общий механизм и минимальные
+примеры разных MCU выделены в stm32-gdbtest; здесь развивается самостоятельное
+CMSIS-приложение для двух BlackPill. Старые HAL-исходники сохранены в [справочном архиве](legacy/hal/README.md);
+их результаты не следует смешивать с CMSIS.
 
 ```mermaid
 flowchart LR
-    F["Прошивка и профиль MCU"] --> E["ELF с отладочной информацией"]
-    E --> T["stm32-gdbtest + Python-сценарии"]
-    T <--> G["GDB / сервер / отладчик"]
-    G <-->|SWD| B["Плата STM32"]
-    T --> R["Результаты и отчёты"]
+    E["ELF + debug info"] --> G["GDB + Python scenarios"]
+    R["stm32-gdbtest on PC"] --> G
+    G <--> S["OpenOCD / ST-Link"]
+    S <-->|SWD| M["BlackPill application"]
+    R --> J["JSON / JUnit"]
 ```
 
-Опциональное CMSIS-приложение для F411CE/F401CC собирается presets
-`Debug_F411CE` / `Debug_F401CC` (также есть `Release_*`).
-[Сценарии и ограничения](hil/README.md), [результаты приёмки](docs/BLACKPILL_CMSIS_APPLICATION.md).
-Основная HAL-конфигурация пока сохранена на время перехода.
+## Платы и приложение
 
-## Что находится в репозитории
+| Профиль | MCU | Flash / RAM | LED |
+| --- | --- | --- | --- |
+| F411CE | STM32F411CEU6, WeAct BlackPill V3.1 | 512 / 128 КиБ | PC13, active-low |
+| F401CC | STM32F401CCU6, BlackPill v3.0 | 256 / 64 КиБ | PC13, active-low |
 
-- `User/` — общая логика примера: LED, ADC, DMA, таймеры, RTC и Sleep.
-- `profiles/` — отдельные CubeMX-проекты, адаптеры MCU и ожидания тестов.
-- `tests/` — сценарии приложения, требования и шаблоны стендов.
-- `examples/minimal-consumer/` — небольшой пример подключения без YAML-фреймворка.
-- `modules/` — закреплённые зависимости сборки и тестирования.
-- `docs/` — методика, архитектура, настройки и протоколы опытов.
+[Проект плат WeAct](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1).
+Приложение мигает LED, измеряет внутренние temperature/VREFINT через ADC/DMA,
+обрабатывает TIM2 и RTC и использует Sleep/WFI. UART и внешняя проводка периферии
+не требуются. SWD, питание и земля должны быть подключены; отладчик выбирается
+явно по serial. Несовпадение DEV_ID не расширяет заданный размер памяти.
 
-Рабочие профили: WeAct BlackPill V3.1 (STM32F411CEU6), BlackPill v3.0
-(STM32F401CCU6) и BluePill V1.1 / BluePill-Plus (STM32F103C8T6).
-[NUCLEO-F030R8](profiles/f030r8/README.md) проверен через встроенный отладчик; сейчас восстановлена родная прошивка ST-Link/SWD.
-[STM32F429I-DISCO](profiles/f429zi/README.md) проверен через встроенный ST-Link/V2/OpenOCD.
-Профиль STM32H503CBT6 подготовлен частично и ещё не включён в сборку.
-Точные сочетания плат/серверов, результаты и ограничения — в [текущем состоянии](docs/STATUS.md).
+## Сборка
 
-Отдельный [эксперимент К1921ВГ015/RISC-V](examples/k1921vg015-poc/README.md)
-исследует переносимость подхода через J-Link/JTAG; он ещё не является штатным профилем модуля.
+Нужны Git, CMake 3.25+, Ninja и GNU Arm GCC; проверен xPack 13.3.1-1.1.
+CMSIS-заголовки включены в репозиторий, CubeMX для новой сборки не нужен.
+Для HIL дополнительно нужны Python 3.11+, GDB с Python и OpenOCD/ST-Link.
 
-## Зависимости и начало работы
+```sh
+git clone --recurse-submodules https://github.com/ViacheslavMezentsev/stm32-hwtest-blackpill.git
+cd stm32-hwtest-blackpill
+cmake --preset Debug_F411CE
+cmake --build --preset Debug_F411CE
+```
 
-Основная среда — Windows, PowerShell и VS Code. Нужны Git, CMake/Ninja,
-Python 3.11+, yq v4, ARM GCC с GDB-Python и соответствующие STM32Cube-пакеты.
-Для аппаратных проверок — плата, SWD-отладчик ST-Link либо J-Link и совместимый
-GDB-сервер. Зависимости сборки подключаются Git-подмодулями; Cube-пакеты и
-инструменты устанавливаются отдельно.
+Путь к GCC: переменная `ARM_TOOLCHAIN_ROOT` либо одноимённый CMake cache.
+По умолчанию Windows использует `%USERPROFILE%/xpack-arm-none-eabi-gcc-13.3.1-1.1`,
+Linux — `/opt/xpack-arm-none-eabi-gcc-13.3.1-1.1`. Для разных MCU/toolchain нужны
+разные build-каталоги. ELF, HEX и BIN находятся в `build/<preset>/`; gaps BIN
+заполняются 0xFF, но загрузка ELF не гарантирует состояние gaps в памяти MCU.
 
-Начните с [сборки и проверенных версий инструментов](docs/STATUS.md#сборка-и-зависимости),
-затем настройте свой стенд по [инструкции запуска тестов](docs/HWTEST.md).
-Для написания собственных сценариев есть [руководство автора](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/TEST_AUTHORING.md).
+| Назначение | F411CE | F401CC |
+| --- | --- | --- |
+| Отладка | Debug_F411CE | Debug_F401CC |
+| Оптимизация размера | Release_F411CE | Release_F401CC |
+| Сценарии GDB и prepare | HIL_F411CE | HIL_F401CC |
 
-## Документация и связанные проекты
+## Тестирование
 
-- [Карта документации](docs/README.md), [архитектура](docs/HWTEST_ARCHITECTURE_V2.md) и [методы тестирования](docs/STM32_TESTING_METHODS.md).
-- [CI без оборудования и планы QEMU/Renode](docs/CI.md).
-- [Состояние и проверенные возможности](docs/STATUS.md), [планы](TODO.md), [история изменений](CHANGELOG.md).
-- [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest) — самостоятельная инфраструктура тестирования.
-- [stm32-cmake-yml](https://github.com/ViacheslavMezentsev/stm32-cmake-yml) — конфигурация сборки STM32 через YAML.
-- Проекты плат WeAct: [BlackPill F4x1](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1), [BluePill-Plus](https://github.com/WeActStudio/BluePill-Plus), [H503 Core Board](https://github.com/WeActStudio/WeActStudio.STM32H503CoreBoard).
+```sh
+cmake --preset HIL_F411CE
+cmake --build --preset HIL_F411CE
+ctest --preset HIL_F411CE-host
+```
 
-[Лицензия](LICENSE). Для изменений с участием агентов — [AGENTS.md](AGENTS.md).
+Это подготовка без оборудования. Для аппаратного запуска скопируйте
+`hil/stands/f411ce.example.toml` в `hil/stands/f411ce.local.toml`, задайте serial
+и путь к OpenOCD, затем выполните `ctest --preset HIL_F411CE-hw`.
+Для F401CC замените профиль и файл стенда соответственно. Не запускайте VS Code
+и тестовый runner одновременно с одним отладчиком. Конфигурации VS Code запрашивают
+serial и выбирают соответствующий SVD. Подробности — [HIL](hil/README.md).
+
+## Ограничения и документация
+
+GDB-остановки меняют тайминги; Sleep-тесты не измеряют ток. Калибровочные векторы
+проверяют арифметику, а не точность температуры. Сценарии требуют понимания GDB,
+текущего frame и доступности макросов при `-g3`; произвольный C/C++ код нельзя
+считать свободно исполнимым в выражениях отладчика. Renode/QEMU для этих F4 здесь
+пока не проверены. CI build/prepare не заменяет аппаратный запуск.
+
+- [Текущий статус](docs/STATUS.md), [CMSIS-приёмка](docs/BLACKPILL_CMSIS_APPLICATION.md), [CI](docs/CI.md).
+- [Документация и история](docs/README.md), [архитектура](docs/HWTEST_ARCHITECTURE_V2.md), [план](TODO.md).
+- `src/` — приложение; `cmsis/` — сторонние заголовки; `ld/`, `cmake/` — сборка; `hil/` — профили и тесты.
+- [Аналогичный BluePill-пример](https://github.com/ViacheslavMezentsev/stm32-hwtest-bluepill), [stm32-cmake-yml](https://github.com/ViacheslavMezentsev/stm32-cmake-yml).
+
+Собственный код — [MIT](LICENSE); CMSIS имеет отдельные [лицензии и происхождение](cmsis/README.md).
