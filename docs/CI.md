@@ -11,6 +11,11 @@ manifest и Python-сценарии. Сервер GDB и USB не использ
 Результаты: `build/ci-reports/cmsis/`, ELF/HEX/BIN и HIL manifests сохраняются
 артефактом workflow. Счётчик тестов не является покрытием кода.
 
+Offline CTest по умолчанию использует два процесса. Переопределение:
+`python -B ci/run_checks.py --prepare-jobs 1` (допустимы1/2/4). Это не
+параллелизм аппаратных сценариев. `timings.json` сохраняет длительности стадий.
+[Замеры, воспроизведение и ограничения](TEST_TIMING.md).
+
 ## Запуск
 
 ```powershell

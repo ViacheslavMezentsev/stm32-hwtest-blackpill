@@ -5,6 +5,12 @@
 
 ## [Unreleased]
 
+- CI запускает offline CTest в двух процессах (настройка1/2/4), сохраняет время
+  стадий; добавлен воспроизводимый benchmark. HW lifecycle и набор проверок сохранены.
+- Added bounded offline CTest parallelism, CI stage timings and a repeatable
+  benchmark; hardware lifecycle and test inventory remain unchanged.
+
+
 - Согласованы AGENTS, TODO, архитектура и статус с завершённым CMSIS-переносом.
   Добавлена карта дерева; examples и profiles/h503cb сохраняются. Исторические
   HAL-команды и результаты явно отделены от текущих инструкций.

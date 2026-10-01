@@ -1,4 +1,6 @@
 """Build both BlackPill CMSIS boards and prepare their scenarios without hardware."""
+import argparse
+import time
 import json
 import os
 from pathlib import Path
@@ -9,17 +11,34 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prepare-jobs", type=int, choices=(1, 2, 4), default=2,
+                        help="parallel offline CTest processes; hardware is never run")
+    args = parser.parse_args()
     out = ROOT / "build/ci-reports/cmsis"
     out.mkdir(parents=True, exist_ok=True)
     env = {key: value for key, value in os.environ.items()
            if not key.startswith(("STM32_GDBTEST_", "HWTEST_"))}
     env["PYTHONDONTWRITEBYTECODE"] = "1"
     summary = []
+    timings = []
+    total_started = time.perf_counter()
 
     def run(command, name):
-        with (out / (name + ".log")).open("wb") as log:
-            subprocess.run(command, cwd=ROOT, env=env, stdout=log,
-                           stderr=subprocess.STDOUT, check=True, timeout=300)
+        started = time.perf_counter()
+        record = {"step": name, "status": "ERROR"}
+        try:
+            with (out / (name + ".log")).open("wb") as log:
+                subprocess.run(command, cwd=ROOT, env=env, stdout=log,
+                               stderr=subprocess.STDOUT, check=True, timeout=300)
+            record["status"] = "PASS"
+        finally:
+            record["wall_s"] = round(time.perf_counter() - started, 3)
+            timings.append(record)
+            (out / "timings.json").write_text(json.dumps({
+                "prepare_jobs": args.prepare_jobs, "steps": timings,
+                "elapsed_s": round(time.perf_counter() - total_started, 3)
+            }, indent=2) + "\n")
 
     for board in ("F411CE", "F401CC"):
         record = {"board": board, "status": "ERROR"}
@@ -46,7 +65,7 @@ def main():
                     raise ValueError("Unexpected host test")
             junit = out / (board + "-junit.xml")
             junit.unlink(missing_ok=True)
-            run(["ctest", "--test-dir", str(build), "-L", "host", "--no-tests=error",
+            run(["ctest", "--test-dir", str(build), "-L", "host", "-j", str(args.prepare_jobs), "--no-tests=error",
                  "--output-on-failure", "--output-junit", str(junit)], board + "-tests")
             cases = ET.parse(junit).getroot().findall(".//testcase")
             if len(cases) != 15 or {c.attrib["name"] for c in cases} != names or any(
