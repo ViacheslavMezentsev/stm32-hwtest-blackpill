@@ -6,8 +6,9 @@ Debug_F411CE/Debug_F401CC собирают src без HAL; HIL_F411CE/HIL_F401CC
 общие сценарии hil/tests/board используют выбранный MCU для ожидания канала ADC.
 Запускать через штатный tools/gdbtest.py с явными --session и --stand.
 
-14 сценариев: boot/HSI, GPIO blink, ADC init/runtime/invalid/vectors/busy/disabled/timeout,
-TIM2, RTC rearm/deadline, Sleep от SysTick и от TIM2. Source-level HAL contracts
+18 сценариев: boot/HSI, GPIO blink, ADC init/runtime/invalid/vectors/busy/disabled/timeout,
+TIM2, RTC rearm/deadline, Sleep от SysTick и от TIM2; clock/GPIO configuration,
+IRQ publication и подавление ADC callback ([приёмы и результаты](../docs/CMSIS_RUNTIME_SCENARIOS.md)). Source-level HAL contracts
 не применяются к этой firmware. Макросы зависят от текущего frame; MMIO проверяется
 в platform.c, данные приложения — в loop. Число тестов не является покрытием кода.
 

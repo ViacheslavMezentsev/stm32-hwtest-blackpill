@@ -8,11 +8,11 @@
 | src/ | Активное CMSIS-приложение, собственные startup/platform и арифметика |
 | cmsis/ | Неизменённые сторонние заголовки F4, licenses и source hashes |
 | cmake/, ld/ | Toolchain, выбор BOARD, linker и опциональное HIL attach |
-| hil/profiles/, hil/tests/board/ | Два MCU, общие14 сценариев и требования |
+| hil/profiles/, hil/tests/board/ | Два MCU, общие18 сценариев и требования |
 | hil/tests/native/ | Арифметика ADC на ПК, один CTest |
 | hil/stands/ | Шаблоны и игнорируемые local TOML для новых HIL presets |
 | modules/stm32-gdbtest/ | Единственный закреплённый Git-подмодуль |
-| ci/, .github/ | Docker build/prepare, шесть сборок и31 CTest без MCU |
+| ci/, .github/ | Docker build/prepare, шесть сборок и39 CTest без MCU |
 | .vscode/, resources/ | Задачи редактора и SVD; наличие SVD не означает активный профиль |
 | legacy/hal/ | Справочный архив пяти HAL-профилей, User, сценариев и сборочных файлов |
 | profiles/h503cb/ | Сохранённый CubeMX-проект STM32H503CBT6, вне presets/CI; развитие отложено |

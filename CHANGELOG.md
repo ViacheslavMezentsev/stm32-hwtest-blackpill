@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+- Добавлены четыре CMSIS-сценария: clock/GPIO, TIM2 IRQ, DMA publication и
+  подавление ADC callback. Всего 18 сценариев; F401CC 18/18 PASS, F411CE offline.
+  Источники техник и границы доказательств — docs/CMSIS_RUNTIME_SCENARIOS.md.
+- Added four CMSIS runtime scenarios using existing rc.2 APIs; firmware unchanged.
+
 - Подмодуль закреплён на опубликованном v0.1.0-rc.2 (a0d6547) вместо более
   позднего da42cd7 из main; runtime/CLI/CMake-код одинаков. Текущие ссылки на API
   приведены к релизу, исторические ссылки на поздние примеры сохранены.

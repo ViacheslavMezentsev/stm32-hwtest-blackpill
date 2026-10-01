@@ -57,3 +57,19 @@ RTC использует делители 127/249; первый alarm назна
 ## HW_SLEEP_TIM2
 
 При остановленном SysTick TIM2 выводит процессор из WFI без продвижения platform_tick; после восстановления масок приложение продолжает работу.
+
+## HW_CLOCK_GPIO_CONFIG
+
+HSI16, bus dividers, SysTick 1 ms and PC13 electrical configuration match the application.
+
+## HW_TIMER_IRQ_PUBLICATION
+
+Natural TIM2 IRQ has exception 44 and UIF; two completed handlers each publish one event, then return to thread mode.
+
+## HW_ADC_DMA_PUBLICATION
+
+Natural DMA IRQ has exception 72, TCIF without errors and NDTR=0. Both samples are published exactly once after the callback.
+
+## HW_ADC_CALLBACK_SUPPRESSED
+
+Suppressing the void callback after DMA completion causes the application deadline (100 ticks), without publication. A separate normal ADC run after reset checks recovery.

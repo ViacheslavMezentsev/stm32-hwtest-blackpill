@@ -24,8 +24,8 @@ def main():
         ["ctest", "--test-dir", str(build), "-L", "^host$", "--show-only=json-v1"],
         env=env, text=True, timeout=30))["tests"]
     names = {test["name"] for test in listing}
-    if len(listing) != 15 or len(names) != 15:
-        raise ValueError("Expected fourteen prepare tests and traceability")
+    if len(listing) != 19 or len(names) != 19:
+        raise ValueError("Expected eighteen prepare tests and traceability")
     for test in listing:
         command = test["command"]
         if test["name"].startswith("prepare.") and "--prepare-only" in command:
@@ -52,7 +52,7 @@ def main():
                         stderr=subprocess.STDOUT, check=True, timeout=180)
                 elapsed = time.perf_counter() - started
                 cases = ET.parse(junit).getroot().findall(".//testcase")
-                if len(cases) != 15 or {c.attrib["name"] for c in cases} != names or any(
+                if len(cases) != 19 or {c.attrib["name"] for c in cases} != names or any(
                         c.find(tag) is not None for c in cases for tag in ("failure", "error", "skipped")):
                     raise ValueError("Incomplete or unsuccessful benchmark result")
                 row = {"repeat": repeat, "jobs": jobs, "wall_s": round(elapsed, 3)}

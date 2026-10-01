@@ -55,8 +55,8 @@ def main():
                 ["ctest", "--test-dir", str(build), "-L", "host", "--show-only=json-v1"],
                 cwd=ROOT, env=env, text=True, timeout=30))["tests"]
             names = {test["name"] for test in listing}
-            if len(listing) != 15 or sum(name.startswith("prepare.") for name in names) != 14:
-                raise ValueError("Expected fourteen prepare tests and traceability")
+            if len(listing) != 19 or sum(name.startswith("prepare.") for name in names) != 18:
+                raise ValueError("Expected eighteen prepare tests and traceability")
             for test in listing:
                 if test["name"].startswith("prepare."):
                     if "--prepare-only" not in test["command"]:
@@ -68,7 +68,7 @@ def main():
             run(["ctest", "--test-dir", str(build), "-L", "host", "-j", str(args.prepare_jobs), "--no-tests=error",
                  "--output-on-failure", "--output-junit", str(junit)], board + "-tests")
             cases = ET.parse(junit).getroot().findall(".//testcase")
-            if len(cases) != 15 or {c.attrib["name"] for c in cases} != names or any(
+            if len(cases) != 19 or {c.attrib["name"] for c in cases} != names or any(
                     c.find(tag) is not None for c in cases for tag in ("skipped", "error", "failure")):
                 raise ValueError("Incomplete or unsuccessful JUnit")
             manifest = json.loads(Path(session["build_manifest"]).read_text())

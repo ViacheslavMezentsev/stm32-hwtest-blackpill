@@ -109,8 +109,10 @@
 - F411CE/F401CC CMSIS: по14 HW cases, по12 повторов после инъекций, timeout/recovery
   и HAL restore. Перенос дерева сохранил load images; это не новый аппаратный запуск.
   Release только собран. Протокол — docs/BLACKPILL_CMSIS_APPLICATION.md.
-- CI: python -B ci/run_checks.py; шесть Debug/Release/HIL firmware-сборок и31 CTest
-  (два набора14 prepare+traceability, один native ADC). Windows/Linux Docker,
+- Расширение CMSIS: F401CC 18/18 PASS; F411CE новые четыре только offline.
+  Техники и ограничения — docs/CMSIS_RUNTIME_SCENARIOS.md.
+- CI: python -B ci/run_checks.py; шесть Debug/Release/HIL firmware-сборок и39 CTest
+  (два набора18 prepare+traceability, один native ADC). Windows/Linux Docker,
   без оборудования и эмуляции. Перед land проверять полный Offline точного SHA.
 - Исторические hardware_smoke/check_profile_offline, tests/gdb/experiments и
   отдельный observe_sleep не являются штатной CMSIS-регрессией. Не заявлять их

@@ -4,9 +4,9 @@ Workflow [Offline](../.github/workflows/offline.yml) собирает CMSIS-пр
 для F411CE и F401CC в Debug, Release и HIL. HIL включает отладочную информацию,
 manifest и Python-сценарии. Сервер GDB и USB не используются.
 
-Для каждой платы проверяются 14 prepare и traceability: всего 30 CTest.
+Для каждой платы проверяются 18 prepare и traceability: всего 38 CTest.
 Ещё один native CTest проверяет арифметику `src/adc_units.cpp` на ПК.
-Итого **31 CTest и шесть firmware-сборок**. Пропущенные/отсутствующие тесты,
+Итого **39 CTest и шесть firmware-сборок**. Пропущенные/отсутствующие тесты,
 неуспешный JUnit или ошибка сборки приводят к неуспеху CI.
 Результаты: `build/ci-reports/cmsis/`, ELF/HEX/BIN и HIL manifests сохраняются
 артефактом workflow. Счётчик тестов не является покрытием кода.
