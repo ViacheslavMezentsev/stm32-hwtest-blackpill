@@ -99,7 +99,7 @@
 
 ## Стенды, CI и доказательства
 
-- Последнее подтверждение: F401CC + внешний ST-Link/SWD. Перед каждым HW-набором
+- Последнее подтверждение: F411CE + внешний ST-Link/SWD. Перед каждым HW-набором
   назвать MCU/отладчик/backend/проводку; смена требует ответа владельца. USB enumeration
   не подтверждает SWD. UART/VCOM не подключать без согласования. Термин — «отладчик».
 - Не включать автоматически mass erase, option bytes, shared mode, firmware update.
@@ -109,7 +109,8 @@
 - F411CE/F401CC CMSIS: по14 HW cases, по12 повторов после инъекций, timeout/recovery
   и HAL restore. Перенос дерева сохранил load images; это не новый аппаратный запуск.
   Release только собран. Протокол — docs/BLACKPILL_CMSIS_APPLICATION.md.
-- Расширение CMSIS: F401CC 18/18 PASS; F411CE новые четыре только offline.
+- Расширение CMSIS: F401CC и F411CE по 18/18 PASS через ST-Link/OpenOCD;
+  после инъекций обычные ADC/GPIO PASS, F411CE оставлен running.
   Техники и ограничения — docs/CMSIS_RUNTIME_SCENARIOS.md.
 - CI: python -B ci/run_checks.py; шесть Debug/Release/HIL firmware-сборок и39 CTest
   (два набора18 prepare+traceability, один native ADC). Windows/Linux Docker,

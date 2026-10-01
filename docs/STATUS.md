@@ -4,9 +4,13 @@
 
 ## Расширение CMSIS-сценариев
 
-Рабочая ветка: 18 сценариев, F401CC/ST-Link/OpenOCD 18/18 PASS;
-Windows/Linux Docker: по шесть сборок и 39 CTest PASS. Новые четыре для F411CE пока проверены только offline.
-[Состав, техники и границы](CMSIS_RUNTIME_SCENARIOS.md). CI новой ветки требуется после push.
+18 сценариев приняты в main (`742e1d6`) после полного Offline CI.
+F401CC и F411CE через ST-Link/OpenOCD: по 18/18 PASS, после инъекций
+нормальные ADC/GPIO PASS. F411CE оставлен running; текущий подтверждённый стенд — F411CE.
+Windows/Linux Docker: по шесть сборок и 39 CTest PASS для пакета сценариев.
+При аппаратном повторе F411CE дополнительно HIL build и 19 host CTest PASS.
+[Состав, техники и границы](CMSIS_RUNTIME_SCENARIOS.md). Текущая ветка приёмки
+меняет только документацию; её CI требуется после push.
 
 ## Закреплённая зависимость
 

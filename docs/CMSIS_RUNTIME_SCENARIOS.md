@@ -30,8 +30,10 @@
   на каждый MCU и один native ADC).
 - F401CC + ST-Link/SWD, OpenOCD 0.12.0: полный набор **18/18 PASS**, 42,41 с.
   После инъекции отдельно проверены обычный ADC и GPIO; teardown reset_run успешен.
-- F411CE: аппаратно приняты прежние 14 сценариев. Новые четыре требуют отдельного
-  запуска после согласованной замены платы; prepare не подтверждает аппаратный результат.
+- F411CE + ST-Link/SWD, OpenOCD 0.12.0: **18/18 PASS**, 44,60 с.
+  После набора отдельно GPIO и ADC runtime: 2/2 PASS, reset_run успешен.
+  DEV_ID=0x431 соответствует профилю, заводской размер Flash=512 КиБ, предупреждений нет.
+  HIL-сборка и 19 host CTest повторены перед подключением; прошивка не менялась.
 
 Локальные артефакты: build/cmsis-runtime/f401cc-hardware.xml, restore.xml и
 build/HIL_F401CC/hwtest/runs. ELF SHA256:
@@ -44,3 +46,25 @@ IRQ наблюдаются с остановками GDB: это не измер
 частоты внешним прибором. Проверка регистров GPIO не доказывает физический уровень
 на выводе. Число сценариев не является процентом покрытия кода. Prepare здесь
 проверяет подготовку и traceability, но не исполняет выражения новых сценариев на MCU.
+
+## Повтор на F411CE
+
+Consumer `742e1d64dcd5cdc3f7289838331dd3138f969beb`, модуль
+`a0d6547ba83b7c911f8f3028cb064aeedd3e5a36` (rc.2). Полный
+[Offline CI исходных сценариев](https://github.com/ViacheslavMezentsev/stm32-hwtest-blackpill/actions/runs/36924624200)
+прошёл до land; GitHub main сверён с этим consumer SHA.
+
+Среда аппаратного повтора: Windows, xPack GCC 13.3.1, GDB 14.2.90.20240526-git,
+Python внутри GDB 3.11.4, явный локальный stand tests/stands/blackpill.local.toml.
+Внешняя проводка периферии и UART не использовались. Все 18 сценариев, в том числе
+четыре новых, проверены на MCU. Это HIL/Og, не аппаратная проверка Release.
+
+Артефакты: build/cmsis-runtime-f411/hardware.xml, restore.xml и
+build/HIL_F411CE/hwtest/runs. Финальный ADC run:
+`20261001T211742.903745Z-HW_ADC_RUNTIME-5552`, PASS, teardown=reset_run.
+ELF SHA256: `c4d748b61dcf1700b88ce6c7630c26631735bd4a39826532d4696de4b60fe298`.
+BIN SHA256: `dd7a0ecf6d4ca1f1ce7c54792428134d9422d7cfe8a878ce6aa073a66654b76a`.
+BIN hash не означает проверку gaps: использована штатная проверка ELF load sections.
+
+MCU оставлен работающим. Успешный reset_run и проверка регистра LED не заменяют
+визуальное подтверждение мигания владельцем; в этом повторе оно не запрашивалось.

@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+- Подтверждён полный набор CMSIS на F411CE: 18/18 PASS через ST-Link/OpenOCD,
+  повтор ADC/GPIO 2/2 PASS. Прошивка, тесты и rc.2 не изменены; записан протокол.
+- Validated all 18 CMSIS scenarios on F411CE, including ADC/GPIO recovery checks.
+
 - Добавлены четыре CMSIS-сценария: clock/GPIO, TIM2 IRQ, DMA publication и
   подавление ADC callback. Всего 18 сценариев; F401CC 18/18 PASS, F411CE offline.
   Источники техник и границы доказательств — docs/CMSIS_RUNTIME_SCENARIOS.md.
