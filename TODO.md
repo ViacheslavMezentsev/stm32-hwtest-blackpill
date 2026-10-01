@@ -1,22 +1,21 @@
 # Дорожная карта стендового проекта
 
-Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/README.md).
-План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/TODO.md).
+Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a0d6547ba83b7c911f8f3028cb064aeedd3e5a36/README.md).
+План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a0d6547ba83b7c911f8f3028cb064aeedd3e5a36/TODO.md).
 История завершённых этапов — CHANGELOG и профильные протоколы в docs.
 
-Текущая интеграция: кандидат модуля `67b7431`, Python 0.1.0rc2, API_VERSION=1, ТЗ 0.44.
-Ветка потребителя `codex/integrate-gdbtest-rc2` основана на main a48c944 и зависит
-от выпускной ветки модуля `codex/release-0.1.0-rc.2`. Порядок land: сначала
-финализированный модуль, затем потребитель с окончательным gitlink; до этого не сливать.
-После финальных документальных коммитов модуля обновить gitlink и ссылки,
-повторить затронутые проверки и CI потребителя.
+Текущая интеграция: модуль `a0d6547` из опубликованного main, Python 0.1.0rc2,
+API_VERSION=1, ТЗ 0.45. Docs и полный Offline модуля прошли; тег ещё не опубликован.
+Ветка потребителя `codex/integrate-gdbtest-rc2` основана на main a48c944.
+Модуль уже прошёл land; окончательный gitlink и ссылки обновлены.
+После push проверить новый SHA потребителя и только затем согласовать его land.
 
 - [x] Windows F411 build/host/prepare, 22/22 HW через закреплённый модуль,
   entered-loop timeout/recovery и финальный ADC/boot/blink PASS.
 - [x] Linux Docker: пять сборок, 120/120 CTest (105 prepare) PASS.
-- [ ] Опубликовать интеграционную ветку и проверить её полный GitHub Offline.
-- [ ] После финализации модуля обновить окончательный gitlink и выполнить land
-  потребителя только после land модуля и CI соответствующего SHA.
+- [x] Первая интеграция fb2d186 / модуль 67b7431: GitHub Offline 36791792481 SUCCESS.
+- [x] После land модуля обновить окончательный gitlink и закреплённые ссылки.
+- [ ] Опубликовать окончательную интеграцию, проверить её Offline и согласовать land.
 
 - [x] Обновить модуль после пакета из четырёх веток; унифицировать каталоги
   тестов потребителя как `tests`, пути и импорты, игнорировать `remote.toml`.

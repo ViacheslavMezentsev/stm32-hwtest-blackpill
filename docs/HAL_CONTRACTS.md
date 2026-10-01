@@ -1,6 +1,6 @@
 # Предварительные проверки ELF/HAL-контрактов
 
-Описание механизма/schema перенесено в [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/67b7431eabba970ed2f690fb5ac2fcec045cc06e/docs/ru/CONTRACTS.md).
+Описание механизма/schema перенесено в [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a0d6547ba83b7c911f8f3028cb064aeedd3e5a36/docs/ru/CONTRACTS.md).
 Ниже — ожидания HAL конкретных профилей и история проверок; ранние числа тестов исторические.
 
 Сценарий объявляет необходимые контракты литерально:
