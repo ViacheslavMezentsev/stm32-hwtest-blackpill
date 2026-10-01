@@ -90,3 +90,5 @@ CI build/prepare is not hardware validation.
 Project code: [MIT](LICENSE). CMSIS: [separate licenses and provenance](cmsis/README.md).
 
 [Repository layout](docs/PROJECT_LAYOUT.md) (Russian): active code, archive, retained examples and H503CB.
+
+The submodule is pinned to release **v0.1.0-rc.2**, commit `a0d6547`. It does not track a moving branch.

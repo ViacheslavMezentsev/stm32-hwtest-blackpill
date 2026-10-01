@@ -40,7 +40,7 @@
 ## Направления независимого модуля
 
 Канонический план API и матрицы MCU находится в
-[stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/TODO.md).
+[stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a0d6547ba83b7c911f8f3028cb064aeedd3e5a36/TODO.md).
 Сохраняем согласованный порядок будущих направлений, не утверждая их готовность:
 
 1. Переносимая схема профиля с чтением прежних STM32-профилей.

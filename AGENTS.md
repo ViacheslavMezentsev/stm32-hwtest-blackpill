@@ -10,7 +10,8 @@
 - Использовать Debug_*, Release_* и HIL_* presets. Только HIL подключает manifest
   и тесты. Базово: cmake --preset HIL_F411CE; cmake --build --preset HIL_F411CE;
   ctest --preset HIL_F411CE-host. MCU/toolchain имеют отдельные build.
-- modules/stm32-gdbtest — единственный закреплённый подмодуль. Ядро/API/документация
+- modules/stm32-gdbtest — единственный закреплённый подмодуль: v0.1.0-rc.2/a0d6547.
+  Не обновлять на main без отдельной задачи; подмодуль хранит точный SHA, не ветку. Ядро/API/документация
   механизма принадлежат ему. Не писать туда build/temp/reports. Для согласованных
   изменений использовать .work/stm32-gdbtest и его AGENTS.md; сначала push/CI/land
   модуля, затем родителя. В этой задаче модуль не меняется.

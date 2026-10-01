@@ -5,6 +5,13 @@
 
 ## [Unreleased]
 
+- Подмодуль закреплён на опубликованном v0.1.0-rc.2 (a0d6547) вместо более
+  позднего da42cd7 из main; runtime/CLI/CMake-код одинаков. Текущие ссылки на API
+  приведены к релизу, исторические ссылки на поздние примеры сохранены.
+- Pinned stm32-gdbtest to release v0.1.0-rc.2; runtime code is unchanged from
+  the previously selected revision. Kept later example references as historical evidence.
+
+
 - CI запускает offline CTest в двух процессах (настройка1/2/4), сохраняет время
   стадий; добавлен воспроизводимый benchmark. HW lifecycle и набор проверок сохранены.
 - Added bounded offline CTest parallelism, CI stage timings and a repeatable
