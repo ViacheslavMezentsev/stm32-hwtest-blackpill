@@ -11,6 +11,7 @@
 
 | Область | Владелец / источник |
 | --- | --- |
+| CMSIS-приложение BlackPill F411CE/F401CC | [приёмка и границы проверки](BLACKPILL_CMSIS_APPLICATION.md) |
 | Интеграция CMSIS fixtures, границы и оставшийся перенос | [аудит F030/F103/F411 и план F401/F429](CMSIS_INTEGRATION.md) |
 | Сохранённая HAL-регрессия F030 | [fixture и аппаратная приёмка](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/F030_HAL_VALIDATION.md) |
 | Каталог приёмов HAL/CMSIS | [TECH-001…008](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/TESTING_TECHNIQUES.md) |

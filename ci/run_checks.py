@@ -94,7 +94,9 @@ def main():
     summary.append(record)
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(f"{record['status']} minimal-consumer", flush=True)
-    return int(any(item["status"] != "PASS" for item in summary))
+    cmsis = subprocess.run([os.sys.executable, "-B", str(ROOT / "ci/run_cmsis_checks.py")],
+                           cwd=ROOT, env=env, timeout=1200)
+    return int(cmsis.returncode != 0 or any(item["status"] != "PASS" for item in summary))
 
 
 if __name__ == "__main__":

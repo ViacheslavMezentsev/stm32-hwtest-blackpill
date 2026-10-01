@@ -1,4 +1,9 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.25)
+option(BLACKPILL_CMSIS "Build independent CMSIS application" OFF)
+if(BLACKPILL_CMSIS)
+    include(cmake/blackpill.cmake)
+    return()
+endif()
 
 set(STM32_YML_PROFILE f411ce CACHE STRING "MCU profile: f411ce, f103c8, f401cc, f030r8 or f429zi")
 set_property(CACHE STM32_YML_PROFILE PROPERTY STRINGS f411ce f103c8 f401cc f030r8 f429zi)

@@ -2,7 +2,7 @@
   "version": 3,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 21,
+    "minor": 25,
     "patch": 0
   },
   "configurePresets": [
@@ -175,6 +175,50 @@
       "cacheVariables": {
         "STM32_YML_PROFILE": "f429zi"
       }
+    },
+    {
+      "name": "Debug_F411CE",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/Debug_F411CE",
+      "cacheVariables": {
+        "BLACKPILL_CMSIS": true,
+        "BOARD": "F411CE",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      }
+    },
+    {
+      "name": "Release_F411CE",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/Release_F411CE",
+      "cacheVariables": {
+        "BLACKPILL_CMSIS": true,
+        "BOARD": "F411CE",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      }
+    },
+    {
+      "name": "Debug_F401CC",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/Debug_F401CC",
+      "cacheVariables": {
+        "BLACKPILL_CMSIS": true,
+        "BOARD": "F401CC",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      }
+    },
+    {
+      "name": "Release_F401CC",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/Release_F401CC",
+      "cacheVariables": {
+        "BLACKPILL_CMSIS": true,
+        "BOARD": "F401CC",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      }
     }
   ],
   "buildPresets": [
@@ -270,6 +314,22 @@
     {
       "name": "ci-f429zi",
       "configurePreset": "ci-f429zi"
+    },
+    {
+      "name": "Debug_F411CE",
+      "configurePreset": "Debug_F411CE"
+    },
+    {
+      "name": "Release_F411CE",
+      "configurePreset": "Release_F411CE"
+    },
+    {
+      "name": "Debug_F401CC",
+      "configurePreset": "Debug_F401CC"
+    },
+    {
+      "name": "Release_F401CC",
+      "configurePreset": "Release_F401CC"
     }
   ],
   "testPresets": [

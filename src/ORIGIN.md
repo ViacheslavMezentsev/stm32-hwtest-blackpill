@@ -1,0 +1,1 @@
+Application program.cpp, adc_units.cpp and app.h originate from this repository User at84a257e. CMSIS ADC/DMA and RTC implementation adapts techniques from stm32-gdbtest da42cd7 tests/firmware (MIT, Viacheslav Mezentsev; see root LICENSE). It is independent source, not a runtime dependency on module test fixtures. RTC preserves application rearming after two seconds.

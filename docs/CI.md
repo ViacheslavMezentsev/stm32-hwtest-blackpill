@@ -13,6 +13,12 @@ GDB-Python читает ELF, но сервер и MCU не запускаютс�
 JUnit приводит к ошибке. Внутренние platform-specific skips host unittest
 допустимы и видны в логе. H503 и эксперименты К1921 в матрицу не входят.
 
+Новый пакет дополнительно собирает CMSIS-приложение F411CE/F401CC в Debug и
+Release и выполняет по 15 host CTest для Debug (14 prepare + traceability).
+Итого ожидается 154 CTest; результаты нового приложения сохраняются отдельно
+в `build/ci-reports/cmsis/`. Изолированный запуск этой части:
+`python -B ci/run_cmsis_checks.py`. Это по-прежнему не аппаратная проверка.
+
 ## Окружение и локальный запуск
 
 Нужен Docker с Linux containers (linux/amd64). Из корня репозитория:

@@ -1,5 +1,14 @@
 # Дорожная карта стендового проекта
 
+Рабочая ветка codex/blackpill-cmsis-application зависит от проверенного плана18e4d14.
+Новая конфигурация BLACKPILL_CMSIS добавлена в src/cmsis/ld/cmake/hil.
+F411CE/F401CC: по 14 аппаратных сценариев, по 12 повторов после инъекций,
+внешний timeout/recovery и возврат HAL — проверены. Новый CI-runner выполняет
+30 host CTest и Debug/Release сборки; прежняя HAL сборка пока остаётся по умолчанию.
+Далее: опубликованный CI, README RU/EN и VS Code, сокращение активной структуры.
+Протокол — docs/BLACKPILL_CMSIS_APPLICATION.md.
+
+
 Текущее уточнение плана: codex/blackpill-two-profile-plan зависит от интеграции0f8a358.
 CI интеграции36895980111 SUCCESS; её land выполняет владелец.
 

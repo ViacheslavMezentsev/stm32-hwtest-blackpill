@@ -1,0 +1,1 @@
+CMSIS subset from STM32CubeF4 V1.28.3, copied without modification. Original copyright and license notices remain in each header. Core and Device headers are third-party code and must not be formatted.
