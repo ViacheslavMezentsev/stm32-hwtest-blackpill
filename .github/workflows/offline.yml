@@ -21,7 +21,7 @@ jobs:
           mkdir -p build/ci-reports
           set -o pipefail
           docker build --progress plain -f ci/docker/Dockerfile -t hwtest-ci . 2>&1 | tee build/ci-reports/image.log
-      - name: Build and prepare five profiles without hardware or network
+      - name: Build five HAL profiles and standalone CMSIS consumer without hardware or network
         run: |
           docker run --rm --network none --user "$(id -u):$(id -g)" -e HOME=/workspace/build/ci-reports \
             --mount "type=bind,source=$PWD,target=/workspace" hwtest-ci
@@ -37,4 +37,6 @@ jobs:
             build/ci-*/*.bin
             build/ci-*/*.map
             build/ci-*/hwtest/
+            examples/minimal-consumer/build/ci/*.elf
+            examples/minimal-consumer/build/ci/hwtest/
           if-no-files-found: error

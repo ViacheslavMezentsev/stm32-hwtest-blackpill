@@ -1,8 +1,22 @@
 # Дорожная карта стендового проекта
 
-Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/README.md).
-План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/TODO.md).
+Назначение: проверка и развитие отдельного [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/README.md).
+План ядра и выпуска версий — [TODO модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/TODO.md).
 История завершённых этапов — CHANGELOG и профильные протоколы в docs.
+
+Текущая ветка: codex/f411-cmsis-consumer-integration от main84a257e.
+Модуль da42cd7 (ТЗ0.58, Python0.1.0rc2/API1) принят после Docs и полного Offline.
+
+- [x] Обновить gitlink после пяти CMSIS-профилей и HAL GPIO/RCC-регрессии.
+- [x] Самостоятельный examples/minimal-consumer: Windows/Linux toolchain, два GPIO/blink cases, CI.
+- [x] Windows4/4 offline; F411CE/ST-Link/OpenOCD: CMSIS GPIO/blink2/2, HAL restore boot/blink2/2.
+- [x] Linux: пять HAL-профилей + CMSIS consumer,124 CTest PASS с повтором F030/F103 после исправления Git-копии.
+- [ ] Публикация ветки, полный CI и land владельцем.
+- [ ] Следующий пакет: основное F411 CMSIS-приложение ADC/DMA/TIM/RTC/Sleep, профильные сценарии и HW/recovery.
+- [ ] После приёмки сократить активные профили/presets/CI до F411; историю, HAL-методику и К1921 сохранить.
+
+Подробности: docs/F411_CONSUMER_INTEGRATION.md. Ниже — история прежней интеграции;
+её аппаратные результаты не являются повторной проверкой всех сценариев на новой зависимости.
 
 Текущая интеграция: модуль `91a7cd4` из опубликованного main, Python 0.1.0rc2,
 API_VERSION=1, ТЗ 0.51. Релиз v0.1.0-rc.2 опубликован на `a0d6547`;

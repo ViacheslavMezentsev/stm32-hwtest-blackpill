@@ -207,3 +207,8 @@
   плату и подтверждённую проводку; software IRQ не доказывает физический фронт.
   Capability/stand wiring schema и автоматический SKIP пока не реализованы;
   состояния планирования не добавлять в API/target TOML без отдельной задачи.
+
+- Интеграция da42cd7: пять CMSIS fixtures и HAL GPIO/RCC сохранены в модуле.
+  Здесь examples/minimal-consumer проверяет CMSIS GPIO/blink (Windows/Linux CI);
+  основное приложение ещё HAL. Следующий пакет — F411 CMSIS platform для User,
+  затем сокращение активных профилей после HW приёмки. Протокол docs/F411_CONSUMER_INTEGRATION.md.

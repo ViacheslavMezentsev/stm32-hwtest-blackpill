@@ -69,6 +69,31 @@ def main():
         summary.append(record)
         (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
         print(f"{record['status']} {profile}", flush=True)
+    # Independent CMSIS consumer: same pinned module, no parent YAML/HAL sources.
+    record = {"profile": "minimal-consumer", "status": "ERROR"}
+    try:
+        source = ROOT / "examples/minimal-consumer"
+        build = source / "build/ci"
+        run(["cmake", "-S", str(source), "-B", str(build), "-G", "Ninja",
+             "--toolchain", str(source / "cmake/arm-gcc.cmake"),
+             "-DSTM32_GDBTEST_STAND="], out / "consumer-configure.log")
+        run(["cmake", "--build", str(build)], out / "consumer-build.log")
+        junit = out / "consumer-junit.xml"
+        junit.unlink(missing_ok=True)
+        run(["ctest", "--test-dir", str(build), "-L", "host", "--output-on-failure",
+             "--no-tests=error", "--output-junit", str(junit)], out / "consumer-tests.log")
+        cases = ET.parse(junit).getroot().findall(".//testcase")
+        names = {"prepare.HW_CONSUMER_GPIO", "prepare.HW_CONSUMER_BLINK",
+                 "host.traceability", "host.consumer_offline"}
+        if len(cases) != 4 or {c.attrib["name"] for c in cases} != names or any(
+                c.find(tag) is not None for c in cases for tag in ("skipped", "failure", "error")):
+            raise ValueError("Incomplete CMSIS consumer result")
+        record.update(status="PASS", tests=4)
+    except (OSError, ValueError, subprocess.SubprocessError, ET.ParseError) as error:
+        record["error"] = str(error)
+    summary.append(record)
+    (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    print(f"{record['status']} minimal-consumer", flush=True)
     return int(any(item["status"] != "PASS" for item in summary))
 
 

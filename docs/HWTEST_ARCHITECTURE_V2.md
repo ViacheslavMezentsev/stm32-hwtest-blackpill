@@ -1,12 +1,12 @@
 # HWTEST: фактическая архитектура v2
 
 Обновлено 2026-10-01. v2 — версия этого документа, не API:
-подключён stm32-gdbtest `91a7cd4`, API_VERSION=1, ТЗ 0.51.
+подключён stm32-gdbtest `da42cd7`, API_VERSION=1, ТЗ 0.58.
 Версия Python `0.1.0rc2`; опубликованный тег rc.2 закреплён на `a0d6547`.
-Текущий gitlink включает последующие CMSIS fixtures F103/F411; ядро не изменено.
+Текущий gitlink включает пять CMSIS fixtures и расширенную HAL F030-регрессию; ядро не изменено.
 [Исходный замысел](HWTEST_ARCHITECTURE.md) сохранён без изменений.
 Этот общий документ описывает взаимодействие двух самостоятельных проектов;
-детальный API принадлежит [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/docs/ru/API.md).
+детальный API принадлежит [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/API.md).
 
 ## Ответственность проектов
 
@@ -16,7 +16,7 @@ F411-consumer в режиме сопровождения; остальные м�
 матрица проверки модуля переходят в stm32-gdbtest. Последовательность и условия
 приёмки — [TODO](../TODO.md#целевое-разделение-после-перехода-на-cmsis).
 Исторические HAL-протоколы сохраняются, их результаты не доказывают CMSIS-регрессию.
-F030/F103/F411 fixtures приняты в модуле; F401/F429 и преобразование этого
+Пять CMSIS fixtures и HAL-техники приняты в модуле; преобразование этого
 репозитория в F411-only consumer ещё впереди. [Аудит переноса](CMSIS_INTEGRATION.md).
 
 | Проект / слой | Ответственность |
@@ -90,15 +90,15 @@ Attach создаёт session/CTest и post-link manifest. Runner выбирае
 
 Совместимость — конкретная комбинация MCU/платы, HAL/CMSIS, compiler/ABI,
 GDB/Python, backend/прошивки отладчика. API presence, build manifest и выборочный
-ELF/HAL preflight — три разных доказательства. Их [форматы и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/docs/ru/MANIFESTS.md)
+ELF/HAL preflight — три разных доказательства. Их [форматы и ограничения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/MANIFESTS.md)
 не подтверждают всю семантику HAL, карту памяти или корректность генерации CubeMX.
-[Контракты](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/docs/ru/CONTRACTS.md) требуют осмысленных source_reviews;
-обновлять hash без анализа нельзя. [-g3 и HAL-макросы](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/docs/ru/HAL_MACRO_GUIDE.md)
+[Контракты](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/CONTRACTS.md) требуют осмысленных source_reviews;
+обновлять hash без анализа нельзя. [-g3 и HAL-макросы](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/HAL_MACRO_GUIDE.md)
 дают контекст debug info, но не сохраняют неиспользуемые функции.
 
 DEV_ID mismatch по умолчанию предупреждает, strict отказывает до Flash. Выбранный
 target не меняется автоматически; размер образа ограничен и профилем, и прочитанным
-размером Flash. [Политика модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/docs/ru/TARGET_IDENTITY.md),
+размером Flash. [Политика модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/TARGET_IDENTITY.md),
 [опыты на экземплярах](TARGET_IDENTITY.md).
 
 Hardware BP имеют ограниченный бюджет; pending/optimized-out и неверные причины
@@ -111,7 +111,7 @@ PASS/FAIL/ERROR различаются в JSON/JUnit; SKIP/NOT_APPLICABLE пок
 Named mutex координирует участвующие процессы в одной Windows-сессии, включая
 OpenOCD/ST server с одним ST-Link. VS Code/vendor tools не участвуют автоматически.
 После crash освобождение mutex не доказывает завершение серверов; Job Object ещё планируется.
-[Детали владения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/docs/ru/DEBUGGER_OWNERSHIP.md).
+[Детали владения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/DEBUGGER_OWNERSHIP.md).
 
 ## Доказанная область
 
@@ -143,7 +143,7 @@ MCU identity/memory adapter и проверка ELF по load regions. STM32-я�
 5. Позже: host-контроллер питания/реле/кнопок с протоколом синхронизации GDB,
    reconnect/повторной identity и владением ресурсами. Драйверы приборов принадлежат стенду.
 
-Полные планы: [проект](../TODO.md), [модуль](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/TODO.md).
+Полные планы: [проект](../TODO.md), [модуль](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/TODO.md).
 Практика и ограничения: [STM32_TESTING_METHODS](STM32_TESTING_METHODS.md).
 Навигация по всем деталям: [карта документации](README.md).
 
@@ -152,7 +152,7 @@ MCU identity/memory adapter и проверка ELF по load regions. STM32-я�
 Модуль сравнивает только загружаемые ELF-секции по LMA. BIN нормализуется
 заполнением промежутков 0xFF, но исходный GDB load ELF их не гарантирует.
 Проверка полной области/CRC требует отдельного контракта и режима записи.
-[Механизм модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/docs/ru/IMAGES.md),
+[Механизм модуля](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/IMAGES.md),
 [проверки на текущих STM32-стендах](ELF_LOAD_REGIONS.md).
 
 ### Полный образ как отдельный вход runner
@@ -160,5 +160,5 @@ MCU identity/memory adapter и проверка ELF по load regions. STM32-я�
 Опциональный TOML image policy задаёт диапазон и fill. Ядро создаёт canonical BIN
 и односекционный ELF для GDB, сохраняет исходный ELF для символов, сравнивает весь
 readback и CRC-32/ISO-HDLC на ПК. Это не MCU CRC и не встроенное CRC-поле firmware.
-Умолчание остаётся load sections. [Контракт](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/91a7cd4400e68991b420f990be15f47e277665c0/docs/ru/IMAGES.md),
+Умолчание остаётся load sections. [Контракт](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/IMAGES.md),
 [реальная проверка](FULL_IMAGE_CRC.md).

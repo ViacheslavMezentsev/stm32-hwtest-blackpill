@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+- Подмодуль stm32-gdbtest закреплён на da42cd7 (ТЗ0.58): пять CMSIS fixtures и HAL GPIO/RCC-техники.
+  Самостоятельный F411 CMSIS consumer поддерживает Windows/Linux, проверяет GPIO/blink
+  и включён в CI. Основное HAL-приложение пока сохранено; протокол F411_CONSUMER_INTEGRATION.md.
+
+
 - Подмодуль stm32-gdbtest обновлён до `91a7cd4` (ТЗ 0.51), после опубликованного
   rc.2: CMSIS fixtures F103/F411 и их протоколы. Ядро и firmware потребителя
   не менялись. Ссылки синхронизированы, статус релиза исправлен; аудит переноса

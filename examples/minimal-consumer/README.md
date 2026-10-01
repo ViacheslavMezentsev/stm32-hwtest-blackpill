@@ -3,7 +3,7 @@
 Самостоятельный CMake-проект для STM32F411CEU6 / BlackPill с LED PC13.
 Подключает исходный HWTEST через `STM32_GDBTEST_SOURCE_DIR`, без родительского CMake,
 `stm32-cmake-yml`, YAML, общего User и сценариев основного приложения.
-Модуль пока не опубликован; рабочее имя будущего модуля — **stm32-gdbtest**.
+Модуль опубликован отдельно и подключён закреплённым подмодулем **stm32-gdbtest**.
 
 ## Проверка без платы
 
@@ -15,10 +15,10 @@ cmake --build --preset debug
 ctest --preset offline
 ```
 
-Нужны Windows, CMake >=3.25 (presets schema6), Ninja, Python >=3.11, xPack GCC13
+Нужны Windows или Linux, CMake >=3.25 (presets schema6), Ninja, Python >=3.11, xPack GCC13
 с GDB-Python и установленный CubeF4 V1.28.3. Значения `ARM_TOOLCHAIN_ROOT` и
 `CUBE_F4_ROOT` по умолчанию вычисляются относительно USERPROFILE; другое размещение
-задаётся через CMake cache / локальный CMakeUserPresets.json. Cube-пакет только читается.
+задаётся через CMake cache / локальный CMakeUserPresets.json. На Linux по умолчанию используются /opt/xpack-arm-none-eabi-gcc-13.3.1-1.1 и /opt/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3; поддержаны ARM_TOOLCHAIN_ROOT и CUBE_F4_ROOT из окружения. Cube-пакет только читается.
 
 `host.consumer_offline` проверяет post-link manifest двух translation units,
 импорт собственного helper из корня потребителя, запрет выхода отчётов за корень,
@@ -61,3 +61,5 @@ ACL. Воспроизведение из корня репозитория — t
 В этом приложении STM32_GDBTEST_SOURCE_DIR теперь по умолчанию указывает на
 ../../modules/stm32-gdbtest. Для обновления старого cache: `cmake --preset debug -U STM32_GDBTEST_SOURCE_DIR`.
 Подмодуль предварительно инициализировать; пример не обновляет его коммит автоматически.
+
+CI проверяет четыре host/prepare CTest: два сценария GPIO/blink, traceability и consumer_offline. Этот blink — начальная CMSIS-интеграция, не замена периферийного HAL-приложения.

@@ -8,7 +8,8 @@ GDB-Python читает ELF, но сервер и MCU не запускаютс�
 
 Первый слой: Debug, GCC 13.3.1-1.1, f030r8/f103c8/f401cc/f411ce/f429zi.
 Ожидаются 20 CTest-тестов для F030 и по 25 для остальных (всего 120,
-из них 105 prepare). Отсутствующий тест, пропуск CTest-теста или неверный
+из них 105 prepare). Дополнительно собирается самостоятельный CMSIS minimal-consumer:
+4 CTest (два prepare, traceability, consumer_offline), всего124. Отсутствующий тест, пропуск CTest-теста или неверный
 JUnit приводит к ошибке. Внутренние platform-specific skips host unittest
 допустимы и видны в логе. H503 и эксперименты К1921 в матрицу не входят.
 
@@ -23,7 +24,7 @@ docker run --rm --network none --mount "type=bind,source=$PWD,target=/workspace"
 ```
 
 Для одного профиля допишите после `hwtest-ci`:
-`python3 -B ci/run_checks.py --profile f030r8`.
+`python3 -B ci/run_checks.py --profile f030r8`. CMSIS consumer проверяется также при этом фильтре.
 В Linux используйте дополнительно `--user "$(id -u):$(id -g)"` и
 `-e HOME=/workspace/build/ci-reports`, как в workflow.
 USB и Docker privileged не нужны; аппаратный стенд оставьте без изменений.
