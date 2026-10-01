@@ -49,3 +49,5 @@
 не копировать его API. Сводка результатов содержит MCU/backend/ELF и границы опыта.
 
 - [F411: самостоятельная CMSIS-интеграция и следующий пакет](F411_CONSUMER_INTEGRATION.md).
+
+- [Структура по образцу BluePill и два профиля BlackPill](REPOSITORY_ALIGNMENT.md).

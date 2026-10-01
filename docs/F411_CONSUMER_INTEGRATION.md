@@ -56,3 +56,5 @@ linux-final-summary.json, JSON/JUnit/logs — linux-source/build/ci-reports.
 Это offline-доказательство, не Linux HW. Windows host98 (8 skips) PASS;
 локальные файловые ссылки Markdown проверены, битых не найдено.
 GitHub CI нового коммита ещё требуется перед land.
+
+Уточнение владельца после этого этапа: сохраняются F411CE и F401CC как два профиля общего BlackPill-приложения. [План структуры](REPOSITORY_ALIGNMENT.md) заменяет прежний план F411-only.

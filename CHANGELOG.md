@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+- Уточнён план CMSIS-перехода: сохранить F411CE и F401CC, согласовать структуру
+  и README RU/EN с BluePill. Реализация и аппаратная приёмка двух профилей впереди.
+
+
 - Подмодуль stm32-gdbtest закреплён на da42cd7 (ТЗ0.58): пять CMSIS fixtures и HAL GPIO/RCC-техники.
   Самостоятельный F411 CMSIS consumer поддерживает Windows/Linux, проверяет GPIO/blink
   и включён в CI. Основное HAL-приложение пока сохранено; протокол F411_CONSUMER_INTEGRATION.md.
