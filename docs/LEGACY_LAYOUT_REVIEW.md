@@ -35,7 +35,7 @@ CI проверяет два CMSIS-профиля (Debug/Release/HIL), боль�
 
 ## Не затрагивается
 
-- `profiles/h503` (приостановлен владельцем).
+- `profiles/h503cb` (приостановлен владельцем).
 - `examples/k1921vg015-poc`, `examples/k1921vg015-errata` и их протоколы.
 - `docs/HWTEST_ARCHITECTURE.md`, HAL-методика и история аппаратных результатов.
 - `build/`, `.work/`, локальные стенды, serial, ELF и аппаратные отчёты.

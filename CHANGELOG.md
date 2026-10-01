@@ -5,6 +5,13 @@
 
 ## [Unreleased]
 
+- Согласованы AGENTS, TODO, архитектура и статус с завершённым CMSIS-переносом.
+  Добавлена карта дерева; examples и profiles/h503cb сохраняются. Исторические
+  HAL-команды и результаты явно отделены от текущих инструкций.
+- Aligned agent instructions, roadmap, architecture and status after CMSIS migration;
+  documented the tree and retained examples/H503CB without changing firmware.
+
+
 - HAL-исходники архивированы в legacy/hal; активны только F411CE/F401CC.
   Старые build-подмодули исключены, CI больше не загружает Cube/HAL/yq.
   Native ADC сохранён в hil/tests/native; шесть firmware-сборок и 31 CTest.

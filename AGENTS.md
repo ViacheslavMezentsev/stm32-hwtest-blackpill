@@ -1,32 +1,32 @@
-# Работа над стендовым проектом
+# Работа над BlackPill consumer
 
-- Текущая пользовательская сборка — CMSIS src/cmsis/ld/cmake/hil, два MCU F411CE/F401CC.
-  Использовать Debug_*, Release_* и HIL_* presets; только HIL подключает тесты.
-  Старые presets/профили находятся в справочном архиве legacy/hal; описание
-  docs/LEGACY_LAYOUT_REVIEW.md. Исторические инструкции ниже применимы к ним.
-  Правило форматирования собственного User-кода распространяется на src; CMSIS не форматировать.
+## Текущая структура
 
-
-- Этот репозиторий — прошивка, MCU-профили и стенд для проверки отдельного stm32-gdbtest.
-  Ядро и его документация принадлежат отдельному проекту. Сначала читать README.md,
-  docs/README.md, docs/HWTEST_ARCHITECTURE_V2.md и TODO.md. История опытов — в docs,
-  старые значения числа тестов/планы внутри протоколов не заменяют текущий статус.
-- Целевое состояние после CMSIS-миграции: здесь приложение BlackPill с профилями F411CE и F401CC на сопровождении;
-  другие минимальные примеры и общая матрица регрессии — в stm32-gdbtest.
-  Переход пока не выполнен; порядок и приёмка описаны в TODO.md. Не удалять
-  HAL-профили и протоколы до проверки замены, не считать CMSIS проверкой HAL API.
-- Основная среда: Windows, PowerShell, VS Code, CMake/Ninja, xPack ARM GCC.
-  Собирать через presets; MCU/toolchain имеют отдельные build. Базово:
-  cmake --preset f411ce-debug, cmake --build --preset f411ce-debug.
-- Конфигурация firmware — stm32_config.yml; CMake оставлять тонкой интеграцией.
-  Перед изменением YAML читать документацию/skills фактически закреплённого stm32-cmake-yml.
-- Зависимости modules — Git-подмодули на фиксированных коммитах. Не писать в них
-  build/temp/reports и не менять без задачи. Для доработки stm32-gdbtest использовать
-  отдельный checkout .work/stm32-gdbtest внутри workspace; правила — его AGENTS.md.
-  Не удалять этот Git checkout очисткой build. Сначала push модуля, затем родителя.
-- Все изменения, временные файлы, отчёты и блокировки — только внутри этого workspace.
-  Соседние проекты/установленные инструменты только читать/запускать. Не менять global config.
+- Сначала читать README.md, docs/README.md, docs/STATUS.md, docs/HWTEST_ARCHITECTURE_V2.md и TODO.md.
+  Карта дерева — docs/PROJECT_LAYOUT.md. Протоколы опытов не заменяют текущий статус.
+- Активны F411CE/F401CC: приложение src/, CMSIS cmsis/, linker ld/, CMake cmake/.
+  Профили hil/profiles, сценарии hil/tests/board, требования hil/tests/requirements.md;
+  native ADC — hil/tests/native. Firmware настраивается CMake, не YAML.
+- Использовать Debug_*, Release_* и HIL_* presets. Только HIL подключает manifest
+  и тесты. Базово: cmake --preset HIL_F411CE; cmake --build --preset HIL_F411CE;
+  ctest --preset HIL_F411CE-host. MCU/toolchain имеют отдельные build.
+- modules/stm32-gdbtest — единственный закреплённый подмодуль. Ядро/API/документация
+  механизма принадлежат ему. Не писать туда build/temp/reports. Для согласованных
+  изменений использовать .work/stm32-gdbtest и его AGENTS.md; сначала push/CI/land
+  модуля, затем родителя. В этой задаче модуль не меняется.
+- legacy/hal — справочный архив. Старую HAL-сборку воспроизводить отдельным checkout
+  314982a с его подмодулями. Локально оставшиеся stm32-cmake/stm32-cmake-yml не являются
+  зависимостями. Исторические пути и числа тестов внутри протоколов не актуальные команды.
+- examples/ и profiles/h503cb/ сохранить по решению владельца. H503 не включён в
+  сборку; IOC/Core не менять до отдельной задачи. К1921-стенд разобран: не запускать
+  его аппаратные команды без нового подтверждения владельца.
+- Все изменения, временные файлы, отчёты и блокировки — только внутри workspace.
+  Соседние проекты/инструменты только читать/запускать. Не менять global Git config.
   Не коммитить build, serial, личные пути, local TOML и CMakeUserPresets.json.
+  .work/ и вложенные Git checkout не удалять очисткой; docs/BUILD_ARTIFACTS.md.
+
+## Git и координация
+
 - Порядок без обязательных PR действует, пока разработчик один и работает с агентами;
   при расширении команды пересмотреть правила проверки и слияния.
 - Рабочие ветки `<агент>/<задача>`: префикс соответствует создающему ветку агенту
@@ -68,154 +68,52 @@
   обновляется в модуле; аппаратура/профили/измерения здесь. Общая архитектура/методика
   остаётся здесь со ссылками на независимый модуль. Навигация — docs/README.md.
 
-- Новые собственные каталоги называем в нижнем регистре; каталоги тестов — `tests`.
-  Имена сторонних/генерируемых каталогов (`Core` и т. п.) сохраняем; существующие
-  `User`/`Platform` не переименовываем в рамках этой миграции. Личный удалённый
-  стенд — `remote.toml` или `<profile>-remote.toml`, исключённый из Git.
-
 ## Firmware и тесты
 
-- Активные профили f103c8/f401cc/f411ce. CubeMX генерирует внутри profiles/<MCU>;
-  User общий, Platform — адаптер конкретного MCU. Правки генерации по возможности
-  в USER CODE, согласованные с IOC. Не добавлять тестовый код/hooks в firmware.
-- Форматировать только C/C++ в User по .clang-format (dry-run --Werror); CubeMX/Core,
-  Platform и подмодули не форматировать. Навык cpp-clang-format использован по запросу владельца.
-- До новых Python/GDB решений сверять приёмы ../buck-boost-course/99_BOARD_TEST,
-  Tests/BBC_SW_LLR и исходную docs/HWTEST_ARCHITECTURE.md. Они изучены; не переносить
-  личные пути, serial, подавление ошибок. Исходный архитектурный документ не переписывать.
-- docs/gdb.pdf §23.3 описывает GDB19; фактический xPack GCC13 содержит GDB14.2.90.
-  Проверять API presence; -g3 сохраняет macro debug info, но не неиспользуемые функции.
-  GDB API только в главном потоке, внешний timeout обязателен. Python breakpoint может
-  быть pending вопреки CLI pending off: проверять явно.
-- Проектные сценарии tests/scenarios, @case/ожидания/контракты — profiles/<MCU>/tests.
-  Не переносить app-specific логику в ядро. API/CLI/contracts/macros описаны в модуле.
-  CLI приложения: python -B tools/gdbtest.py. Host ядра: python -B tools/test_module_host.py
-  (65 тестов в отдельных build/module-host копиях). CMake attach здесь без SELF_TESTS.
-- Manifest привязывает ELF и target.toml после линковки; после смены toolchain чистая
-  сборка. Runtime metadata, build manifest и ELF/HAL preflight — разные доказательства.
-  Source review hashes не обновлять без анализа HAL. F1/F4 RCC различаются const.
-  NOT_REQUESTED не означает совместимость. Предикаты/CMSIS masks использовать осмысленно,
-  физические ожидания брать независимо; MMIO GET может иметь побочный эффект.
-- F103: LED PB2 подтверждён владельцем; F411/F401 PC13. Получать pin/port/level из EXPECTED.
-  RTC IRQ мост F103 в Platform: при регенерации не допустить дубли handler/NVIC.
-- ADC: User/Src/adc_units.cpp — арифметика, Platform — калибровка. F103 TYPICAL,
-  F411 FACTORY; м°C не означают точность 0.001°C. F401 channel16, F411 channel18
-  (HAL TEMPSENSOR у F411 содержит служебный флаг). Native tests — tests/native.
-- app_idle — Sleep/WFI с SysTick, не Stop. SWD/DBGMCU влияют на clocks/потребление;
-  S_SLEEP не измеряет ток. observe_sleep — проектный OpenOCD-only инструмент,
-  передавать проектный root для output/temp, не писать в подмодуль.
+- Форматировать только собственный C/C++ src по .clang-format (dry-run --Werror).
+  CMSIS и CubeMX-генерацию в архиве/H503 не форматировать. Новые собственные каталоги
+  lowercase; имена сторонних каталогов сохранять. Не добавлять тестовые hooks.
+- F401CC: Flash256KiB/RAM64KiB, температура ADC CH16; F411CE:512/128KiB, CH18.
+  LED PC13 active-low, VREFINT CH17. RTC перепланирует alarm через две секунды;
+  ежесекундный alarm fixture модуля не является заменой. Sleep/WFI не Stop.
+- src/adc_units.cpp — арифметика, src/platform.c — периферия и калибровка.
+  Заводские точки 30/110°C проверяют вычисления, не точность датчика.
+  Startup не поддерживает динамическую инициализацию глобальных C++ объектов.
+- CLI: python -B tools/gdbtest.py; явно задавать --session и --stand.
+  HIL_*-hw читают hil/stands/<mcu>.local.toml; шаблоны *.example.toml.
+  tests/stands хранит прежние стенды и локальные настройки; не выбирать их автоматически.
+  remote.toml/*-remote.toml также приватные и исключены из Git.
+- До новых GDB решений сверять docs/HWTEST_ARCHITECTURE.md и доступные примеры
+  ../buck-boost-course/99_BOARD_TEST/Tests/BBC_SW_LLR, только чтение. Исходный документ
+  не переписывать. docs/gdb.pdf §23.3 описывает GDB19, проверенный GCC13 — GDB14.2.90.
+  Проверять API presence. GDB API только в главном потоке, внешний timeout обязателен.
+- -g3 сохраняет macro debug info, но не неиспользуемые функции. Макросы зависят от
+  frame, pending breakpoint проверять явно. MMIO GET может иметь побочный эффект.
+  Manifest, offline preflight и runtime — разные доказательства. NOT_REQUESTED не PASS.
+  HAL reviewed hashes менять только после анализа исходников в соответствующем fixture.
+- DEV_ID mismatch по умолчанию WARNING; memory bounds не расширять. Ошибка чтения
+  и слишком большой образ — ERROR; strict отклоняет mismatch до Flash.
+- Проверка ELF использует load sections/LMA, включая .data; BIN gap-fill0xFF не
+  гарантирует gaps после ELF load. Full-image policy и CRC — отдельные режимы модуля.
 
-## Стенды и доказательства
+## Стенды, CI и доказательства
 
-- Текущее подключение (последнее подтверждение 2026-09-30): только NUCLEO-F030R8,
-  штатный ST-Link V2J45M31 восстановлен владельцем. OpenOCD17/17 и ST server17/17 PASS.
-  Использовать nucleo-f030r8.local.toml или nucleo-f030r8-stlink.local.toml;
-  прежний J-Link serial недействителен. Другие платы сейчас отключены: перед новым
-  HW набором подтвердить их подключение. Исторические записи ниже не отменяют это.
-
-- Актуализация 2026-09-30: владелец заменил F411 на F401CC у внешнего ST-Link/SWD.
-  Перед возвратом к F411 согласовать замену; старые списки ниже — история стендов.
-  На bc07625 пять сборок/120 host+prepare PASS; F411/F401/F429 OpenOCD22/22 и ST22/22,
-  F103 J-Link22/22, F030 J-Link STLink повтор17/17 после подтверждения окна SEGGER.
-  Восстановление ST-Link на Nucleo выполняет владелец; ждать сообщения и заново
-  сверить USB/stand перед запуском. Полные данные и ограничения — docs/STATUS.md.
-- Текущие стенды подтверждены владельцем: F411CE + ST-Link/SWD, F103C8 + J-Link/SWD и NUCLEO-F030R8 + встроенный J-Link STLink/SWD.
-  Опыты К1921ВГ015 завершены, его стенд разобран; не запускать его HW-команды.
-  Перед каждым HW набором назвать плату/MCU, отладчик, backend и соединения, явно
-  сказать оставить или изменить стенд. При подтверждённом текущем стенде повторное
-  разрешение не нужно; смена требует ответа владельца. USB не подтверждает разводку.
-- F411 OpenOCD: tests/stands/blackpill.local.toml; ST server: blackpill-stlink.local.toml.
-  F103 J-Link: bluepill-jlink.local.toml. Выбирать stand явно, не полагаться на default.
-  UART/VCOM пока не подключать. Термин в русских текстах — «отладчик».
-- OpenOCD0.12.0/ST server7.14.0 (CubeCLT1.22.0), J-Link8.32 проверялись; диалекты
-  reset/finish различаются. J-Link mapping пока F103C8, Flash breakpoints выключены.
-  Не включать автоматически mass erase, option bytes, shared mode и firmware update.
-- DEV_ID mismatch по умолчанию WARNING и продолжение по выбранному target; strict
-  отклоняет до Flash. Ошибка чтения или образ больше profile/observed Flash — ERROR.
-  Не расширять linker по названию MCU/размеру из программы. F401 маркировка и DEV_ID
-  различались на экземплярах; F103 Flash128K против профиля64K не доказывает верхние64K.
-- После отделения модуля: host44, три MCU build/offline; F411/OpenOCD24/24,
-  F103/J-Link24/24, consumer3/3, timeout/recovery/restore PASS. Новые macro-сценарии
-  F401 аппаратно ещё не повторены. Старые F401/ST и F411/ST результаты исторические.
-  Успешная сборка/host-тесты не означают HW PASS; число тестов не покрытие кода.
-- Mutex координирует участвующие runners в одной Windows-сессии, ST/OpenOCD имеют
-  общий ключ ST-Link serial. Vendor tools/VS Code не участвуют. После crash освобождение
-  mutex не гарантирует завершение server; WAIT_ABANDONED — ERROR до подключения.
-- H503CB приостановлен владельцем. STM32H503CBT6, 128KiB Flash/32KiB RAM, CubeH5 1.7.0;
-  IOC/Core/SVD сохранены, YAML/CMake не включены. Не менять генерацию до сообщения.
-  Далее проверять pinout/DMA/IRQ/RTC/backend по docs/H503_CUBEMX.md; не переносить
-  F411 ADC-калибровку или TrustZone H563 по аналогии.
-- Развивать docs/STM32_TESTING_METHODS.md: доказательство, влияние отладчика, ограничения,
-  положительный/отрицательный опыт. Для очистки следовать docs/BUILD_ARTIFACTS.md;
-  аппаратные ошибки/отчёты, текущие ELF/manifest и Git checkout сохранять.
-
-- README — краткое пользовательское введение (зачем/что/как/зависимости/ссылки). Точные результаты, версии и ограничения поддерживать в docs/STATUS.md; хронологию — в CHANGELOG и протоколах. Не превращать README в журнал текущей работы.
-
-- CI Offline: ci/run_checks.py, Linux Docker и presets ci-<profile>; только
-  build/host/prepare без выбранного stand. Порядок запуска и границы — docs/CI.md.
-  После push проверять полный job profiles для опубликованного SHA до land.
-  Эмуляция, Release и матрица GCC пока не входят в этот workflow.
-
-- К1921 PoC — examples/k1921vg015-poc, внешний NIIET_DEVICE_DIR только читать;
-  build/k1921vg015-poc, explicit tests/stands/k1921-jlink.local.toml. Собран GCC13.3.0-2,
-  GDB15.1/Python3.12.2 (-py3), -Og -g3. Не менять production STM32 guards ради запуска PoC.
-  CHIPID0xDEADBEE1 по RM p300, Flash1MiB по разделу7 — документированная граница,
-  не заводской размер. Проверка по ELF load regions, включая .data LMA; gaps не сравнивать.
-  Host4, offline PASS, HW23checks PASS, negative FAIL, timeout ERROR+recovery0, repeatPASS;
-  LED подтверждён владельцем, собственный blink оставлен running. Не использовать
-  generic trap_entry как fault trap. Полный runner/schema/IRQ/force_return/low-power
-  пока не портированы; протокол docs/K1921VG015_POC.md. У серверного процесса должен
-  быть доступ к определениям K1921VG015 в пользовательском окружении SEGGER.
-
-- Диагностика errata К1921 — examples/k1921vg015-errata; намеренно отдельный
-  измерительный firmware, обычный blink не менять. Протокол K1921VG015_ERRATA.md.
-  CloudBEAR требует полного march для multilib; ключ приложения не исправляет архивы.
-  HW series восстанавливает blink; OBSERVED не означает отсутствие ошибок.
-  Не выводить безопасность по одному успешному запуску или single-step.
-
-- ELF load sections: LMA, Flash bounds до сервера, BIN gap-fill 0xFF.
-  В режиме секций image_verified не означает проверку gaps/full-image CRC. Модуль docs/IMAGES.md;
-  текущий протокол docs/ELF_LOAD_REGIONS.md: host53, F411/OpenOCD22 и F103/J-Link22.
-
-- Опциональный full-image: profiles/f411ce и f103c8/full-image.toml, первые16KiB,
-  fillFF. CLI --image-policy или абсолютный STM32_GDBTEST_IMAGE_POLICY; по умолчанию
-  остаются секции. CRC считается на ПК по readback, не MCU peripheral.
-  Контейнер program.elf грузить вместе с symbol-file исходного firmware.elf.
-  Host65, A5/FF/verify-only/restore и GPIO после реальной записи проверены на двух
-  стендах. Снимать env image policy для обычного режима; docs/FULL_IMAGE_CRC.md.
-
-- F030R8: offline preset f030r8-debug, CubeF0 V1.11.6, LED PA5 active-high,
-  hadc/TIM3, ADC scan IN16/17. target/contracts/M0 review и J-Link STLink/SWD 17/17 PASS.
-  TS_CAL1 + типовой slope, quality=3; не читать TS_CAL2 по общему LL header.
-  User HAL-free, Platform обслуживает HAL callbacks через app_* callbacks.
-  Общие Python-сценарии используют adc_handle/timer_handle/timer_enabled из EXPECTED.
-  Nucleo подключена к встроенному J-Link STLink: явно выбирать
-  tests/stands/nucleo-f030r8-jlink.local.toml; LD2 подтверждён, MCU running.
-  Не путать с BluePill J-Link; firmware отладчика не менять. Offline: tools/check_profile_offline.py --session build/.../hwtest/session.json.
-
-- F429ZI: STM32F429I-DISCO (старый ST-Link/V2), IOC template DISC1 сохранён.
-  PG13/LD3 active-high, PLL SYSCLK64/AHB8 → HCLK8, APB1/2=8 МГц, ADC4 МГц.
-  TIM2 7999/99, RTC127/249, ADC IN18/17; factory30/110°C. Сборка/offline PASS,
-  22/22 HW PASS, LD3 подтверждён. Стенд подключён и подтверждён владельцем;
-  stand disco-f429zi.local.toml, OpenOCD. DMA-буфер только SRAM, не CCM.
-
-- F429/ST server7.14: 18 PASS, USB error до готовности сервера, после переподключения
-  ещё4 PASS; позже непрерывные22/22 и через ST. ST Flash O0→Og/verify-only/timeout
-  recovery проверены, штатный Og восстановлен и running. ST stand явно
-  disco-f429zi-stlink.local.toml. Причина USB-сбоя не установлена, firmware не менять.
-
-- F429 stability: ST boot24/24 без паузы и24/24 с2с; OpenOCD22 PASS, USB descriptor
-  ERROR на23-м, после reconnect полный ST22/22 PASS. Причина не локализована,
-  задержка не доказана как fix; серии останавливать на первом сбое.
-  docs/F429_SERVER_STABILITY.md; ядро/firmware не менять без отдельного опыта.
-
-- Расширение периферии планировать поперёк пяти активных профилей по
-  docs/PERIPHERAL_PLAN.md (P1 EXTI, P2 PWM/capture, далее P3–P8). Разделять MCU,
-  плату и подтверждённую проводку; software IRQ не доказывает физический фронт.
-  Capability/stand wiring schema и автоматический SKIP пока не реализованы;
-  состояния планирования не добавлять в API/target TOML без отдельной задачи.
-
-- Интеграция da42cd7: пять CMSIS fixtures и HAL GPIO/RCC сохранены в модуле.
-  Здесь examples/minimal-consumer проверяет CMSIS GPIO/blink (Windows/Linux CI);
-  основное приложение ещё HAL. Следующий пакет — CMSIS platform для F411CE/F401CC,
-  затем структура src/cmsis/ld/cmake/hil по образцу BluePill и сокращение остальных активных профилей после HW приёмки. Протокол docs/F411_CONSUMER_INTEGRATION.md.
+- Последнее подтверждение: F401CC + внешний ST-Link/SWD. Перед каждым HW-набором
+  назвать MCU/отладчик/backend/проводку; смена требует ответа владельца. USB enumeration
+  не подтверждает SWD. UART/VCOM не подключать без согласования. Термин — «отладчик».
+- Не включать автоматически mass erase, option bytes, shared mode, firmware update.
+  VS Code/vendor tools не участвуют в mutex runner; не запускать их параллельно.
+  После crash освобождение lock не доказывает остановку server. Ошибки recovery
+  и USB сохранять отдельно; не маскировать успешным повтором.
+- F411CE/F401CC CMSIS: по14 HW cases, по12 повторов после инъекций, timeout/recovery
+  и HAL restore. Перенос дерева сохранил load images; это не новый аппаратный запуск.
+  Release только собран. Протокол — docs/BLACKPILL_CMSIS_APPLICATION.md.
+- CI: python -B ci/run_checks.py; шесть Debug/Release/HIL firmware-сборок и31 CTest
+  (два набора14 prepare+traceability, один native ADC). Windows/Linux Docker,
+  без оборудования и эмуляции. Перед land проверять полный Offline точного SHA.
+- Исторические hardware_smoke/check_profile_offline, tests/gdb/experiments и
+  отдельный observe_sleep не являются штатной CMSIS-регрессией. Не заявлять их
+  совместимость без проверки. История и назначение — docs/PROJECT_LAYOUT.md.
+- Развивать docs/STM32_TESTING_METHODS.md: ограничения и положительный/отрицательный
+  опыт. README — введение, STATUS — текущие результаты, CHANGELOG/протоколы — история.
+  Общую оптимизацию runner выполнять в stm32-gdbtest, проектную — здесь.

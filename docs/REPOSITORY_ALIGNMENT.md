@@ -4,7 +4,7 @@
 
 Решение владельца 01.10.2026: после переноса прочих минимальных примеров в
 stm32-gdbtest в BlackPill остаются **F411CE и F401CC**, а не один F411.
-План реализован в рабочем пакете: CMSIS src/hil, два MCU, отдельные presets,
+План реализован и принят в main76d50b0: CMSIS src/hil, два MCU, отдельные presets,
 README RU/EN и VS Code. Старые HAL-исходники сохранены в legacy/hal;
 [состав архива](LEGACY_LAYOUT_REVIEW.md). Ниже — исходное обоснование перехода.
 Сравнены локальные README, CMake, hil/README и cmsis/README проекта

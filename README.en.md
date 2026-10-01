@@ -88,3 +88,5 @@ CI build/prepare is not hardware validation.
 - Related: [BluePill consumer](https://github.com/ViacheslavMezentsev/stm32-hwtest-bluepill), [stm32-cmake-yml](https://github.com/ViacheslavMezentsev/stm32-cmake-yml).
 
 Project code: [MIT](LICENSE). CMSIS: [separate licenses and provenance](cmsis/README.md).
+
+[Repository layout](docs/PROJECT_LAYOUT.md) (Russian): active code, archive, retained examples and H503CB.

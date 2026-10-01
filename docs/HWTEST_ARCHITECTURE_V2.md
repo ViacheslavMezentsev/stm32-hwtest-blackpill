@@ -1,6 +1,6 @@
 # HWTEST: фактическая архитектура v2
 
-Обновлено 2026-10-01. v2 — версия этого документа, не API:
+Обновлено 2026-10-02. v2 — версия этого документа, не API:
 подключён stm32-gdbtest `da42cd7`, API_VERSION=1, ТЗ 0.58.
 Версия Python `0.1.0rc2`; опубликованный тег rc.2 закреплён на `a0d6547`.
 Текущий gitlink включает пять CMSIS fixtures и расширенную HAL F030-регрессию; ядро не изменено.
@@ -10,20 +10,16 @@
 
 ## Ответственность проектов
 
-Таблица описывает текущее состояние. Согласован следующий переход: после
-подтверждённой миграции активных STM32-примеров на CMSIS здесь остаётся
-BlackPill consumer с профилями F411CE/F401CC в режиме сопровождения; остальные минимальные примеры и актуальная
-матрица проверки модуля переходят в stm32-gdbtest. Последовательность и условия
-приёмки — [TODO](../TODO.md#целевое-разделение-после-перехода-на-cmsis).
-Исторические HAL-протоколы сохраняются, их результаты не доказывают CMSIS-регрессию.
-Пять CMSIS fixtures и HAL-техники приняты в модуле. Активный consumer теперь
-использует src/cmsis/ld/cmake/hil и F411CE/F401CC; прежние HAL-исходники — legacy/hal. [Аудит переноса](CMSIS_INTEGRATION.md).
+Переход к самостоятельному CMSIS consumer завершён: F411CE/F401CC здесь,
+общая матрица MCU и механизм — в stm32-gdbtest. Прежние HAL-профили сохранены
+в legacy/hal; examples и profiles/h503cb оставлены отдельно вне активного CI.
+[Дерево проекта](PROJECT_LAYOUT.md), [текущий план](../TODO.md).
 
 | Проект / слой | Ответственность |
 | --- | --- |
 | stm32-gdbtest | CMake attach, AST collection, host runner, offline contracts, backend, GDB agent/Target, отчёты, владение отладчиком |
 | stm32-hwtest-blackpill | CMSIS-приложение src, hil-профили, требования и сценарии периферии, инструменты экспериментов, аппаратные доказательства |
-| stm32-cmake-yml | Сборка firmware по YAML; не зависимость публичного API тестового модуля |
+| stm32-cmake-yml | Историческая зависимость HAL-сборки, исключена из текущего проекта |
 | Локальный стенд | Выбранная плата, SWD/питание, serial/executable отладчика в игнорируемом TOML |
 
 Gitlink `modules/stm32-gdbtest` закрепляет исходники и документацию зависимости.
@@ -32,7 +28,7 @@ Gitlink `modules/stm32-gdbtest` закрепляет исходники и до�
 Один firmware target/Ninja, один MCU/отладчик на запуск; multi-node пока нет.
 Модуль поддерживает Windows/Linux, удалённый GDB-сервер по SSH и пакеты запусков.
 Аппаратные проверки потребителя выполняются на Windows. Для Linux добавлен
-[Docker CI build/host/prepare](CI.md); QEMU/Renode + GDB остаются следующим этапом.
+[Docker CI build/host/prepare](CI.md); QEMU/Renode + GDB остаются отдельным возможным опытом после выбора модели F4.
 Штатные `prepare.*` проверяют подготовку сценариев без подключения к оборудованию.
 Новые возможности модуля и DDTT описаны в его документации; исторические аппаратные
 результаты ниже не являются регрессией на новой ревизии.
@@ -41,7 +37,7 @@ Gitlink `modules/stm32-gdbtest` закрепляет исходники и до�
 
 ```mermaid
 flowchart TD
-    P[Профиль CubeMX / YAML / User] --> E[ELF и post-link manifest]
+    P[CMSIS src / CMake / hil profile] --> E[ELF и post-link manifest]
     T[Требования и Python-сценарии потребителя] --> C[CMake / CTest]
     C --> R[stm32-gdbtest host runner]
     E --> R
@@ -71,18 +67,13 @@ Attach создаёт session/CTest и post-link manifest. Runner выбирае
 
 ## Конфигурация и артефакты
 
-- `profiles/f103c8`, `f401cc`, `f411ce`: CubeMX/Platform, target.toml, tests/contracts.json,
-  tests/board и требования. `h503cb` сохранён, интеграция приостановлена владельцем.
-- `profiles/f030r8`: Nucleo/Cortex-M0: target, 17 сценариев и contracts; HW 17/17 через J-Link STLink/SWD.
-- `profiles/f429zi`: Discovery/Cortex-M4, 22 сценария и 10 контрактов; сборка/offline и 22/22 HW через встроенный ST-Link/V2/OpenOCD PASS.
-- `User/`: общая firmware-логика без HAL. Platform реализует ADC/таймер/LED/Sleep,
-  перенаправляет HAL callbacks в app_*; это API приложения, не API тестового модуля. `tests/scenarios`: общие проектные сценарии.
-- `tests/stands/*.local.toml`: локальная конфигурация, не часть Git.
-- `tools/gdbtest.py`: вход в CLI закреплённого модуля из корня приложения.
-- `build/<preset>`: ELF, manifest, session и runs потребителя. Подмодуль не используется
-  для вывода. Host-проверки ядра запускаются в отдельных build/module-host копиях.
-- `examples/minimal-consumer`: интеграционный fixture стенда; самостоятельный пример
-  для пользователей также поставляется модулем. Согласованность проверяется явно.
+- `src/`, `cmsis/`, `ld/`, `cmake/`: активная прошивка и сборка без HAL/YAML.
+- `hil/profiles/f401cc.toml`, `f411ce.toml`: MCU и границы памяти; общие сценарии
+  `hil/tests/board`, требования `hil/tests/requirements.md`, native ADC — `hil/tests/native`.
+- `hil/stands/*.local.toml`: приватные настройки отладчика для HIL presets.
+- `tools/gdbtest.py`: CLI; `build/HIL_<MCU>/hwtest`: session/manifest/runs.
+- `legacy/hal`: архив; `profiles/h503cb` и `examples`: сохранённые отдельные проекты.
+- `tests/stands` и прочие старые tools/tests не входят в текущую CMSIS-регрессию.
 
 Правила хранения и очистки: [BUILD_ARTIFACTS](BUILD_ARTIFACTS.md).
 
@@ -110,42 +101,26 @@ force_return проверяет вызывающий код, пропуская 
 PASS/FAIL/ERROR различаются в JSON/JUnit; SKIP/NOT_APPLICABLE пока нет.
 Named mutex координирует участвующие процессы в одной Windows-сессии, включая
 OpenOCD/ST server с одним ST-Link. VS Code/vendor tools не участвуют автоматически.
-После crash освобождение mutex не доказывает завершение серверов; Job Object ещё планируется.
+После crash освобождение mutex не доказывает завершение серверов; актуальный механизм
+завершения процессов описан в закреплённом модуле.
 [Детали владения](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/docs/ru/DEBUGGER_OWNERSHIP.md).
 
-## Доказанная область
+## Доказанная область и следующие шаги
 
-F103C8/F401CC/F411CE собраны, offline GDB проверяет положительный случай и 11 отказов.
-После выделения Git-подмодуля F411CE/ST-Link/OpenOCD и F103C8/J-Link прошли по
-24/24 CTest (22 HW + 2 host), host ядра — 44 unittest. Перенесённый read-only consumer
-прошёл 3/3, Flash/verify-only/timeout/recovery и восстановление основной прошивки.
-F411 live Sleep: 29/30 samples, tick +1384ms, без halt.
+CMSIS F411CE/F401CC: по14 аппаратных сценариев, по12 повторов после инъекций,
+внешний timeout/recovery и восстановление прежней HAL-прошивки. Последующая
+перестройка каталогов сохранила load images; повторным аппаратным запуском это
+не является. Release собран, аппаратно проверен Debug. [Протокол](BLACKPILL_CMSIS_APPLICATION.md).
 
-Ранние F401/OpenOCD/ST server и F411/ST server результаты сохраняются в протоколах;
-они не означают повтор всех новых сценариев на этих комбинациях. Новые macro-сценарии
-F401 требуют отдельного аппаратного прогона. H503 не заявлен поддержанным.
-Количество тестов не равно структурному покрытию.
+Текущий CI: шесть Debug/Release/HIL сборок и31 CTest на Windows/Linux (30 host
+prepare/traceability и один native ADC). Offline пакета76d50b0 прошёл на GitHub,
+пакет включён в main. Это не эмуляция и не измерение структурного покрытия.
+Результаты F030/F103/F429/HAL/full-image из старых протоколов являются историческими.
 
-## Ближайшие доработки
-
-Эксперимент [К1921ВГ015/RISC-V](K1921VG015_POC.md) подтвердил переносимость Target API
-при отдельном JTAG lifecycle. Для production-переноса нужны явные toolchain/transport,
-MCU identity/memory adapter и проверка ELF по load regions. STM32-ядро в опыте не менялось.
-
-1. Опубликовать разделённую документацию, обновить закреплённую зависимость;
-   подготовить release candidate в модуле с проверкой в этом стендовом проекте.
-2. После согласованной смены платы проверить F401 с новыми macro-сценариями;
-   развивать матрицу требований/периферии/отказов и явную halt/freeze policy.
-3. В модуле: надзор за дочерними процессами, backend-независимая schema профиля,
-   расширение manifest/capabilities; изменения подтверждать здесь положительными и отказными опытами.
-4. На стенде: Stop/wakeup, контракты ADC/RTC/PWR, независимые эталоны измерений.
-   UART/VCOM и H503 — после отдельного согласования.
-5. Позже: host-контроллер питания/реле/кнопок с протоколом синхронизации GDB,
-   reconnect/повторной identity и владением ресурсами. Драйверы приборов принадлежат стенду.
-
-Полные планы: [проект](../TODO.md), [модуль](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/da42cd74c27a01c21df47cd660e2533e9bcfc6d4/TODO.md).
-Практика и ограничения: [STM32_TESTING_METHODS](STM32_TESTING_METHODS.md).
-Навигация по всем деталям: [карта документации](README.md).
+Следующие задачи — сопровождение двух профилей, измерение расходов тестирования,
+проектные оптимизации и дальнейшие опыты. Общие изменения runner/адаптеров,
+ARM/RISC-V, multi-node и внешняя синхронизация относятся к модулю.
+[План](../TODO.md), [методика](STM32_TESTING_METHODS.md).
 
 ## Уточнение проверки образа после опытов переноса
 

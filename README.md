@@ -88,3 +88,5 @@ GDB-остановки меняют тайминги; Sleep-тесты не из
 - [Аналогичный BluePill-пример](https://github.com/ViacheslavMezentsev/stm32-hwtest-bluepill), [stm32-cmake-yml](https://github.com/ViacheslavMezentsev/stm32-cmake-yml).
 
 Собственный код — [MIT](LICENSE); CMSIS имеет отдельные [лицензии и происхождение](cmsis/README.md).
+
+[Дерево проекта](docs/PROJECT_LAYOUT.md): активные каталоги, архив, сохранённые examples и H503CB.
