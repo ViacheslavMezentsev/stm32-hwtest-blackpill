@@ -2,19 +2,19 @@
 /artifacts/
 /CMakeUserPresets.json
 /Makefile
-/profiles/*/Makefile
+/archive/profiles/*/Makefile
 /.cache/
 /.cortex-debug*
 /.vscode/*.log
 /.vscode/browse.vc.db*
-/tests/stands/*.local.toml
+/archive/tests/stands/*.local.toml
 __pycache__/
 *.pyc
 *.bak
 .mxproject
 
-/examples/minimal-consumer/build/
-/examples/minimal-consumer/CMakeUserPresets.json
+/archive/examples/minimal-consumer/build/
+/archive/examples/minimal-consumer/CMakeUserPresets.json
 
 /.work/
 
@@ -27,4 +27,4 @@ remote.toml
 # Retained local historical checkouts, no longer build dependencies.
 /modules/stm32-cmake/
 /modules/stm32-cmake-yml/
-/legacy/hal/profiles/*/Makefile
+/archive/legacy/hal/profiles/*/Makefile

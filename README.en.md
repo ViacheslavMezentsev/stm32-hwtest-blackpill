@@ -2,93 +2,116 @@
 
 [Русский](README.md)
 
-A standalone WeAct BlackPill application tested on the MCU through **GDB-Python
-and SWD**. [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest)
-runs host-side Python scenarios, stops firmware, reads variables and registers,
-and injects faults without adding test hooks to the application.
+A demo project of [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest): the
+running firmware on a WeAct BlackPill board (STM32F411CE and STM32F401CC) is checked through GDB
+and an SWD debugger by Python scenarios — the DDTT method (Debugger-Driven Testing on Target).
+There is no test code in the firmware.
 
-The project began as HAL experiments across several STM32 boards. The reusable
-runner and multi-MCU fixtures now belong to stm32-gdbtest. This repository provides
-a CMSIS consumer for two BlackPill variants. Historical HAL sources are retained in the [reference archive](legacy/hal/README.md);
-their results do not prove CMSIS behavior.
+The firmware is deliberately simple: `setup()` configures the ADC with DMA, the RTC and TIM2;
+every 500 ms `loop()` measures the chip temperature and VDDA with the factory calibration,
+reschedules the RTC alarm, blinks the LED and sleeps in WFI. CMSIS is the only library.
 
 ```mermaid
 flowchart LR
     E["ELF + debug info"] --> G["GDB + Python scenarios"]
-    R["stm32-gdbtest on PC"] --> G
-    G <--> S["OpenOCD / ST-Link"]
-    S <-->|SWD| M["BlackPill application"]
+    R["stm32-gdbtest on the PC"] --> G
+    G <--> S["GDB server: OpenOCD, ST-LINK, J-Link"]
+    S <-->|SWD| M["Firmware on the board"]
     R --> J["JSON / JUnit"]
 ```
 
-## Boards and behavior
+## Boards
 
-| Profile | MCU / board | Flash / RAM | LED |
-| --- | --- | --- | --- |
-| F411CE | STM32F411CEU6 / WeAct BlackPill V3.1 | 512 / 128 KiB | PC13, active-low |
-| F401CC | STM32F401CCU6 / BlackPill v3.0 | 256 / 64 KiB | PC13, active-low |
+| Profile (`BOARD`) | Board | MCU | Flash / RAM | LED |
+| --- | --- | --- | --- | --- |
+| `F411CE` | [WeAct BlackPill](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1) V3.1 | STM32F411CEU6 | 512 / 128 KiB | PC13, on at 0 |
+| `F401CC` | WeAct BlackPill v3.0 | STM32F401CCU6 | 256 / 64 KiB | PC13, on at 0 |
 
-[WeAct board project](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1).
-The application blinks the LED, samples internal temperature/VREFINT via ADC/DMA,
-handles TIM2 and RTC events, and sleeps using WFI. No UART or external peripheral
-wiring is required. Connect SWD, power and ground; select the debugger explicitly
-by serial. A different DEV_ID does not expand the configured memory limits.
+Only SWD, power and ground are needed: no UART and no external wiring. The debugger is selected by
+its serial number in the stand file.
 
-## Build
+## Requirements (Windows)
 
-Requirements: Git, CMake 3.25+, Ninja, GNU Arm GCC (tested with xPack 13.3.1-1.1).
-CMSIS headers are included; CubeMX is not required for the new build. HIL also
-requires Python 3.11+, Python-enabled GDB, OpenOCD and ST-Link.
+- [xPack GNU Arm Embedded GCC 13.3.1-1.1](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/tag/v13.3.1-1.1),
+  unpacked to `%USERPROFILE%\xpack-arm-none-eabi-gcc-13.3.1-1.1`, or its path in
+  `ARM_TOOLCHAIN_ROOT` (the Linux default is `/opt/xpack-arm-none-eabi-gcc-13.3.1-1.1`);
+- CMake ≥ 3.25 and Ninja on `PATH`;
+- for HIL tests: Python ≥ 3.11 and an ST-Link with OpenOCD (or a J-Link);
+- VS Code with CMake Tools, C/C++ and Cortex-Debug (optional).
 
-```sh
-git clone --recurse-submodules https://github.com/ViacheslavMezentsev/stm32-hwtest-blackpill.git
+## Getting and building
+
+```powershell
+git clone --recursive https://github.com/ViacheslavMezentsev/stm32-hwtest-blackpill.git
 cd stm32-hwtest-blackpill
 cmake --preset Debug_F411CE
 cmake --build --preset Debug_F411CE
 ```
 
-Set `ARM_TOOLCHAIN_ROOT` in the environment or CMake cache. Defaults:
-`%USERPROFILE%/xpack-arm-none-eabi-gcc-13.3.1-1.1` on Windows,
-`/opt/xpack-arm-none-eabi-gcc-13.3.1-1.1` on Linux. Use separate build directories
-for different MCUs/toolchains. ELF, HEX and BIN are written to `build/<preset>/`.
-BIN gaps use 0xFF; loading ELF does not guarantee the contents of gaps on the MCU.
+If the repository was cloned without `--recursive`: `git submodule update --init`.
 
-| Purpose | F411CE | F401CC |
-| --- | --- | --- |
-| Debug firmware | Debug_F411CE | Debug_F401CC |
-| Size optimization | Release_F411CE | Release_F401CC |
-| GDB scenarios and prepare | HIL_F411CE | HIL_F401CC |
+| Preset | Purpose |
+| --- | --- |
+| `Debug_F411CE`, `Release_F411CE` | build for F411CE (`build/<preset>`) |
+| `Debug_F401CC`, `Release_F401CC` | build for F401CC |
+| `HIL_F411CE`, `HIL_F401CC` | Debug build with stm32-gdbtest HIL tests |
 
-## Tests
+Test presets: `HIL_*-host` and `HIL_*-hw`. Output: `build/<preset>/` — ELF, HEX and BIN
+(BIN gaps are filled with 0xFF). Each board and toolchain needs its own build directory.
 
-```sh
-cmake --preset HIL_F411CE
-cmake --build --preset HIL_F411CE
-ctest --preset HIL_F411CE-host
+## Application
+
+- ADC1 scans the temperature sensor (channel 18 on F411, 16 on F401) and VREFINT (17); DMA2
+  stream 0 moves the two samples; VDDA and temperature use the factory calibration.
+- TIM2 overflows every 100 ms; the LSI-driven RTC wakes the application with an alarm every two seconds.
+- `app_idle()` sleeps in ordinary WFI (not Stop); the 1 ms SysTick runs from the 16 MHz HSI.
+
+Debugger stops change the timing, sleep tests do not measure current, calibration vectors check the
+arithmetic rather than the temperature accuracy.
+
+## HIL tests
+
+The scenarios in `hil/tests/board` (stm32-gdbtest v0.3.0, 21 scenarios) check the firmware on
+the board: startup and clock, the LED, the run profile, ADC and DMA (configuration, publication, who
+counts the measurements, a measurement series), TIM2 and RTC, WFI sleep, and the reaction to
+injections — ADC and DMA failures, substituted samples and calibrations, a lost callback, an LSI wait
+that cannot succeed. The MCU description and the board data file, shared by all scenarios, describe
+the board. Without a board the requirement traceability and run preparation are checked
+(`ctest --preset HIL_F411CE-host`); on the board run `ctest --preset HIL_F411CE-hw` after setting
+up a stand. Details: [hil/README.en.md](hil/README.en.md).
+
+Latest hardware run: F411CE and F401CC through ST-Link/OpenOCD — 21/21 PASS each.
+
+## Layout
+
+```text
+src/            firmware: main, setup/loop, platform (CMSIS), ADC arithmetic
+cmsis/          CMSIS headers (unmodified)
+ld/             linker script (Flash and RAM per board)
+cmake/          toolchain and HIL integration
+hil/            run configurations, MCU descriptions, board data, scenarios and requirements, stands
+modules/        stm32-gdbtest (Git submodule)
+ci/             offline checks in Docker: build, scenario preparation, ADC arithmetic
+resources/      SVD files for debugging in VS Code
+docs/history/   history of the project stm32-gdbtest was extracted from
+archive/        retained material: former HAL sources, K1921 and H503 examples, experiments
+.claude/skills/ stm32-gdbtest agent skills
+.vscode/        tasks, debug configurations, settings
+.github/        GitHub Actions: offline checks
 ```
 
-This prepares tests without hardware. Copy `hil/stands/f411ce.example.toml` to
-`hil/stands/f411ce.local.toml`, set the debugger serial and OpenOCD path, then run
-`ctest --preset HIL_F411CE-hw`. Substitute F401CC and its stand file as needed.
-Do not use VS Code and the runner with the same debugger concurrently. VS Code
-launch configurations ask for a serial and select the matching SVD.
-See [HIL details](hil/README.md) (Russian).
+## Documentation
 
-## Limits and further reading
+- stm32-gdbtest v0.3.0: [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/README.en.md), [API reference](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/docs/en/api/index.md),
+  [testing techniques](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/docs/en/TESTING_TECHNIQUES.md), [agent skills](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/skills/README.en.md).
+- This project: [HIL tests](hil/README.en.md), [requirements](hil/tests/requirements.md) (Russian),
+  [changes](CHANGELOG.en.md), [development rules](AGENTS.md).
+- [History](docs/history/README.md) (Russian): the project began as HAL experiments on several STM32
+  boards and stm32-gdbtest was extracted from it; the protocols, architecture and plans of that
+  period are kept.
+- A similar example: [stm32-hwtest-bluepill](https://github.com/ViacheslavMezentsev/stm32-hwtest-bluepill).
 
-Debugger stops affect timing; Sleep checks do not measure current. Calibration
-vectors test arithmetic, not sensor accuracy. Scenario authors need to understand
-GDB, frame context and macro availability with `-g3`; GDB expressions do not support
-arbitrary C/C++ execution. F4 emulation using Renode/QEMU is not validated here.
-CI build/prepare is not hardware validation.
+## License
 
-- [Status](docs/STATUS.md), [hardware acceptance](docs/BLACKPILL_CMSIS_APPLICATION.md), [CI](docs/CI.md) (Russian).
-- [Documentation](docs/README.md), [architecture](docs/HWTEST_ARCHITECTURE_V2.md), [roadmap](TODO.md) (Russian).
-- `src/`: application; `cmsis/`: vendor headers; `ld/`, `cmake/`: build; `hil/`: profiles and scenarios.
-- Related: [BluePill consumer](https://github.com/ViacheslavMezentsev/stm32-hwtest-bluepill), [stm32-cmake-yml](https://github.com/ViacheslavMezentsev/stm32-cmake-yml).
-
-Project code: [MIT](LICENSE). CMSIS: [separate licenses and provenance](cmsis/README.md).
-
-[Repository layout](docs/PROJECT_LAYOUT.md) (Russian): active code, archive, retained examples and H503CB.
-
-The submodule is pinned to release **v0.3.0**, commit `2c879f0`. It does not track a moving branch.
+MIT ([LICENSE](LICENSE)). The `cmsis/` files are third-party code by Arm and STMicroelectronics under their licenses
+([cmsis/README.md](cmsis/README.md)).

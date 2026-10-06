@@ -1,126 +1,62 @@
-# Работа над BlackPill consumer
+# Rules for developers and AI agents
 
-## Текущая структура
+Communicate with the owner in Russian. Documentation is bilingual: Russian is primary
+(`*.md`), English is the translation (`*.en.md`); this file is English only.
 
-- Сначала читать README.md, docs/README.md, docs/STATUS.md, docs/HWTEST_ARCHITECTURE_V2.md и TODO.md.
-  Карта дерева — docs/PROJECT_LAYOUT.md. Протоколы опытов не заменяют текущий статус.
-- Активны F411CE/F401CC: приложение src/, CMSIS cmsis/, linker ld/, CMake cmake/.
-  Конфигурации прогона hil/sessions/<mcu>.toml (SESSION_CONFIG) связывают описание MCU hil/profiles,
-  общий hil/api.toml и файл данных платы hil/boards; сценарии hil/tests/board (API 0.3.0, стиль —
-  тест модуля tests/host/test_scenario_style.py), требования и контракты — hil/tests;
-  native ADC — hil/tests/native. Firmware настраивается CMake, не YAML.
-- Использовать Debug_*, Release_* и HIL_* presets. Только HIL подключает manifest
-  и тесты. Базово: cmake --preset HIL_F411CE; cmake --build --preset HIL_F411CE;
-  ctest --preset HIL_F411CE-host. MCU/toolchain имеют отдельные build.
-- modules/stm32-gdbtest — единственный закреплённый подмодуль: v0.3.0/2c879f0. Навыки модуля
-  скопированы в .claude/skills (подключение, сценарии, запуск); обновлять вместе с подмодулем.
-  Не обновлять на main без отдельной задачи; подмодуль хранит точный SHA, не ветку. Ядро/API/документация
-  механизма принадлежат ему. Не писать туда build/temp/reports. Для согласованных
-  изменений использовать .work/stm32-gdbtest и его AGENTS.md; сначала push/CI/land
-  модуля, затем родителя. В этой задаче модуль не меняется.
-- legacy/hal — справочный архив. Старую HAL-сборку воспроизводить отдельным checkout
-  314982a с его подмодулями. Локально оставшиеся stm32-cmake/stm32-cmake-yml не являются
-  зависимостями. Исторические пути и числа тестов внутри протоколов не актуальные команды.
-- examples/ и profiles/h503cb/ сохранить по решению владельца. H503 не включён в
-  сборку; IOC/Core не менять до отдельной задачи. К1921-стенд разобран: не запускать
-  его аппаратные команды без нового подтверждения владельца.
-- Все изменения, временные файлы, отчёты и блокировки — только внутри workspace.
-  Соседние проекты/инструменты только читать/запускать. Не менять global Git config.
-  Не коммитить build, serial, личные пути, local TOML и CMakeUserPresets.json.
-  .work/ и вложенные Git checkout не удалять очисткой; docs/BUILD_ARTIFACTS.md.
+## Project
 
-## Git и координация
+A small demo of [stm32-gdbtest](https://github.com/ViacheslavMezentsev/stm32-gdbtest)
+(DDTT: debugger-driven testing on target) on WeAct BlackPill boards, built with CMake and
+CMSIS only. Boards: `F411CE` (STM32F411CEU6, 512/128 KiB, temperature ADC channel 18) and
+`F401CC` (STM32F401CCU6, 256/64 KiB, channel 16); both have the LED on PC13, active low,
+and VREFINT on channel 17.
 
-- Порядок без обязательных PR действует, пока разработчик один и работает с агентами;
-  при расширении команды пересмотреть правила проверки и слияния.
-- Рабочие ветки `<агент>/<задача>`: префикс соответствует создающему ветку агенту
-  или участнику (`codex/`, `claude/`, `gemini/`, `dev/` и т. п.). Агент создаёт
-  подписанные локальные коммиты и оставляет их в рабочей ветке. PR только по договорённости.
-  Сначала пользователь публикует ветку; агент сверяет опубликованный SHA, локальные
-  проверки и CI именно этого коммита (если CI настроен). Только затем предлагает
-  владельцу `git land <ветка>`: alias делает fast-forward main, push и удаление ветки.
-  Сам alias не проверяет CI. До этого не сливать ветку даже в локальный main.
-  После land сверить origin/main. Отсутствие CI не считать зелёной проверкой.
-  Push ветки не означает согласие на land: сначала дождаться всех ожидаемых CI
-  проверок, включая Docker/эмуляторы по мере их появления, разобрать результаты
-  и согласовать следующий шаг. Успешный отдельный job не заменяет полный набор.
-  Независимые задачи вести от актуального main; для зависимых веток явно фиксировать
-  базовую ветку и порядок land. После rebase повторить затронутые проверки нового SHA;
-  опубликованную свою ветку обновляет владелец через `--force-with-lease`.
-  Не переписывать main или чужие ветки; global Git config не менять.
-- Допускается несколько опубликованных веток. Land выполнять поочерёдно с учётом
-  зависимостей: после изменения main проверить возможность fast-forward следующей
-  ветки. Если нужен rebase, подписать новые коммиты, повторно опубликовать и проверить
-  их CI; прежний зелёный SHA не подтверждает результат объединения изменений.
-  Удалять только уже слитые ветки после успешной публикации main; стандартный land
-  делает это для своей ветки. Для остальных сначала сверить включение в origin/main,
-  затем предложить владельцу удаление remote-веток и убрать локальные через `branch -d`.
-  `fetch --prune` очищает устаревшие remote-tracking ссылки, но не локальные ветки.
-- Коммиты подписывать настроенным ключом владельца; не отключать подпись.
-  Участие текущего ИИ-агента отмечать одной строкой `Co-authored-by: Имя <email>`
-  в конце сообщения, без ссылок на чаты/сессии. Для Codex:
-  `Co-authored-by: Codex <noreply@openai.com>`. Другие агенты указывают собственную
-  атрибуцию, а не копируют имя Codex; не приписывать участие другим агентам.
-  Тип коммита (`docs`, `fix`, `feat` и т. п.) отражает изменение, а не имя агента.
-- Push и `git land` делает пользователь. После локальных коммитов всегда напоминать,
-  что и куда публиковать: репозиторий, ветку, remote и точные команды с `git -C`.
-  Сначала давать `push -u origin <ветка>`, а после проверки — отдельную команду land.
-  Если изменён модуль, сначала опубликовать и проверить его, затем родительский проект;
-  land модуля выполнять перед land родителя с обновлённым gitlink.
-  Не переписывать старые коммиты только ради добавления атрибуции.
-- Вести CHANGELOG.md (Keep a Changelog) и TODO.md без сроков. Документация механизма
-  обновляется в модуле; аппаратура/профили/измерения здесь. Общая архитектура/методика
-  остаётся здесь со ссылками на независимый модуль. Навигация — docs/README.md.
+| Path | Contents |
+| --- | --- |
+| `src/` | Application: `setup()`/`loop()` (`program.cpp`), CMSIS platform (`platform.c`), ADC arithmetic (`adc_units.cpp`) |
+| `cmsis/` | Unmodified CMSIS subset from STM32CubeF4 V1.28.3; do not edit or reformat |
+| `ld/`, `cmake/` | Linker script template (Flash/RAM from `BOARD`), toolchain and HIL integration (`blackpill.cmake`) |
+| `hil/` | HIL: `sessions/` (run configuration per board), `profiles/` (MCU descriptions), `boards/` (board data), `api.toml`, `tests/` (scenarios, requirements, contracts, native ADC test), `stands/` (examples) |
+| `ci/` | Offline checks in Docker (`run_cmsis_checks.py`: builds, `prepare.*`, native ADC) |
+| `modules/stm32-gdbtest` | Git submodule, pinned to v0.3.0 |
+| `.claude/skills/` | Copies of the stm32-gdbtest skills (`stm32-gdbtest-integrate`, `-scenarios`, `-run`); refresh with the submodule |
+| `docs/history/`, `archive/` | History of the project stm32-gdbtest was extracted from and retained material (HAL sources, K1921 and H503 examples, experiments); keep, do not update |
 
-## Firmware и тесты
+## Build and checks
 
-- Форматировать только собственный C/C++ src по .clang-format (dry-run --Werror).
-  CMSIS и CubeMX-генерацию в архиве/H503 не форматировать. Новые собственные каталоги
-  lowercase; имена сторонних каталогов сохранять. Не добавлять тестовые hooks.
-- F401CC: Flash256KiB/RAM64KiB, температура ADC CH16; F411CE:512/128KiB, CH18.
-  LED PC13 active-low, VREFINT CH17. RTC перепланирует alarm через две секунды;
-  ежесекундный alarm fixture модуля не является заменой. Sleep/WFI не Stop.
-- src/adc_units.cpp — арифметика, src/platform.c — периферия и калибровка.
-  Заводские точки 30/110°C проверяют вычисления, не точность датчика.
-  Startup не поддерживает динамическую инициализацию глобальных C++ объектов.
-- CLI: python -B tools/gdbtest.py; явно задавать --session и --stand.
-  HIL_*-hw читают hil/stands/<mcu>.local.toml; шаблоны *.example.toml.
-  tests/stands хранит прежние стенды и локальные настройки; не выбирать их автоматически.
-  remote.toml/*-remote.toml также приватные и исключены из Git.
-- До новых GDB решений сверять docs/HWTEST_ARCHITECTURE.md и доступные примеры
-  ../buck-boost-course/99_BOARD_TEST/Tests/BBC_SW_LLR, только чтение. Исходный документ
-  не переписывать. docs/gdb.pdf §23.3 описывает GDB19, проверенный GCC13 — GDB14.2.90.
-  Проверять API presence. GDB API только в главном потоке, внешний timeout обязателен.
-- -g3 сохраняет macro debug info, но не неиспользуемые функции. Макросы зависят от
-  frame, pending breakpoint проверять явно. MMIO GET может иметь побочный эффект.
-  Manifest, offline preflight и runtime — разные доказательства. NOT_REQUESTED не PASS.
-  HAL reviewed hashes менять только после анализа исходников в соответствующем fixture.
-- DEV_ID mismatch по умолчанию WARNING; memory bounds не расширять. Ошибка чтения
-  и слишком большой образ — ERROR; strict отклоняет mismatch до Flash.
-- Проверка ELF использует load sections/LMA, включая .data; BIN gap-fill0xFF не
-  гарантирует gaps после ELF load. Full-image policy и CRC — отдельные режимы модуля.
+```powershell
+cmake --preset Debug_F411CE; cmake --build --preset Debug_F411CE
+cmake --preset HIL_F411CE;   cmake --build --preset HIL_F411CE
+ctest --preset HIL_F411CE-host          # no board: traceability and prepare.*
+ctest --preset HIL_F411CE-hw            # on the board, needs hil/stands/f411ce.local.toml
+python -B ci/run_cmsis_checks.py        # the CI check, inside the Docker image of ci/docker
+clang-format --dry-run --Werror src/*.cpp src/*.c src/*.h
+```
 
-## Стенды, CI и доказательства
+Requirements: CMake ≥ 3.25, Ninja, xPack GNU Arm 13.3.1-1.1 (`ARM_TOOLCHAIN_ROOT` or
+`%USERPROFILE%/xpack-arm-none-eabi-gcc-13.3.1-1.1`), Python ≥ 3.11 for HIL.
 
-- Последнее подтверждение: F411CE + внешний ST-Link/SWD. Перед каждым HW-набором
-  назвать MCU/отладчик/backend/проводку; смена требует ответа владельца. USB enumeration
-  не подтверждает SWD. UART/VCOM не подключать без согласования. Термин — «отладчик».
-- Не включать автоматически mass erase, option bytes, shared mode, firmware update.
-  VS Code/vendor tools не участвуют в mutex runner; не запускать их параллельно.
-  После crash освобождение lock не доказывает остановку server. Ошибки recovery
-  и USB сохранять отдельно; не маскировать успешным повтором.
-- F411CE/F401CC CMSIS: по14 HW cases, по12 повторов после инъекций, timeout/recovery
-  и HAL restore. Перенос дерева сохранил load images; это не новый аппаратный запуск.
-  Release только собран. Протокол — docs/BLACKPILL_CMSIS_APPLICATION.md.
-- Расширение CMSIS: F401CC и F411CE по 18/18 PASS через ST-Link/OpenOCD;
-  после инъекций обычные ADC/GPIO PASS, F411CE оставлен running.
-  Техники и ограничения — docs/CMSIS_RUNTIME_SCENARIOS.md.
-- CI: python -B ci/run_checks.py; шесть Debug/Release/HIL firmware-сборок и39 CTest
-  (два набора18 prepare+traceability, один native ADC). Windows/Linux Docker,
-  без оборудования и эмуляции. Перед land проверять полный Offline точного SHA.
-- Исторические hardware_smoke/check_profile_offline, tests/gdb/experiments и
-  отдельный observe_sleep не являются штатной CMSIS-регрессией. Не заявлять их
-  совместимость без проверки. История и назначение — docs/PROJECT_LAYOUT.md.
-- Развивать docs/STM32_TESTING_METHODS.md: ограничения и положительный/отрицательный
-  опыт. README — введение, STATUS — текущие результаты, CHANGELOG/протоколы — история.
-  Общую оптимизацию runner выполнять в stm32-gdbtest, проектную — здесь.
+## Rules
+
+1. Keep `setup()`/`loop()`, `app_state`, `platform_fault`, `platform_tick` and the `platform_*`
+   functions readable from GDB: the HIL scenarios depend on these names. Renaming them means
+   updating `hil/tests` and `hil/tests/requirements.md` in the same commit. No test hooks in the firmware.
+2. Every `@case` ID has a `## HW_...` section in `hil/tests/requirements.md`. Scenarios follow
+   the stm32-gdbtest API of the pinned submodule (v0.3.0) and its scenario style
+   (`skills/stm32-gdbtest-scenarios` in the module; check with
+   `python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/tests/board/*.py`).
+   Board-specific expectations belong in `hil/boards/<mcu>.toml`, scenario parameters in
+   `hil/api.toml`. When the scenario count changes, update `SCENARIOS` in `ci/run_cmsis_checks.py`.
+3. No LTO (`-fno-lto`). No HAL; registers through CMSIS names. The startup code does not run
+   dynamic initialization of global C++ objects.
+4. Format `src/` with the repository `.clang-format`; never reformat `cmsis/` or `archive/`.
+5. Never commit `*.local.toml` or `*-remote.toml` stands, probe serial numbers, personal paths or `build/`.
+6. Update `CHANGELOG.md` and `CHANGELOG.en.md` (`[Unreleased]`) for user-visible changes;
+   keep RU and EN documents in sync. Mechanism documentation belongs to stm32-gdbtest; boards,
+   wiring and measurements belong here.
+7. Branches `<agent>/<task>` from an up-to-date `main`; signed Conventional Commits in
+   English without links to chat sessions, ending with one `Co-authored-by:` line of the agent
+   that took part. Push, `git land`, tags and releases are done by the owner, after the CI of the
+   published branch is green.
+8. Do not claim hardware results that were not run; state what was checked and how. Run hardware
+   only on boards agreed with the owner; the K1921 stand in `archive/` is dismantled.
