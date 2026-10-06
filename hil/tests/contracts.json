@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "contracts": {
+    "cmsis_clock_gpio": {
+      "macros": {
+        "context": "platform_led_toggle",
+        "expressions": [
+          "RCC",
+          "RCC_CR_HSION",
+          "RCC_CR_HSIRDY",
+          "RCC_CFGR_SWS",
+          "RCC_CFGR_SWS_HSI",
+          "RCC_CFGR_HPRE",
+          "RCC_CFGR_PPRE1",
+          "RCC_CFGR_PPRE2",
+          "SysTick",
+          "SysTick_CTRL_CLKSOURCE_Msk",
+          "SysTick_CTRL_TICKINT_Msk",
+          "SysTick_CTRL_ENABLE_Msk",
+          "RCC_AHB1ENR_GPIOCEN",
+          "GPIOC",
+          "GPIO_MODER_MODER13",
+          "GPIO_MODER_MODER13_0",
+          "GPIO_OTYPER_OT13",
+          "GPIO_OSPEEDER_OSPEEDR13",
+          "GPIO_PUPDR_PUPDR13",
+          "GPIO_ODR_OD13"
+        ]
+      }
+    },
+    "cmsis_adc_dma": {
+      "macros": {
+        "context": "platform_led_toggle",
+        "expressions": [
+          "ADC1",
+          "ADC",
+          "ADC_SQR3_SQ1_Pos",
+          "ADC_SQR3_SQ2_Pos",
+          "ADC_SQR1_L",
+          "ADC_SQR1_L_Pos",
+          "ADC_CR1_SCAN",
+          "ADC_CR2_ADON",
+          "ADC_CR2_DMA",
+          "ADC_CR2_DDS",
+          "ADC_CCR_TSVREFE",
+          "DMA2",
+          "DMA2_Stream0",
+          "DMA_SxCR_MSIZE",
+          "DMA_SxCR_PSIZE",
+          "DMA_SxCR_MINC",
+          "DMA_SxCR_MSIZE_0",
+          "DMA_SxCR_PSIZE_0",
+          "DMA_SxCR_EN",
+          "DMA_LISR_TCIF0",
+          "DMA_LISR_TEIF0",
+          "DMA_LISR_DMEIF0",
+          "DMA_LISR_FEIF0",
+          "SCB",
+          "SCB_ICSR_VECTACTIVE_Msk",
+          "NVIC"
+        ]
+      }
+    },
+    "cmsis_timer_rtc": {
+      "macros": {
+        "context": "platform_led_toggle",
+        "expressions": [
+          "TIM2",
+          "TIM_SR_UIF",
+          "TIM_DIER_UIE",
+          "TIM_CR1_CEN",
+          "SCB",
+          "SCB_ICSR_VECTACTIVE_Msk",
+          "RTC",
+          "RTC_PRER_PREDIV_A_Pos",
+          "RTC_ALRMAR_ST",
+          "RTC_ALRMAR_SU",
+          "RTC_ALRMAR_MSK4"
+        ]
+      }
+    },
+    "cmsis_sleep": {
+      "macros": {
+        "context": "platform_led_toggle",
+        "expressions": [
+          "SCB",
+          "SCB_SCR_SLEEPONEXIT_Msk",
+          "SCB_SCR_SLEEPDEEP_Msk",
+          "SCB_ICSR_VECTACTIVE_Msk",
+          "SCB_ICSR_PENDSTCLR_Msk",
+          "NVIC",
+          "SysTick",
+          "SysTick_CTRL_CLKSOURCE_Msk",
+          "SysTick_CTRL_TICKINT_Msk",
+          "SysTick_CTRL_ENABLE_Msk"
+        ]
+      }
+    }
+  }
+}

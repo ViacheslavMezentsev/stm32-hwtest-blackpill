@@ -2,15 +2,39 @@
 
 CMSIS-конфигурация приложения: BOARD=F411CE/F401CC.
 Debug_F411CE/Debug_F401CC собирают src без HAL; HIL_F411CE/HIL_F401CC
-дополнительно подключают сценарии и manifest. CMSIS теперь включён по умолчанию. Старые HAL-конфигурации находятся в legacy/hal и не входят в текущие presets. Профили в hil/profiles задают память и identity;
-общие сценарии hil/tests/board используют выбранный MCU для ожидания канала ADC.
-Запускать через штатный tools/gdbtest.py с явными --session и --stand.
+дополнительно подключают сценарии и manifest. Старые HAL-конфигурации находятся в legacy/hal и
+не входят в текущие presets. Модуль — stm32-gdbtest v0.3.0 (`modules/stm32-gdbtest`).
 
-18 сценариев: boot/HSI, GPIO blink, ADC init/runtime/invalid/vectors/busy/disabled/timeout,
-TIM2, RTC rearm/deadline, Sleep от SysTick и от TIM2; clock/GPIO configuration,
-IRQ publication и подавление ADC callback ([приёмы и результаты](../docs/CMSIS_RUNTIME_SCENARIOS.md)). Source-level HAL contracts
-не применяются к этой firmware. Макросы зависят от текущего frame; MMIO проверяется
-в platform.c, данные приложения — в loop. Число тестов не является покрытием кода.
+```text
+hil/
+  sessions/<mcu>.toml          конфигурация прогона (SESSION_CONFIG): описание MCU, api.toml, файл данных
+  profiles/<mcu>.toml          описание MCU: Flash, DEV_ID, точки останова
+  boards/<mcu>.toml            файл данных платы: светодиод, RAM, каналы ADC, адреса заводских калибровок
+  api.toml                     параметры сценариев: сроки, окно VDDA, серия измерений, таймеры
+  tests/requirements.md        требования HW_* (общие для обеих плат)
+  tests/contracts.json         контракты макросов CMSIS по группам сценариев
+  tests/board/test_boot.py     HW_BOOT, HW_CLOCK_GPIO_CONFIG, HW_GPIO, HW_BOARD_PROFILE
+  tests/board/test_adc.py      HW_ADC_INIT, HW_ADC_RUNTIME, HW_ADC_DMA_PUBLICATION, HW_ADC_WRITER, HW_ADC_SERIES
+  tests/board/test_adc_faults.py  HW_ADC_DISABLED, HW_ADC_TIMEOUT, HW_ADC_BUSY, HW_ADC_INVALID,
+                                  HW_ADC_VECTORS, HW_ADC_CALLBACK_SUPPRESSED
+  tests/board/test_timers.py   HW_TIMER, HW_TIMER_IRQ_PUBLICATION, HW_RTC, HW_RTC_DEADLINE
+  tests/board/test_sleep.py    HW_SLEEP_SYSTICK, HW_SLEEP_TIM2
+```
+
+21 сценарий на API 0.3.0: таблицы `check(rows)` и `write(rows)`, ожидания именами CMSIS и из файла
+данных платы (`t.profile.data["board"]`), параметры из `api.toml` (`t.profile.get(...)`), подмена
+возврата `ret`, ожидаемый отказ `refused`, точка наблюдения `watch` с `frames`, серия измерений
+через `record`/`records`. Новые в 0.3.0: `HW_BOARD_PROFILE`, `HW_ADC_WRITER`, `HW_ADC_SERIES`.
+Стиль проверяет тест модуля:
+`python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/tests/board/*.py`.
+Макросы зависят от текущего frame: MMIO проверяется в функциях platform.c, данные приложения — в
+loop(). Число сценариев не является покрытием кода.
+
+```powershell
+cmake --preset HIL_F411CE; cmake --build --preset HIL_F411CE
+ctest --preset HIL_F411CE-host     # без платы: трассировка требований и prepare.*
+ctest --preset HIL_F411CE-hw       # на плате, стенд hil/stands/f411ce.local.toml
+```
 
 RTC при setup устанавливает календарь00-01-01, затем Alarm A через2 секунды;
 app_state.rtc_events инициирует следующее перепланирование в loop. Backup domain

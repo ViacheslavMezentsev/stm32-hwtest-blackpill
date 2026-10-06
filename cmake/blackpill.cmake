@@ -37,5 +37,8 @@ if(BLACKPILL_HIL)
 set(Python3_FIND_REGISTRY LAST)
 enable_testing()
 include(modules/stm32-gdbtest/stm32_gdbtest/cmake/STM32GDBTest.cmake)
-stm32_gdbtest_attach(${PROJECT_NAME} PROFILE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/hil" PROFILE "${CMAKE_CURRENT_SOURCE_DIR}/hil/profiles/${profile}.toml" MANIFEST_INPUTS "${CMAKE_BINARY_DIR}/firmware.ld" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/blackpill.cmake")
+# The run configuration ties the MCU description, the shared api.toml and the board data file.
+stm32_gdbtest_attach(${PROJECT_NAME} PROFILE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/hil"
+ SESSION_CONFIG "${CMAKE_CURRENT_SOURCE_DIR}/hil/sessions/${profile}.toml"
+ MANIFEST_INPUTS "${CMAKE_BINARY_DIR}/firmware.ld" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/blackpill.cmake")
 endif()

@@ -1,0 +1,23 @@
+# Файл данных платы для сценариев HIL: t.profile.data["board"].
+[board]
+name = "F411CE"
+title = "WeAct BlackPill F411CE"
+# Макрос устройства CMSIS, с которым собрана прошивка (cmake/blackpill.cmake).
+device = "STM32F411xE"
+# Светодиод пользователя на PC13, горит при низком уровне.
+led_port = "GPIOC"
+led_pin = 13
+led_active_high = false
+ram_kib = 128
+
+# Каналы ADC1 (RM0383/RM0368): датчик температуры и VREFINT. Заводские калибровки F4 сняты при
+# VDDA = 3,3 В: VREFINT_CAL, TS_CAL1 при 30 °C и TS_CAL2 при 110 °C (DS10314, DS9716).
+[adc]
+temperature_channel = 18
+vrefint_channel = 17
+vrefint_cal_address = 0x1FFF7A2A
+ts_cal1_address = 0x1FFF7A2C
+ts_cal2_address = 0x1FFF7A2E
+calibration_vdda_mv = 3300
+ts_cal1_mdeg_c = 30000
+ts_cal2_mdeg_c = 110000

@@ -1,0 +1,36 @@
+# Параметры API и сценариев HIL, общие для F411CE и F401CC (stm32-gdbtest, схема 1).
+# Сценарии читают раздел [user] через t.profile.get("user.<раздел>.<ключ>").
+schema = 1
+
+# Предел обхода кадров frames(): цепочки обработчиков и loop() -> main() короткие.
+[frames]
+limit = 8
+
+# Записи серии измерений HW_ADC_SERIES (по одной на итерацию loop()).
+[records]
+max_records = 64
+
+# Сроки приложения (src/program.cpp): ожидание DMA в loop() и интервал idle, тики SysTick по 1 мс.
+[user.timing]
+adc_deadline_ticks = 100
+idle_ms = 500
+
+# Окно питания, которое принимает арифметика приложения (src/adc_units.cpp, valid_supply).
+[user.adc]
+vdda_mv = [2400, 3600]
+
+# Серия измерений HW_ADC_SERIES: число итераций loop() и допустимый разброс соседних отсчётов
+# при неизменных питании и температуре; это проверка устойчивости, не метрология.
+[user.series]
+count = 5
+vdda_spread_mv = 50
+temperature_spread_mdeg_c = 3000
+
+# Таймеры (src/platform.c): TIM2 от HSI 16 МГц делится до 1 кГц и переполняется каждые 100 мс;
+# RTC от LSI с делителями 127/249 даёт 1 Гц, alarm назначается через две секунды.
+[user.timers]
+tim2_tick_hz = 1000
+tim2_period_ticks = 100
+rtc_prediv_a = 127
+rtc_prediv_s = 249
+rtc_alarm_delay_s = 2

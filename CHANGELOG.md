@@ -5,6 +5,18 @@
 
 ## [Unreleased]
 
+- stm32-gdbtest обновлён до v0.3.0. Плату описывает конфигурация прогона `hil/sessions/<mcu>.toml`
+  (`SESSION_CONFIG` вместо `PROFILE`): описание MCU, общий `hil/api.toml` (сроки, окно VDDA, серия,
+  таймеры) и файл данных платы `hil/boards/<mcu>.toml` (светодиод, RAM, каналы ADC, адреса калибровок).
+- Все 18 сценариев переписаны на API 0.3.0: таблицы `check(rows)`/`write(rows)`, ожидания именами CMSIS
+  и из файла данных, `ret` вместо `force_return`, кадры через `frames()` вместо прямого GDB API,
+  контракты макросов для групп сценариев; файлы разложены по темам. Добавлены `HW_BOARD_PROFILE`
+  (профиль, таблица векторов, `refused`), `HW_ADC_WRITER` (`watch` и цепочка кадров) и `HW_ADC_SERIES`
+  (серия измерений через `record`/`records`). Всего 21 сценарий; offline CI ждёт 21 `prepare`.
+- Навыки агентов stm32-gdbtest скопированы в `.claude/skills/`.
+- stm32-gdbtest updated to v0.3.0 with run configurations, board data and `api.toml`; 18 scenarios
+  rewritten on API 0.3.0 and three added (21 in total).
+
 - Подтверждён полный набор CMSIS на F411CE: 18/18 PASS через ST-Link/OpenOCD,
   повтор ADC/GPIO 2/2 PASS. Прошивка, тесты и rc.2 не изменены; записан протокол.
 - Validated all 18 CMSIS scenarios on F411CE, including ADC/GPIO recovery checks.

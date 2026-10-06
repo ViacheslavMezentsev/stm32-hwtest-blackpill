@@ -5,12 +5,15 @@
 - Сначала читать README.md, docs/README.md, docs/STATUS.md, docs/HWTEST_ARCHITECTURE_V2.md и TODO.md.
   Карта дерева — docs/PROJECT_LAYOUT.md. Протоколы опытов не заменяют текущий статус.
 - Активны F411CE/F401CC: приложение src/, CMSIS cmsis/, linker ld/, CMake cmake/.
-  Профили hil/profiles, сценарии hil/tests/board, требования hil/tests/requirements.md;
+  Конфигурации прогона hil/sessions/<mcu>.toml (SESSION_CONFIG) связывают описание MCU hil/profiles,
+  общий hil/api.toml и файл данных платы hil/boards; сценарии hil/tests/board (API 0.3.0, стиль —
+  тест модуля tests/host/test_scenario_style.py), требования и контракты — hil/tests;
   native ADC — hil/tests/native. Firmware настраивается CMake, не YAML.
 - Использовать Debug_*, Release_* и HIL_* presets. Только HIL подключает manifest
   и тесты. Базово: cmake --preset HIL_F411CE; cmake --build --preset HIL_F411CE;
   ctest --preset HIL_F411CE-host. MCU/toolchain имеют отдельные build.
-- modules/stm32-gdbtest — единственный закреплённый подмодуль: v0.1.0-rc.2/a0d6547.
+- modules/stm32-gdbtest — единственный закреплённый подмодуль: v0.3.0/2c879f0. Навыки модуля
+  скопированы в .claude/skills (подключение, сценарии, запуск); обновлять вместе с подмодулем.
   Не обновлять на main без отдельной задачи; подмодуль хранит точный SHA, не ветку. Ядро/API/документация
   механизма принадлежат ему. Не писать туда build/temp/reports. Для согласованных
   изменений использовать .work/stm32-gdbtest и его AGENTS.md; сначала push/CI/land
