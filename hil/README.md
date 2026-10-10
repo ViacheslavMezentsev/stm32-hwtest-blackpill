@@ -29,12 +29,12 @@ hil/
 ```
 
 Плата выбирается сборкой: пресеты `HIL_F411CE` и `HIL_F401CC` задают `BOARD` и
-`BLACKPILL_HIL=ON`, `cmake/blackpill.cmake` подключает stm32-gdbtest v0.3.0 (`modules/stm32-gdbtest`) с
+`BLACKPILL_HIL=ON`, `cmake/blackpill.cmake` подключает stm32-gdbtest v0.4.0 (`modules/stm32-gdbtest`) с
 конфигурацией прогона `hil/sessions/<mcu>.toml` (`SESSION_CONFIG`) и общими сценариями `hil/tests`.
 Конфигурация связывает описание MCU, общий `api.toml` и файл данных платы: сценарии читают их
 через `t.profile` (`t.profile.data["board"]`, `t.profile.get("user.timing.adc_deadline_ticks")`),
 поэтому один сценарий обслуживает обе платы, а ожидания, зависящие от платы, лежат в данных, а не в коде.
-Сценарии написаны на API 0.3.0 и проверяются тестом стиля модуля:
+Сценарии написаны на API модуля 0.4.0 и проверяются тестом стиля модуля:
 `python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/tests/board/*.py`.
 
 ## Стенд
@@ -59,13 +59,13 @@ python -B modules/stm32-gdbtest/stm32_gdbtest/cli.py doctor --stand hil/stands/f
 cmake --preset HIL_F411CE
 cmake --build --preset HIL_F411CE
 ctest --preset HIL_F411CE-host     # без платы: трассировка требований и prepare.*
-ctest --preset HIL_F411CE-hw       # на плате: все hw.* (21 сценарий)
+ctest --preset HIL_F411CE-hw       # на плате: все hw.* (22 сценария)
 ```
 
 Прошивка записывается, только если образ во Flash отличается (`flash = "if-different"` в стенде).
 Не запускайте отладку VS Code и тесты одновременно с одним отладчиком.
 
-| Сценарий | Что проверяет | Приёмы ([техники](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/docs/ru/TESTING_TECHNIQUES.md)) |
+| Сценарий | Что проверяет | Приёмы ([техники](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/docs/ru/TESTING_TECHNIQUES.md)) |
 | --- | --- | --- |
 | `HW_BOOT` | `loop()` без отказа, SYSCLK от HSI 16 МГц без деления шин | таблица `check(rows)`, адрес регистра |
 | `HW_CLOCK_GPIO_CONFIG` | HSI, делители, SysTick 1 мс, вывод PC13 | таблица, контракт, TECH-001 |
@@ -111,3 +111,14 @@ backup domain не сбрасывается, несовместимый исто
 
 **История.** Прежние HAL-пресеты, протоколы опытов и стенды — в [истории](../docs/history/README.md)
 и [архиве](../archive/README.md); их результаты не относятся к текущей CMSIS-прошивке.
+
+## Разработка через DDTT
+
+[План](plans/ddtt-feedback.md) и [результат цикла](plans/ddtt-feedback-results.md):
+сначала сценарий выявляет дефект на исходной прошивке, затем проверяет исправление и регрессию.
+Навык — `.claude/skills/stm32-gdbtest-develop/SKILL.md`; его опытная копия сопровождает эту ветку,
+а gitlink модуля остаётся на опубликованной 0.4.0. Остальные копии навыков обновлены для 0.4.0.
+В отличие от stand-loop, разработке нужен checkout исходников и компилятор, а не только ZIP.
+Профили используют target schema 2 с `[openocd]`; сессии включают `[results] capture = true`.
+
+Новый сценарий: `HW_ADC_TIMEOUT_DIAGNOSTIC` (`tests/board/test_ddtt_feedback.py`).

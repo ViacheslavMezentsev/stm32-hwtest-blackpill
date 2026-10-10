@@ -24,7 +24,11 @@ void loop( void )
     const uint32_t started = platform_ticks();
     while ( !adc_ready )
     {
-        if ( ( uint32_t ) ( platform_ticks() - started ) >= 100 ) platform_error();
+        if ( ( uint32_t ) ( platform_ticks() - started ) >= 100 )
+        {
+            platform_fault = APP_FAULT_ADC_TIMEOUT;
+            platform_error();
+        }
     }
     platform_adc_stop();
     app_state.temperature_raw                = adc_samples[0];

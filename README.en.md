@@ -71,7 +71,7 @@ arithmetic rather than the temperature accuracy.
 
 ## HIL tests
 
-The scenarios in `hil/tests/board` (stm32-gdbtest v0.3.0, 21 scenarios) check the firmware on
+The scenarios in `hil/tests/board` (stm32-gdbtest v0.4.0, 22 scenarios) check the firmware on
 the board: startup and clock, the LED, the run profile, ADC and DMA (configuration, publication, who
 counts the measurements, a measurement series), TIM2 and RTC, WFI sleep, and the reaction to
 injections — ADC and DMA failures, substituted samples and calibrations, a lost callback, an LSI wait
@@ -80,7 +80,7 @@ the board. Without a board the requirement traceability and run preparation are 
 (`ctest --preset HIL_F411CE-host`); on the board run `ctest --preset HIL_F411CE-hw` after setting
 up a stand. Details: [hil/README.en.md](hil/README.en.md).
 
-Latest hardware run: F411CE and F401CC through ST-Link/OpenOCD — 21/21 PASS each.
+Latest hardware run: F411CE and F401CC through ST-Link/OpenOCD — 22/22 PASS each.
 
 ## Layout
 
@@ -102,8 +102,8 @@ archive/        retained material: former HAL sources, K1921 and H503 examples, 
 
 ## Documentation
 
-- stm32-gdbtest v0.3.0: [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/README.en.md), [API reference](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/docs/en/api/index.md),
-  [testing techniques](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/docs/en/TESTING_TECHNIQUES.md), [agent skills](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/skills/README.en.md).
+- stm32-gdbtest v0.4.0: [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/README.en.md), [API reference](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/docs/en/api/index.md),
+  [testing techniques](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/docs/en/TESTING_TECHNIQUES.md), [agent skills](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/skills/README.en.md).
 - This project: [HIL tests](hil/README.en.md), [requirements](hil/tests/requirements.md) (Russian),
   [changes](CHANGELOG.en.md), [development rules](AGENTS.md).
 - [History](docs/history/README.md) (Russian): the project began as HAL experiments on several STM32

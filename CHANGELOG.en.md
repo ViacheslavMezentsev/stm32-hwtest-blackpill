@@ -6,6 +6,9 @@ documentation alignment are kept in the Russian changelog, most of them with an 
 
 ## [Unreleased]
 
+- Pinned the module to v0.4.0, target schema 2 and capture; refreshed skills and added a trial DDTT development loop.
+- An ADC notification timeout now leaves platform_fault code 6. Added HW_ADC_TIMEOUT_DIAGNOSTIC and updated the suppressed callback expectation; 22 scenarios total.
+
 - The project looks like stm32-hwtest-bluepill: README, `hil/README` (RU and EN) and `AGENTS.md` follow the
   common demo layout. Historical documents moved unchanged to `docs/history/` (index in
   `docs/history/README.md`); material outside the demo moved to `archive/` (HAL sources, K1921 and H503

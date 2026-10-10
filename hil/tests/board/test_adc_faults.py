@@ -8,6 +8,7 @@ from stm32_gdbtest import case
 # platform_fault codes of src/platform.c: the DMA stream is busy, the ADC is off.
 FAULT_DMA_BUSY = 1
 FAULT_ADC_OFF = 2
+FAULT_ADC_TIMEOUT = 6
 
 # SysTick counters are uint32_t and wrap around.
 U32_MASK = 0xFFFFFFFF
@@ -124,9 +125,9 @@ def adc_callback_suppressed(t):
     t.reach("platform_error")
     t.check("application deadline, ticks", (t.read("platform_tick") - before) & U32_MASK >= deadline)
 
-    # Nothing is published and no platform fault code is set.
+    # Nothing is published; the diagnostic distinguishes an application deadline from platform faults.
     t.check([
         ("no publication", "app_state.adc_sequences", 0),
         ("notification remains absent", "adc_ready", 0),
-        ("application timeout, not a platform fault", "platform_fault", 0)
+        ("application ADC timeout", "platform_fault", FAULT_ADC_TIMEOUT)
     ])

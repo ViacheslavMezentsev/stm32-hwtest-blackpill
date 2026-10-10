@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 # Scenarios in hil/tests/board: each gives one prepare.<ID> test besides host.traceability.
-SCENARIOS = 21
+SCENARIOS = 22
 
 
 def main():

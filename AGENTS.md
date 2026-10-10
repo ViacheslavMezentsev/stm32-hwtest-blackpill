@@ -18,8 +18,8 @@ and VREFINT on channel 17.
 | `ld/`, `cmake/` | Linker script template (Flash/RAM from `BOARD`), toolchain and HIL integration (`blackpill.cmake`) |
 | `hil/` | HIL: `sessions/` (run configuration per board), `profiles/` (MCU descriptions), `boards/` (board data), `api.toml`, `tests/` (scenarios, requirements, contracts, native ADC test), `stands/` (examples) |
 | `ci/` | Offline checks in Docker (`run_cmsis_checks.py`: builds, `prepare.*`, native ADC) |
-| `modules/stm32-gdbtest` | Git submodule, pinned to v0.3.0 |
-| `.claude/skills/` | Copies of the stm32-gdbtest skills (`stm32-gdbtest-integrate`, `-scenarios`, `-run`); refresh with the submodule |
+| `modules/stm32-gdbtest` | Git submodule, pinned to v0.4.0 |
+| `.claude/skills/` | Copies of the stm32-gdbtest skills (integration, scenarios, run, results, stand-loop and develop); refresh with the submodule |
 | `docs/history/`, `archive/` | History of the project stm32-gdbtest was extracted from and retained material (HAL sources, K1921 and H503 examples, experiments); keep, do not update |
 
 ## Build and checks
@@ -42,7 +42,7 @@ Requirements: CMake ≥ 3.25, Ninja, xPack GNU Arm 13.3.1-1.1 (`ARM_TOOLCHAIN_RO
    functions readable from GDB: the HIL scenarios depend on these names. Renaming them means
    updating `hil/tests` and `hil/tests/requirements.md` in the same commit. No test hooks in the firmware.
 2. Every `@case` ID has a `## HW_...` section in `hil/tests/requirements.md`. Scenarios follow
-   the stm32-gdbtest API of the pinned submodule (v0.3.0) and its scenario style
+   the stm32-gdbtest API of the pinned submodule (v0.4.0) and its scenario style
    (`skills/stm32-gdbtest-scenarios` in the module; check with
    `python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/tests/board/*.py`).
    Board-specific expectations belong in `hil/boards/<mcu>.toml`, scenario parameters in
@@ -60,3 +60,10 @@ Requirements: CMake ≥ 3.25, Ninja, xPack GNU Arm 13.3.1-1.1 (`ARM_TOOLCHAIN_RO
    published branch is green.
 8. Do not claim hardware results that were not run; state what was checked and how. Run hardware
    only on boards agreed with the owner; the K1921 stand in `archive/` is dismantled.
+
+## DDTT development loop
+
+For firmware changes with target feedback, read `.claude/skills/stm32-gdbtest-develop/SKILL.md`
+and `hil/plans/ddtt-feedback.en.md`. The develop skill is a trial copy accompanying this branch;
+the module remains pinned to released 0.4.0. Preserve red attempts, then verify the unchanged
+assertion and adjacent scenarios after fixing production code. No test hooks.

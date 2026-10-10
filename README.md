@@ -71,7 +71,7 @@ cmake --build --preset Debug_F411CE
 
 ## HIL-тесты
 
-Сценарии в `hil/tests/board` (stm32-gdbtest v0.3.0, 21 сценарий) проверяют прошивку на плате:
+Сценарии в `hil/tests/board` (stm32-gdbtest v0.4.0, 22 сценария) проверяют прошивку на плате:
 запуск и тактирование, светодиод, профиль прогона, ADC и DMA (конфигурация, публикация, кто
 считает измерения, серия измерений), TIM2 и RTC, сон WFI, а также реакцию на инъекции — отказы
 ADC и DMA, подменённые отсчёты и калибровки, потерянный обратный вызов, невыполнимое ожидание LSI.
@@ -79,7 +79,7 @@ ADC и DMA, подменённые отсчёты и калибровки, по�
 трассировка требований и подготовка запуска (`ctest --preset HIL_F411CE-host`); на плате —
 `ctest --preset HIL_F411CE-hw` после настройки стенда. Подробно: [hil/README.md](hil/README.md).
 
-Последний аппаратный прогон: F411CE и F401CC через ST-Link/OpenOCD — по 21/21 PASS.
+Последний аппаратный прогон: F411CE и F401CC через ST-Link/OpenOCD — по 22/22 PASS.
 
 ## Структура
 
@@ -101,8 +101,8 @@ archive/        сохранённые материалы: прежние HAL-и
 
 ## Документация
 
-- stm32-gdbtest v0.3.0: [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/README.md), [справочник API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/docs/ru/api/index.md),
-  [техники тестирования](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/docs/ru/TESTING_TECHNIQUES.md), [навыки агентов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/skills/README.md).
+- stm32-gdbtest v0.4.0: [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/README.md), [справочник API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/docs/ru/api/index.md),
+  [техники тестирования](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/docs/ru/TESTING_TECHNIQUES.md), [навыки агентов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/skills/README.md).
 - Этот проект: [HIL-тесты](hil/README.md), [требования](hil/tests/requirements.md),
   [изменения](CHANGELOG.md), [правила разработки](AGENTS.md).
 - [История](docs/history/README.md): проект начинался с опытов на HAL с несколькими STM32, из

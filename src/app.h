@@ -41,6 +41,14 @@ typedef struct
 } AppState;
 
 extern volatile AppState app_state;
+
+/* Diagnostic codes 1..5 are reserved for platform ADC/DMA failures. */
+enum
+{
+    APP_FAULT_ADC_TIMEOUT = 6
+};
+
+extern volatile uint32_t platform_fault;
 /* Platform ADC contract: one DMA sequence, temperature then VREFINT, aligned buffer of two samples. */
 void platform_adc_start( volatile uint16_t* samples );
 void platform_adc_stop( void );

@@ -77,7 +77,7 @@ temperature = 0 отвергаются: качество ADC_INVALID, VDDA и т
 ## HW_ADC_CALLBACK_SUPPRESSED
 Если после завершённой передачи DMA обратный вызов app_adc_complete() возвращается сразу, приложение
 достигает срока ожидания (100 тиков) и platform_error() без публикации; adc_ready остаётся false,
-platform_fault = 0. Это модель потерянного уведомления, а не отказа ADC или DMA.
+platform_fault = 6 (APP_FAULT_ADC_TIMEOUT). Это модель потерянного уведомления, а не отказа ADC или DMA.
 
 ## HW_TIMER
 TIM2 настроен на 1 кГц (PSC = 15 999) с переполнением каждые 100 мс (ARR = 99), прерывание обновления
@@ -106,3 +106,9 @@ RTC использует делители 127/249 (1 Гц от LSI); первы�
 При остановленном SysTick и единственном разрешённом прерывании TIM2 таймер выводит ядро из WFI
 platform_sleep() без продвижения platform_tick; после восстановления SysTick и масок приложение
 обрабатывает событие таймера и продолжает измерения.
+
+## HW_ADC_TIMEOUT_DIAGNOSTIC
+
+RU: При отсутствии уведомления DMA приложение ожидает не менее 100 тиков, не публикует измерение и устанавливает platform_fault=6 перед platform_error.
+
+EN: When DMA notification is absent, the application waits at least 100 ticks, publishes no measurement and sets platform_fault=6 before platform_error.

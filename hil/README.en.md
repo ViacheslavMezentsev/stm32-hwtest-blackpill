@@ -28,12 +28,12 @@ hil/
 ```
 
 The board is chosen by the build: presets `HIL_F411CE` and `HIL_F401CC` set `BOARD` and
-`BLACKPILL_HIL=ON`; `cmake/blackpill.cmake` attaches stm32-gdbtest v0.3.0 (`modules/stm32-gdbtest`)
+`BLACKPILL_HIL=ON`; `cmake/blackpill.cmake` attaches stm32-gdbtest v0.4.0 (`modules/stm32-gdbtest`)
 with the run configuration `hil/sessions/<mcu>.toml` (`SESSION_CONFIG`) and the shared scenarios
 `hil/tests`. The configuration ties the MCU description, the shared `api.toml` and the board data
 file together; scenarios read them through `t.profile` (`t.profile.data["board"]`,
 `t.profile.get("user.timing.adc_deadline_ticks")`), so one scenario serves both boards and
-board-specific expectations live in data, not in code. The scenarios use API 0.3.0 and pass the
+board-specific expectations live in data, not in code. The scenarios use the API of module 0.4.0 and pass the
 module style test: `python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/tests/board/*.py`.
 
 ## Stand
@@ -58,13 +58,13 @@ python -B modules/stm32-gdbtest/stm32_gdbtest/cli.py doctor --stand hil/stands/f
 cmake --preset HIL_F411CE
 cmake --build --preset HIL_F411CE
 ctest --preset HIL_F411CE-host     # no board: requirement traceability and prepare.*
-ctest --preset HIL_F411CE-hw       # on the board: all hw.* (21 scenarios)
+ctest --preset HIL_F411CE-hw       # on the board: all hw.* (22 scenarios)
 ```
 
 The firmware is programmed only if the Flash image differs (`flash = "if-different"` in the stand).
 Do not debug in VS Code and run the tests with the same debugger at the same time.
 
-| Scenario | Checks | Techniques ([catalogue](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.3.0/docs/en/TESTING_TECHNIQUES.md)) |
+| Scenario | Checks | Techniques ([catalogue](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/docs/en/TESTING_TECHNIQUES.md)) |
 | --- | --- | --- |
 | `HW_BOOT` | `loop()` without a fault, SYSCLK from the 16 MHz HSI, undivided buses | `check(rows)` table, register address |
 | `HW_CLOCK_GPIO_CONFIG` | HSI, dividers, 1 ms SysTick, PC13 pin | table, contract, TECH-001 |
@@ -111,3 +111,14 @@ of LSI accuracy, backup retention or day rollover.
 **History.** Former HAL presets, experiment protocols and stands are in the
 [history](../docs/history/README.md) and the [archive](../archive/README.md); their results do not
 apply to the current CMSIS firmware.
+
+## Development through DDTT
+
+[Plan](plans/ddtt-feedback.en.md) and [cycle results](plans/ddtt-feedback-results.en.md):
+the scenario first exposes the defect in baseline firmware, then checks its fix and regression.
+Skill: `.claude/skills/stm32-gdbtest-develop/SKILL.md`; this branch includes a trial copy while
+the module gitlink remains on released 0.4.0. Other skill copies are refreshed for 0.4.0.
+Unlike stand-loop execution, development needs a source checkout and compiler, not just a ZIP.
+Profiles use target schema 2 with `[openocd]`; sessions enable `[results] capture = true`.
+
+New scenario: `HW_ADC_TIMEOUT_DIAGNOSTIC` (`tests/board/test_ddtt_feedback.py`).
