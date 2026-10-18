@@ -24,8 +24,8 @@ Debugger stops and injections do not establish natural physical failures or real
 The local stand file must match the connected board.
 
 ```powershell
-cmake --preset HIL_F411CE -B build/ddtt-candidate-f411ce
+cmake --preset f411ce-hil -B build/ddtt-candidate-f411ce
 cmake --build build/ddtt-candidate-f411ce
 ctest --test-dir build/ddtt-candidate-f411ce -L host -j 1 --output-on-failure
-python modules/stm32-gdbtest/stm32_gdbtest/cli.py run --session build/ddtt-candidate-f411ce/hwtest/session.json --test HW_ADC_TIMEOUT_DIAGNOSTIC --stand hil/stands/f411ce.local.toml --identity-policy strict
+python modules/stm32-gdbtest/stm32_gdbtest/cli.py run --session build/ddtt-candidate-f411ce/hwtest/session.json --test HW_ADC_TIMEOUT_DIAGNOSTIC --stand hil/F411CE/stands/local.toml --identity-policy strict
 ```

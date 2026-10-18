@@ -8,7 +8,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-# Scenarios in hil/tests/board: each gives one prepare.<ID> test besides host.traceability.
+# Scenarios in hil/common/tests/board: each gives one prepare.<ID> test besides host.traceability.
 SCENARIOS = 22
 
 
@@ -46,10 +46,10 @@ def main():
         record = {"board": board, "status": "ERROR"}
         try:
             for config in ("Debug", "Release", "HIL"):
-                preset = config + "_" + board
+                preset = f"{board.lower()}-{config.lower()}"
                 run(["cmake", "--preset", preset, "-DSTM32_GDBTEST_STAND="], preset + "-configure")
                 run(["cmake", "--build", "--preset", preset], preset + "-build")
-            build = ROOT / "build" / ("HIL_" + board)
+            build = ROOT / "build" / f"{board.lower()}-hil"
             session = json.loads((build / "hwtest/session.json").read_text())
             if session["stand"]:
                 raise ValueError("Offline session must not select a hardware stand")
@@ -83,7 +83,7 @@ def main():
     record = {"board": "native-adc", "status": "ERROR"}
     try:
         build = ROOT / "build/native-adc"
-        run(["cmake", "-S", str(ROOT / "hil/tests/native"), "-B", str(build),
+        run(["cmake", "-S", str(ROOT / "hil/common/tests/native"), "-B", str(build),
              "-G", "Ninja"], "native-configure")
         run(["cmake", "--build", str(build)], "native-build")
         junit = out / "native-junit.xml"

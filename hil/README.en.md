@@ -10,55 +10,55 @@ firmware on the board: the runner starts the debugger's GDB server, GDB resets t
 
 ```text
 hil/
-  sessions/<mcu>.toml          board run configuration: MCU description, api.toml, board data file
-  profiles/f411ce.toml         MCU description: Flash 512 KiB, DEV_ID 0x431, 6 breakpoints
-  profiles/f401cc.toml         the same, Flash 256 KiB, DEV_ID 0x423
-  boards/<mcu>.toml            board data file: LED, RAM, ADC channels, factory calibration addresses
-  api.toml                     scenario parameters: deadlines, VDDA window, measurement series, timers
-  tests/requirements.md        HW_* requirements (shared by both boards, Russian)
-  tests/contracts.json         contracts: CMSIS macros in the ELF debug info
-  tests/board/test_boot.py     HW_BOOT, HW_CLOCK_GPIO_CONFIG, HW_GPIO, HW_BOARD_PROFILE
-  tests/board/test_adc.py      HW_ADC_INIT, HW_ADC_RUNTIME, HW_ADC_DMA_PUBLICATION, HW_ADC_WRITER, HW_ADC_SERIES
-  tests/board/test_adc_faults.py  HW_ADC_DISABLED, HW_ADC_TIMEOUT, HW_ADC_BUSY, HW_ADC_INVALID,
-                               HW_ADC_VECTORS, HW_ADC_CALLBACK_SUPPRESSED — injections
-  tests/board/test_timers.py   HW_TIMER, HW_TIMER_IRQ_PUBLICATION, HW_RTC, HW_RTC_DEADLINE
-  tests/board/test_sleep.py    HW_SLEEP_SYSTICK, HW_SLEEP_TIM2
-  tests/native/                ADC arithmetic on the PC (CTest, no board)
-  stands/*.example.toml        stand examples: ST-Link and OpenOCD
+  common/tests/   board/test_*.py, requirements.md, contracts.json, native/ (ADC arithmetic on the PC)
+  common/plans/   DDTT
+  F411CE/         session.toml, target.toml, board.toml, stands/   (Flash 512 KiB, DEV_ID 0x431)
+  F401CC/         session.toml, target.toml, board.toml, stands/   (Flash 256 KiB, DEV_ID 0x423)
+  templates/      *.example.toml  (stlink, openocd, jlink)
+  tools/          results.py
+  api.toml        scenario parameters: deadlines, VDDA window, measurement series, timers
 ```
 
-The board is chosen by the build: presets `HIL_F411CE` and `HIL_F401CC` set `BOARD` and
+The board is chosen by the build: presets `f411ce-hil` and `f401cc-hil` set `BOARD` and
 `BLACKPILL_HIL=ON`; `cmake/blackpill.cmake` attaches stm32-gdbtest v0.4.0 (`modules/stm32-gdbtest`)
-with the run configuration `hil/sessions/<mcu>.toml` (`SESSION_CONFIG`) and the shared scenarios
-`hil/tests`. The configuration ties the MCU description, the shared `api.toml` and the board data
-file together; scenarios read them through `t.profile` (`t.profile.data["board"]`,
-`t.profile.get("user.timing.adc_deadline_ticks")`), so one scenario serves both boards and
-board-specific expectations live in data, not in code. The scenarios use the API of module 0.4.0 and pass the
-module style test: `python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/tests/board/*.py`.
+with the run configuration `hil/<MCU>/session.toml` (`SESSION_CONFIG`) and the shared scenarios
+`hil/common/tests`. The configuration ties the MCU description (`target.toml`), the shared `api.toml`
+and the board data file (`board.toml`) together; scenarios read them through `t.profile`
+(`t.profile.data["board"]`, `t.profile.get("user.timing.adc_deadline_ticks")`), so one scenario serves
+both boards and board-specific expectations live in data, not in code. The scenarios use the API of
+module 0.4.0 and pass the module style test:
+`python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/common/tests/board/*.py`.
 
 ## Stand
 
-A stand is a local file describing the board's debugger. Copy an example and set the debugger serial
-number (`*.local.toml` files are not committed):
+A stand is a local file describing the board's debugger. Copy an example from `hil/templates/` to
+`hil/<MCU>/stands/local.toml` and set the debugger serial number (`*.local.toml` files are not committed):
 
 | Board | Stand file | Presets |
 | --- | --- | --- |
-| BlackPill F411CE | `hil/stands/f411ce.local.toml` | `HIL_F411CE`, `HIL_F411CE-host`, `HIL_F411CE-hw` |
-| BlackPill F401CC | `hil/stands/f401cc.local.toml` | `HIL_F401CC`, `HIL_F401CC-host`, `HIL_F401CC-hw` |
+| BlackPill F411CE | `hil/F411CE/stands/local.toml` | `f411ce-hil`, `f411ce-hil-host`, `f411ce-hil-hw` |
+| BlackPill F401CC | `hil/F401CC/stands/local.toml` | `f401cc-hil`, `f401cc-hil-host`, `f401cc-hil-hw` |
+
+| Debugger | Example | Serial number |
+| --- | --- | --- |
+| ST-Link, ST-LINK GDB Server (STM32CubeCLT) | `templates/stlink.example.toml` | `STM32_Programmer_CLI -l st` |
+| ST-Link, OpenOCD | `templates/openocd.example.toml` | the same ST-Link serial number |
+| J-Link | `templates/jlink.example.toml` | decimal number from J-Link Commander |
 
 Environment check without accessing the board:
 
 ```powershell
-python -B modules/stm32-gdbtest/stm32_gdbtest/cli.py doctor --stand hil/stands/f411ce.local.toml
+python -B modules/stm32-gdbtest/stm32_gdbtest/cli.py doctor --stand hil/F411CE/stands/local.toml
 ```
 
 ## Running
 
 ```powershell
-cmake --preset HIL_F411CE
-cmake --build --preset HIL_F411CE
-ctest --preset HIL_F411CE-host     # no board: requirement traceability and prepare.*
-ctest --preset HIL_F411CE-hw       # on the board: all hw.* (22 scenarios)
+cmake --preset f411ce-hil
+cmake --build --preset f411ce-hil
+ctest --preset f411ce-hil-host     # no board: requirement traceability and prepare.*
+ctest --preset f411ce-hil-hw       # on the board: all hw.* (22 scenarios)
+python hil/tools/results.py --runs build/f411ce-hil/hwtest/runs
 ```
 
 The firmware is programmed only if the Flash image differs (`flash = "if-different"` in the stand).
@@ -93,7 +93,7 @@ Do not debug in VS Code and run the tests with the same debugger at the same tim
 **CMSIS macros in scenarios.** GDB expands macros (`RCC`, `ADC_CR2_ADON`, …) in a `-g3` build
 (all HIL presets) when the current stop is in a translation unit that includes `stm32f4xx.h`. That is
 `src/platform.c`: registers are checked in the `platform_*` functions and interrupt handlers, the
-application data in `loop()` (`src/program.cpp`). The contracts in `hil/tests/contracts.json` check
+application data in `loop()` (`src/program.cpp`). The contracts in `hil/common/tests/contracts.json` check
 that the macros are in the ELF already in `prepare.*`, without a board.
 
 **No LTO.** The scenarios stop at platform and application functions and substitute their returns;
@@ -105,7 +105,7 @@ of LSI accuracy, backup retention or day rollover.
 
 **Sleep.** Ordinary WFI, not Stop: the tests check the wake-up and the interrupted context, not current.
 
-**Results.** The run directory `build/HIL_<board>/hwtest/runs/<time>-<ID>-<pid>/` holds
+**Results.** The run directory `build/<board>-hil/hwtest/runs/<time>-<ID>-<pid>/` holds
 `result.json`, GDB and server logs, the ELF snapshot and the build manifest.
 
 **History.** Former HAL presets, experiment protocols and stands are in the
@@ -114,11 +114,11 @@ apply to the current CMSIS firmware.
 
 ## Development through DDTT
 
-[Plan](plans/ddtt-feedback.en.md) and [cycle results](plans/ddtt-feedback-results.en.md):
+[Plan](common/plans/ddtt-feedback.en.md) and [cycle results](common/plans/ddtt-feedback-results.en.md):
 the scenario first exposes the defect in baseline firmware, then checks its fix and regression.
 Skill: `.claude/skills/stm32-gdbtest-develop/SKILL.md`; this branch includes a trial copy while
 the module gitlink remains on released 0.4.0. Other skill copies are refreshed for 0.4.0.
 Unlike stand-loop execution, development needs a source checkout and compiler, not just a ZIP.
 Profiles use target schema 2 with `[openocd]`; sessions enable `[results] capture = true`.
 
-New scenario: `HW_ADC_TIMEOUT_DIAGNOSTIC` (`tests/board/test_ddtt_feedback.py`).
+New scenario: `HW_ADC_TIMEOUT_DIAGNOSTIC` (`common/tests/board/test_ddtt_feedback.py`).

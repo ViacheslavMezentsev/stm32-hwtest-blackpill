@@ -11,55 +11,54 @@
 
 ```text
 hil/
-  sessions/<mcu>.toml          конфигурация прогона платы: описание MCU, api.toml, файл данных платы
-  profiles/f411ce.toml         описание MCU: Flash 512 КиБ, DEV_ID 0x431, 6 точек останова
-  profiles/f401cc.toml         то же, Flash 256 КиБ, DEV_ID 0x423
-  boards/<mcu>.toml            файл данных платы: светодиод, RAM, каналы ADC, адреса заводских калибровок
-  api.toml                     параметры сценариев: сроки, окно VDDA, серия измерений, таймеры
-  tests/requirements.md        требования HW_* (общие для обеих плат)
-  tests/contracts.json         контракты: макросы CMSIS в отладочной информации ELF
-  tests/board/test_boot.py     HW_BOOT, HW_CLOCK_GPIO_CONFIG, HW_GPIO, HW_BOARD_PROFILE
-  tests/board/test_adc.py      HW_ADC_INIT, HW_ADC_RUNTIME, HW_ADC_DMA_PUBLICATION, HW_ADC_WRITER, HW_ADC_SERIES
-  tests/board/test_adc_faults.py  HW_ADC_DISABLED, HW_ADC_TIMEOUT, HW_ADC_BUSY, HW_ADC_INVALID,
-                               HW_ADC_VECTORS, HW_ADC_CALLBACK_SUPPRESSED — инъекции
-  tests/board/test_timers.py   HW_TIMER, HW_TIMER_IRQ_PUBLICATION, HW_RTC, HW_RTC_DEADLINE
-  tests/board/test_sleep.py    HW_SLEEP_SYSTICK, HW_SLEEP_TIM2
-  tests/native/                арифметика ADC на ПК (CTest, без платы)
-  stands/*.example.toml        примеры стендов: ST-Link и OpenOCD
+  common/tests/   board/test_*.py, requirements.md, contracts.json, native/ (арифметика ADC на ПК)
+  common/plans/   DDTT
+  F411CE/         session.toml, target.toml, board.toml, stands/   (Flash 512 КиБ, DEV_ID 0x431)
+  F401CC/         session.toml, target.toml, board.toml, stands/   (Flash 256 КиБ, DEV_ID 0x423)
+  templates/      *.example.toml  (stlink, openocd, jlink)
+  tools/          results.py
+  api.toml        параметры сценариев: сроки, окно VDDA, серия измерений, таймеры
 ```
 
-Плата выбирается сборкой: пресеты `HIL_F411CE` и `HIL_F401CC` задают `BOARD` и
+Плату выбирает сборка: пресеты `f411ce-hil` и `f401cc-hil` задают `BOARD` и
 `BLACKPILL_HIL=ON`, `cmake/blackpill.cmake` подключает stm32-gdbtest v0.4.0 (`modules/stm32-gdbtest`) с
-конфигурацией прогона `hil/sessions/<mcu>.toml` (`SESSION_CONFIG`) и общими сценариями `hil/tests`.
-Конфигурация связывает описание MCU, общий `api.toml` и файл данных платы: сценарии читают их
-через `t.profile` (`t.profile.data["board"]`, `t.profile.get("user.timing.adc_deadline_ticks")`),
+конфигурацией прогона `hil/<MCU>/session.toml` (`SESSION_CONFIG`) и общими сценариями `hil/common/tests`.
+Конфигурация связывает описание MCU (`target.toml`), общий `api.toml` и файл данных платы (`board.toml`):
+сценарии читают их через `t.profile` (`t.profile.data["board"]`, `t.profile.get("user.timing.adc_deadline_ticks")`),
 поэтому один сценарий обслуживает обе платы, а ожидания, зависящие от платы, лежат в данных, а не в коде.
 Сценарии написаны на API модуля 0.4.0 и проверяются тестом стиля модуля:
-`python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/tests/board/*.py`.
+`python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/common/tests/board/*.py`.
 
 ## Стенд
 
-Стенд — локальный файл с отладчиком платы. Скопируйте пример и укажите серийный номер отладчика
-(файлы `*.local.toml` не коммитятся):
+Стенд — локальный файл с отладчиком платы. Скопируйте нужный пример из `hil/templates/` в
+`hil/<MCU>/stands/local.toml` и укажите серийный номер отладчика (файлы `*.local.toml` не коммитятся):
 
 | Плата | Файл стенда | Пресеты |
 | --- | --- | --- |
-| BlackPill F411CE | `hil/stands/f411ce.local.toml` | `HIL_F411CE`, `HIL_F411CE-host`, `HIL_F411CE-hw` |
-| BlackPill F401CC | `hil/stands/f401cc.local.toml` | `HIL_F401CC`, `HIL_F401CC-host`, `HIL_F401CC-hw` |
+| BlackPill F411CE | `hil/F411CE/stands/local.toml` | `f411ce-hil`, `f411ce-hil-host`, `f411ce-hil-hw` |
+| BlackPill F401CC | `hil/F401CC/stands/local.toml` | `f401cc-hil`, `f401cc-hil-host`, `f401cc-hil-hw` |
+
+| Отладчик | Пример | Серийный номер |
+| --- | --- | --- |
+| ST-Link, ST-LINK GDB Server (STM32CubeCLT) | `templates/stlink.example.toml` | `STM32_Programmer_CLI -l st` |
+| ST-Link, OpenOCD | `templates/openocd.example.toml` | тот же серийный номер ST-Link |
+| J-Link | `templates/jlink.example.toml` | десятичный номер из J-Link Commander |
 
 Проверка окружения без обращения к плате:
 
 ```powershell
-python -B modules/stm32-gdbtest/stm32_gdbtest/cli.py doctor --stand hil/stands/f411ce.local.toml
+python -B modules/stm32-gdbtest/stm32_gdbtest/cli.py doctor --stand hil/F411CE/stands/local.toml
 ```
 
 ## Запуск
 
 ```powershell
-cmake --preset HIL_F411CE
-cmake --build --preset HIL_F411CE
-ctest --preset HIL_F411CE-host     # без платы: трассировка требований и prepare.*
-ctest --preset HIL_F411CE-hw       # на плате: все hw.* (22 сценария)
+cmake --preset f411ce-hil
+cmake --build --preset f411ce-hil
+ctest --preset f411ce-hil-host     # без платы: трассировка требований и prepare.*
+ctest --preset f411ce-hil-hw       # на плате: все hw.* (22 сценария)
+python hil/tools/results.py --runs build/f411ce-hil/hwtest/runs
 ```
 
 Прошивка записывается, только если образ во Flash отличается (`flash = "if-different"` в стенде).
@@ -94,7 +93,7 @@ ctest --preset HIL_F411CE-hw       # на плате: все hw.* (22 сцена
 **Макросы CMSIS в сценариях.** GDB раскрывает макросы (`RCC`, `ADC_CR2_ADON`, …) в сборке с `-g3`
 (все HIL-пресеты), если текущая остановка находится в единице трансляции с `stm32f4xx.h`. Это
 `src/platform.c`: регистры проверяются в функциях `platform_*` и обработчиках прерываний, а данные
-приложения — в `loop()` (`src/program.cpp`). Контракты `hil/tests/contracts.json` проверяют наличие
+приложения — в `loop()` (`src/program.cpp`). Контракты `hil/common/tests/contracts.json` проверяют наличие
 макросов в ELF ещё в `prepare.*`, без платы.
 
 **LTO не используется.** Сценарии ставят точки на функции платформы и приложения и подменяют их
@@ -106,7 +105,7 @@ backup domain не сбрасывается, несовместимый исто
 
 **Сон.** Обычный WFI, не Stop: тесты проверяют пробуждение и прерванный контекст, а не ток.
 
-**Результаты.** Каталог запуска `build/HIL_<плата>/hwtest/runs/<время>-<ID>-<pid>/` содержит
+**Результаты.** Каталог запуска `build/<плата>-hil/hwtest/runs/<время>-<ID>-<pid>/` содержит
 `result.json`, журналы GDB и сервера, снимок ELF и build manifest.
 
 **История.** Прежние HAL-пресеты, протоколы опытов и стенды — в [истории](../docs/history/README.md)
@@ -114,11 +113,11 @@ backup domain не сбрасывается, несовместимый исто
 
 ## Разработка через DDTT
 
-[План](plans/ddtt-feedback.md) и [результат цикла](plans/ddtt-feedback-results.md):
+[План](common/plans/ddtt-feedback.md) и [результат цикла](common/plans/ddtt-feedback-results.md):
 сначала сценарий выявляет дефект на исходной прошивке, затем проверяет исправление и регрессию.
 Навык — `.claude/skills/stm32-gdbtest-develop/SKILL.md`; его опытная копия сопровождает эту ветку,
 а gitlink модуля остаётся на опубликованной 0.4.0. Остальные копии навыков обновлены для 0.4.0.
 В отличие от stand-loop, разработке нужен checkout исходников и компилятор, а не только ZIP.
 Профили используют target schema 2 с `[openocd]`; сессии включают `[results] capture = true`.
 
-Новый сценарий: `HW_ADC_TIMEOUT_DIAGNOSTIC` (`tests/board/test_ddtt_feedback.py`).
+Новый сценарий: `HW_ADC_TIMEOUT_DIAGNOSTIC` (`common/tests/board/test_ddtt_feedback.py`).

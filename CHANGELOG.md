@@ -5,6 +5,8 @@
 
 ## [Unreleased]
 
+- Пресеты CMake переименованы в нижний регистр (`f411ce-debug/-release/-hil`, `f401cc-*`) со скрытым `base`, как в stm32-hwtest-bluepill; обновлены `.vscode`, `ci/run_cmsis_checks.py`, README и AGENTS. Каталог `hil/` приведён к раскладке bluepill: per-board `hil/F411CE|F401CC/{session,target,board}.toml` и `stands/`, общие `hil/common/{tests,plans}/`, `hil/templates/*.example.toml`, `hil/tools/results.py`. `.clang-format` синхронизирован с bluepill.
+
 - Модуль закреплён на v0.4.0, target schema 2, включён capture; обновлены навыки и добавлен опытный цикл DDTT.
 - Таймаут уведомления ADC теперь оставляет код 6 в platform_fault. Добавлен HW_ADC_TIMEOUT_DIAGNOSTIC, обновлено ожидание подавленного callback; всего 22 сценария.
 

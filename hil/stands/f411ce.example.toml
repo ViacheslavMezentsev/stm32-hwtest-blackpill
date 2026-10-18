@@ -1,6 +1,0 @@
-[probe]
-backend = "openocd"
-serial = "REPLACE_WITH_STLINK_SERIAL"
-executable = "openocd"
-speed_khz = 1000
-flash = "if-different"

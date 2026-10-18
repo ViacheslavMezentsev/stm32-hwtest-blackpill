@@ -2,52 +2,208 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Configure F411CE",
+      "type": "cmake",
+      "label": "Сборка: собрать (активный пресет)",
+      "command": "build",
+      "preset": "${command:cmake.activeBuildPresetName}",
+      "problemMatcher": [ "$gcc" ],
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "Сборка: конфигурировать debug…",
       "type": "process",
       "command": "cmake",
-      "args": [
-        "--preset",
-        "HIL_F411CE"
-      ],
+      "args": [ "--preset", "${input:board}-debug" ],
+      "options": { "cwd": "${workspaceFolder}" },
       "problemMatcher": []
     },
     {
-      "label": "Build F411CE",
+      "label": "Сборка: конфигурировать release…",
       "type": "process",
       "command": "cmake",
-      "args": [
-        "--build",
-        "--preset",
-        "HIL_F411CE"
-      ],
-      "dependsOn": "Configure F411CE",
-      "problemMatcher": [
-        "$gcc"
-      ]
-    },
-    {
-      "label": "Configure F401CC",
-      "type": "process",
-      "command": "cmake",
-      "args": [
-        "--preset",
-        "HIL_F401CC"
-      ],
+      "args": [ "--preset", "${input:board}-release" ],
+      "options": { "cwd": "${workspaceFolder}" },
       "problemMatcher": []
     },
     {
-      "label": "Build F401CC",
+      "label": "Сборка: конфигурировать hil…",
       "type": "process",
       "command": "cmake",
-      "args": [
-        "--build",
-        "--preset",
-        "HIL_F401CC"
+      "args": [ "--preset", "${input:board}-hil" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Проверка: CTest (активная сборка, без платы)",
+      "type": "process",
+      "command": "ctest",
+      "args": [ "--test-dir", "${command:cmake.buildDirectory}", "-L", "^host$", "--no-tests=error", "--output-on-failure" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "dependsOn": "Сборка: собрать (активный пресет)"
+    },
+    {
+      "label": "Прошивка: OpenOCD / ST-Link",
+      "type": "process",
+      "command": "openocd",
+      "args": [ "-f", "interface/stlink.cfg", "-f", "target/stm32f4x.cfg", "-c", "program {${command:cmake.buildDirectory}/stm32_hwtest_blackpill.elf} verify reset exit" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "dependsOn": "Сборка: собрать (активный пресет)"
+    },
+    {
+      "label": "Прошивка: STM32CubeProgrammer / ST-Link",
+      "type": "process",
+      "command": "STM32_Programmer_CLI",
+      "args": [ "-c", "port=SWD", "-w", "${command:cmake.buildDirectory}/stm32_hwtest_blackpill.hex", "-v", "-rst" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "dependsOn": "Сборка: собрать (активный пресет)"
+    },
+    {
+      "label": "HIL: F411CE — конфигурировать",
+      "type": "process",
+      "command": "cmake",
+      "args": [ "--preset", "f411ce-hil" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "HIL: F411CE — собрать",
+      "type": "process",
+      "command": "cmake",
+      "args": [ "--build", "--preset", "f411ce-hil" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [ "$gcc" ],
+      "dependsOn": "HIL: F411CE — конфигурировать"
+    },
+    {
+      "label": "HIL: F411CE — doctor (локальный стенд)",
+      "type": "process",
+      "command": "python",
+      "args": [ "-B", "${config:hil.gdbtest}/stm32_gdbtest/cli.py", "doctor", "--gdb", "${config:toolchain}/bin/arm-none-eabi-gdb-py3", "--stand", "hil/F411CE/stands/local.toml" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "windows": { "args": [ "-B", "${config:hil.gdbtest}/stm32_gdbtest/cli.py", "doctor", "--gdb", "${config:toolchain}/bin/arm-none-eabi-gdb-py3.exe", "--stand", "hil/F411CE/stands/local.toml" ] }
+    },
+    {
+      "label": "HIL: F411CE — подготовка без платы",
+      "type": "process",
+      "command": "ctest",
+      "args": [ "--preset", "f411ce-hil-host" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "dependsOn": "HIL: F411CE — собрать"
+    },
+    {
+      "label": "HIL: F411CE — все тесты (локальная плата)",
+      "type": "process",
+      "command": "ctest",
+      "args": [ "--preset", "f411ce-hil-hw" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "dependsOn": "HIL: F411CE — собрать"
+    },
+    {
+      "label": "HIL: F411CE — один тест (локальная плата)…",
+      "type": "process",
+      "command": "python",
+      "args": [ "-B", "${config:hil.gdbtest}/stm32_gdbtest/cli.py", "run", "--session", "build/f411ce-hil/hwtest/session.json", "--identity-policy", "strict", "--test", "${input:test}", "--stand", "hil/F411CE/stands/local.toml" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "dependsOn": "HIL: F411CE — собрать"
+    },
+    {
+      "label": "HIL: F411CE — результаты",
+      "type": "process",
+      "command": "python",
+      "args": [ "hil/tools/results.py", "--runs", "build/f411ce-hil/hwtest/runs" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "HIL: F401CC — конфигурировать",
+      "type": "process",
+      "command": "cmake",
+      "args": [ "--preset", "f401cc-hil" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "HIL: F401CC — собрать",
+      "type": "process",
+      "command": "cmake",
+      "args": [ "--build", "--preset", "f401cc-hil" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [ "$gcc" ],
+      "dependsOn": "HIL: F401CC — конфигурировать"
+    },
+    {
+      "label": "HIL: F401CC — doctor (локальный стенд)",
+      "type": "process",
+      "command": "python",
+      "args": [ "-B", "${config:hil.gdbtest}/stm32_gdbtest/cli.py", "doctor", "--gdb", "${config:toolchain}/bin/arm-none-eabi-gdb-py3", "--stand", "hil/F401CC/stands/local.toml" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "windows": { "args": [ "-B", "${config:hil.gdbtest}/stm32_gdbtest/cli.py", "doctor", "--gdb", "${config:toolchain}/bin/arm-none-eabi-gdb-py3.exe", "--stand", "hil/F401CC/stands/local.toml" ] }
+    },
+    {
+      "label": "HIL: F401CC — подготовка без платы",
+      "type": "process",
+      "command": "ctest",
+      "args": [ "--preset", "f401cc-hil-host" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "dependsOn": "HIL: F401CC — собрать"
+    },
+    {
+      "label": "HIL: F401CC — все тесты (локальная плата)",
+      "type": "process",
+      "command": "ctest",
+      "args": [ "--preset", "f401cc-hil-hw" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "dependsOn": "HIL: F401CC — собрать"
+    },
+    {
+      "label": "HIL: F401CC — один тест (локальная плата)…",
+      "type": "process",
+      "command": "python",
+      "args": [ "-B", "${config:hil.gdbtest}/stm32_gdbtest/cli.py", "run", "--session", "build/f401cc-hil/hwtest/session.json", "--identity-policy", "strict", "--test", "${input:test}", "--stand", "hil/F401CC/stands/local.toml" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "dependsOn": "HIL: F401CC — собрать"
+    },
+    {
+      "label": "HIL: F401CC — результаты",
+      "type": "process",
+      "command": "python",
+      "args": [ "hil/tools/results.py", "--runs", "build/f401cc-hil/hwtest/runs" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "board",
+      "type": "pickString",
+      "description": "Профиль сборки",
+      "options": [ "f411ce", "f401cc" ],
+      "default": "f411ce"
+    },
+    {
+      "id": "test",
+      "type": "pickString",
+      "description": "Сценарий",
+      "options": [
+        "HW_BOOT", "HW_BOARD_PROFILE", "HW_CLOCK_GPIO_CONFIG", "HW_GPIO",
+        "HW_ADC_INIT", "HW_ADC_RUNTIME", "HW_ADC_SERIES", "HW_ADC_VECTORS",
+        "HW_ADC_WRITER", "HW_ADC_DMA_PUBLICATION", "HW_ADC_BUSY", "HW_ADC_DISABLED",
+        "HW_ADC_INVALID", "HW_ADC_TIMEOUT", "HW_ADC_TIMEOUT_DIAGNOSTIC", "HW_ADC_CALLBACK_SUPPRESSED",
+        "HW_TIMER", "HW_TIMER_IRQ_PUBLICATION", "HW_RTC", "HW_RTC_DEADLINE",
+        "HW_SLEEP_SYSTICK", "HW_SLEEP_TIM2"
       ],
-      "dependsOn": "Configure F401CC",
-      "problemMatcher": [
-        "$gcc"
-      ]
+      "default": "HW_BOOT"
     }
   ]
 }

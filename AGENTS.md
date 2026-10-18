@@ -16,7 +16,7 @@ and VREFINT on channel 17.
 | `src/` | Application: `setup()`/`loop()` (`program.cpp`), CMSIS platform (`platform.c`), ADC arithmetic (`adc_units.cpp`) |
 | `cmsis/` | Unmodified CMSIS subset from STM32CubeF4 V1.28.3; do not edit or reformat |
 | `ld/`, `cmake/` | Linker script template (Flash/RAM from `BOARD`), toolchain and HIL integration (`blackpill.cmake`) |
-| `hil/` | HIL: `sessions/` (run configuration per board), `profiles/` (MCU descriptions), `boards/` (board data), `api.toml`, `tests/` (scenarios, requirements, contracts, native ADC test), `stands/` (examples) |
+| `hil/` | HIL: `F411CE/`, `F401CC/` (per-board `session`/`target`/`board` and private `stands/`), `common/tests/` (scenarios, requirements, contracts, native ADC test), `common/plans/` (DDTT), `templates/` (stand examples), `tools/` (results.py), `api.toml` |
 | `ci/` | Offline checks in Docker (`run_cmsis_checks.py`: builds, `prepare.*`, native ADC) |
 | `modules/stm32-gdbtest` | Git submodule, pinned to v0.4.0 |
 | `.claude/skills/` | Copies of the stm32-gdbtest skills (integration, scenarios, run, results, stand-loop and develop); refresh with the submodule |
@@ -25,10 +25,10 @@ and VREFINT on channel 17.
 ## Build and checks
 
 ```powershell
-cmake --preset Debug_F411CE; cmake --build --preset Debug_F411CE
-cmake --preset HIL_F411CE;   cmake --build --preset HIL_F411CE
-ctest --preset HIL_F411CE-host          # no board: traceability and prepare.*
-ctest --preset HIL_F411CE-hw            # on the board, needs hil/stands/f411ce.local.toml
+cmake --preset f411ce-debug; cmake --build --preset f411ce-debug
+cmake --preset f411ce-hil;   cmake --build --preset f411ce-hil
+ctest --preset f411ce-hil-host          # no board: traceability and prepare.*
+ctest --preset f411ce-hil-hw            # on the board, needs hil/F411CE/stands/local.toml
 python -B ci/run_cmsis_checks.py        # the CI check, inside the Docker image of ci/docker
 clang-format --dry-run --Werror src/*.cpp src/*.c src/*.h
 ```
@@ -40,12 +40,12 @@ Requirements: CMake ≥ 3.25, Ninja, xPack GNU Arm 13.3.1-1.1 (`ARM_TOOLCHAIN_RO
 
 1. Keep `setup()`/`loop()`, `app_state`, `platform_fault`, `platform_tick` and the `platform_*`
    functions readable from GDB: the HIL scenarios depend on these names. Renaming them means
-   updating `hil/tests` and `hil/tests/requirements.md` in the same commit. No test hooks in the firmware.
-2. Every `@case` ID has a `## HW_...` section in `hil/tests/requirements.md`. Scenarios follow
+   updating `hil/common/tests` and `hil/common/tests/requirements.md` in the same commit. No test hooks in the firmware.
+2. Every `@case` ID has a `## HW_...` section in `hil/common/tests/requirements.md`. Scenarios follow
    the stm32-gdbtest API of the pinned submodule (v0.4.0) and its scenario style
    (`skills/stm32-gdbtest-scenarios` in the module; check with
-   `python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/tests/board/*.py`).
-   Board-specific expectations belong in `hil/boards/<mcu>.toml`, scenario parameters in
+   `python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/common/tests/board/*.py`).
+   Board-specific expectations belong in `hil/<MCU>/board.toml`, scenario parameters in
    `hil/api.toml`. When the scenario count changes, update `SCENARIOS` in `ci/run_cmsis_checks.py`.
 3. No LTO (`-fno-lto`). No HAL; registers through CMSIS names. The startup code does not run
    dynamic initialization of global C++ objects.
@@ -64,6 +64,6 @@ Requirements: CMake ≥ 3.25, Ninja, xPack GNU Arm 13.3.1-1.1 (`ARM_TOOLCHAIN_RO
 ## DDTT development loop
 
 For firmware changes with target feedback, read `.claude/skills/stm32-gdbtest-develop/SKILL.md`
-and `hil/plans/ddtt-feedback.en.md`. The develop skill is a trial copy accompanying this branch;
+and `hil/common/plans/ddtt-feedback.en.md`. The develop skill is a trial copy accompanying this branch;
 the module remains pinned to released 0.4.0. Preserve red attempts, then verify the unchanged
 assertion and adjacent scenarios after fixing production code. No test hooks.

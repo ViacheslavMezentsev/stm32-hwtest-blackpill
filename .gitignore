@@ -22,7 +22,10 @@ __pycache__/
 remote.toml
 *-remote.toml
 
-/hil/stands/*.local.toml
+# Per-profile private stands. Templates live in hil/templates.
+/hil/*/stands/local.toml
+/hil/*/stands/remote.toml
+/hil/*/stands/*.local.toml
 
 # Retained local historical checkouts, no longer build dependencies.
 /modules/stm32-cmake/

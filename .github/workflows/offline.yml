@@ -32,10 +32,10 @@ jobs:
           name: offline-${{ github.sha }}
           path: |
             build/ci-reports/
-            build/Debug_*/*.elf
-            build/Release_*/*.elf
-            build/HIL_*/*.elf
-            build/HIL_*/*.bin
-            build/HIL_*/*.hex
-            build/HIL_*/hwtest/
+            build/*-debug/*.elf
+            build/*-release/*.elf
+            build/*-hil/*.elf
+            build/*-hil/*.bin
+            build/*-hil/*.hex
+            build/*-hil/hwtest/
           if-no-files-found: error

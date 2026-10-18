@@ -44,19 +44,19 @@ its serial number in the stand file.
 ```powershell
 git clone --recursive https://github.com/ViacheslavMezentsev/stm32-hwtest-blackpill.git
 cd stm32-hwtest-blackpill
-cmake --preset Debug_F411CE
-cmake --build --preset Debug_F411CE
+cmake --preset f411ce-debug
+cmake --build --preset f411ce-debug
 ```
 
 If the repository was cloned without `--recursive`: `git submodule update --init`.
 
 | Preset | Purpose |
 | --- | --- |
-| `Debug_F411CE`, `Release_F411CE` | build for F411CE (`build/<preset>`) |
-| `Debug_F401CC`, `Release_F401CC` | build for F401CC |
-| `HIL_F411CE`, `HIL_F401CC` | Debug build with stm32-gdbtest HIL tests |
+| `f411ce-debug`, `f411ce-release` | build for F411CE (`build/<preset>`) |
+| `f401cc-debug`, `f401cc-release` | build for F401CC |
+| `f411ce-hil`, `f401cc-hil` | Debug build with stm32-gdbtest HIL tests |
 
-Test presets: `HIL_*-host` and `HIL_*-hw`. Output: `build/<preset>/` — ELF, HEX and BIN
+Test presets: `<board>-hil-host` and `<board>-hil-hw`. Output: `build/<preset>/` — ELF, HEX and BIN
 (BIN gaps are filled with 0xFF). Each board and toolchain needs its own build directory.
 
 ## Application
@@ -71,13 +71,13 @@ arithmetic rather than the temperature accuracy.
 
 ## HIL tests
 
-The scenarios in `hil/tests/board` (stm32-gdbtest v0.4.0, 22 scenarios) check the firmware on
+The scenarios in `hil/common/tests/board` (stm32-gdbtest v0.4.0, 22 scenarios) check the firmware on
 the board: startup and clock, the LED, the run profile, ADC and DMA (configuration, publication, who
 counts the measurements, a measurement series), TIM2 and RTC, WFI sleep, and the reaction to
 injections — ADC and DMA failures, substituted samples and calibrations, a lost callback, an LSI wait
 that cannot succeed. The MCU description and the board data file, shared by all scenarios, describe
 the board. Without a board the requirement traceability and run preparation are checked
-(`ctest --preset HIL_F411CE-host`); on the board run `ctest --preset HIL_F411CE-hw` after setting
+(`ctest --preset f411ce-hil-host`); on the board run `ctest --preset f411ce-hil-hw` after setting
 up a stand. Details: [hil/README.en.md](hil/README.en.md).
 
 Latest hardware run: F411CE and F401CC through ST-Link/OpenOCD — 22/22 PASS each.
@@ -89,7 +89,7 @@ src/            firmware: main, setup/loop, platform (CMSIS), ADC arithmetic
 cmsis/          CMSIS headers (unmodified)
 ld/             linker script (Flash and RAM per board)
 cmake/          toolchain and HIL integration
-hil/            run configurations, MCU descriptions, board data, scenarios and requirements, stands
+hil/            per board (F411CE/F401CC) and shared (common/): run config, MCU, data, scenarios, stands, tools
 modules/        stm32-gdbtest (Git submodule)
 ci/             offline checks in Docker: build, scenario preparation, ADC arithmetic
 resources/      SVD files for debugging in VS Code
@@ -104,7 +104,7 @@ archive/        retained material: former HAL sources, K1921 and H503 examples, 
 
 - stm32-gdbtest v0.4.0: [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/README.en.md), [API reference](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/docs/en/api/index.md),
   [testing techniques](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/docs/en/TESTING_TECHNIQUES.md), [agent skills](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/skills/README.en.md).
-- This project: [HIL tests](hil/README.en.md), [requirements](hil/tests/requirements.md) (Russian),
+- This project: [HIL tests](hil/README.en.md), [requirements](hil/common/tests/requirements.md) (Russian),
   [changes](CHANGELOG.en.md), [development rules](AGENTS.md).
 - [History](docs/history/README.md) (Russian): the project began as HAL experiments on several STM32
   boards and stm32-gdbtest was extracted from it; the protocols, architecture and plans of that

@@ -6,6 +6,8 @@ documentation alignment are kept in the Russian changelog, most of them with an 
 
 ## [Unreleased]
 
+- Renamed the CMake presets to lowercase (`f411ce-debug/-release/-hil`, `f401cc-*`) with a hidden `base`, like stm32-hwtest-bluepill; updated `.vscode`, `ci/run_cmsis_checks.py`, README and AGENTS. The `hil/` directory now follows the bluepill layout: per-board `hil/F411CE|F401CC/{session,target,board}.toml` and `stands/`, shared `hil/common/{tests,plans}/`, `hil/templates/*.example.toml`, `hil/tools/results.py`. `.clang-format` synced with bluepill.
+
 - Pinned the module to v0.4.0, target schema 2 and capture; refreshed skills and added a trial DDTT development loop.
 - An ADC notification timeout now leaves platform_fault code 6. Added HW_ADC_TIMEOUT_DIAGNOSTIC and updated the suppressed callback expectation; 22 scenarios total.
 

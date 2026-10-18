@@ -6,7 +6,7 @@
       "type": "cortex-debug",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "executable": "${workspaceFolder}/build/HIL_F411CE/stm32_hwtest_blackpill.elf",
+      "executable": "${workspaceFolder}/build/f411ce-hil/stm32_hwtest_blackpill.elf",
       "servertype": "openocd",
       "device": "STM32F411CE",
       "interface": "swd",
@@ -14,7 +14,7 @@
         "interface/stlink.cfg",
         "target/stm32f4x.cfg"
       ],
-      "preLaunchTask": "Build F411CE",
+      "preLaunchTask": "HIL: F411CE — собрать",
       "runToEntryPoint": "main",
       "svdFile": "${workspaceFolder}/resources/STM32F411.svd",
       "openOCDLaunchCommands": [
@@ -26,7 +26,7 @@
       "type": "cortex-debug",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "executable": "${workspaceFolder}/build/HIL_F401CC/stm32_hwtest_blackpill.elf",
+      "executable": "${workspaceFolder}/build/f401cc-hil/stm32_hwtest_blackpill.elf",
       "servertype": "openocd",
       "device": "STM32F401CC",
       "interface": "swd",
@@ -34,7 +34,7 @@
         "interface/stlink.cfg",
         "target/stm32f4x.cfg"
       ],
-      "preLaunchTask": "Build F401CC",
+      "preLaunchTask": "HIL: F401CC — собрать",
       "runToEntryPoint": "main",
       "svdFile": "${workspaceFolder}/resources/STM32F401.svd",
       "openOCDLaunchCommands": [

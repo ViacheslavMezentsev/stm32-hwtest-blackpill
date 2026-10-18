@@ -7,162 +7,112 @@
   },
   "configurePresets": [
     {
-      "name": "Debug_F411CE",
+      "name": "base",
+      "hidden": true,
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/Debug_F411CE",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "toolchainFile": "${sourceDir}/cmake/arm-gcc.cmake",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "BLACKPILL_HIL": "OFF"
+      },
+      "description": "Собственный CMake/CMSIS, тулчейн ARM GCC. Без HAL; ARM_TOOLCHAIN_ROOT или PATH."
+    },
+    {
+      "name": "f411ce-debug",
+      "displayName": "DEBUG (F411CE)",
+      "inherits": "base",
+      "cacheVariables": {
+        "BOARD": "F411CE",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "f411ce-release",
+      "displayName": "RELEASE (F411CE)",
+      "inherits": "base",
+      "cacheVariables": {
+        "BOARD": "F411CE",
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "f411ce-hil",
+      "displayName": "HIL (F411CE)",
+      "inherits": "base",
       "cacheVariables": {
         "BOARD": "F411CE",
         "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
-        "BLACKPILL_HIL": false
+        "BLACKPILL_HIL": "ON"
       }
     },
     {
-      "name": "Release_F411CE",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/Release_F411CE",
+      "name": "f401cc-debug",
+      "displayName": "DEBUG (F401CC)",
+      "inherits": "base",
       "cacheVariables": {
-        "BOARD": "F411CE",
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
-        "BLACKPILL_HIL": false
+        "BOARD": "F401CC",
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
-      "name": "Debug_F401CC",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/Debug_F401CC",
+      "name": "f401cc-release",
+      "displayName": "RELEASE (F401CC)",
+      "inherits": "base",
+      "cacheVariables": {
+        "BOARD": "F401CC",
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "f401cc-hil",
+      "displayName": "HIL (F401CC)",
+      "inherits": "base",
       "cacheVariables": {
         "BOARD": "F401CC",
         "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
-        "BLACKPILL_HIL": false
-      }
-    },
-    {
-      "name": "Release_F401CC",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/Release_F401CC",
-      "cacheVariables": {
-        "BOARD": "F401CC",
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
-        "BLACKPILL_HIL": false
-      }
-    },
-    {
-      "name": "HIL_F411CE",
-      "inherits": "Debug_F411CE",
-      "binaryDir": "${sourceDir}/build/HIL_F411CE",
-      "cacheVariables": {
-        "BLACKPILL_HIL": true
-      }
-    },
-    {
-      "name": "HIL_F401CC",
-      "inherits": "Debug_F401CC",
-      "binaryDir": "${sourceDir}/build/HIL_F401CC",
-      "cacheVariables": {
-        "BLACKPILL_HIL": true
+        "BLACKPILL_HIL": "ON"
       }
     }
   ],
   "buildPresets": [
-    {
-      "name": "Debug_F411CE",
-      "configurePreset": "Debug_F411CE"
-    },
-    {
-      "name": "Release_F411CE",
-      "configurePreset": "Release_F411CE"
-    },
-    {
-      "name": "Debug_F401CC",
-      "configurePreset": "Debug_F401CC"
-    },
-    {
-      "name": "Release_F401CC",
-      "configurePreset": "Release_F401CC"
-    },
-    {
-      "name": "HIL_F411CE",
-      "configurePreset": "HIL_F411CE"
-    },
-    {
-      "name": "HIL_F401CC",
-      "configurePreset": "HIL_F401CC"
-    }
+    { "name": "f411ce-debug", "configurePreset": "f411ce-debug" },
+    { "name": "f411ce-release", "configurePreset": "f411ce-release" },
+    { "name": "f411ce-hil", "configurePreset": "f411ce-hil" },
+    { "name": "f401cc-debug", "configurePreset": "f401cc-debug" },
+    { "name": "f401cc-release", "configurePreset": "f401cc-release" },
+    { "name": "f401cc-hil", "configurePreset": "f401cc-hil" }
   ],
   "testPresets": [
     {
-      "name": "HIL_F411CE-host",
-      "configurePreset": "HIL_F411CE",
-      "filter": {
-        "include": {
-          "label": "^host$"
-        }
-      },
-      "output": {
-        "outputOnFailure": true
-      },
-      "execution": {
-        "noTestsAction": "error",
-        "jobs": 1
-      }
+      "name": "f411ce-hil-host",
+      "configurePreset": "f411ce-hil",
+      "filter": { "include": { "label": "^host$" } },
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error", "jobs": 1 }
     },
     {
-      "name": "HIL_F411CE-hw",
-      "configurePreset": "HIL_F411CE",
-      "filter": {
-        "include": {
-          "label": "^hw$"
-        }
-      },
-      "output": {
-        "outputOnFailure": true
-      },
-      "execution": {
-        "noTestsAction": "error",
-        "jobs": 1
-      },
-      "environment": {
-        "STM32_GDBTEST_STAND": "${sourceDir}/hil/stands/f411ce.local.toml"
-      }
+      "name": "f411ce-hil-hw",
+      "configurePreset": "f411ce-hil",
+      "filter": { "include": { "label": "^hw$" } },
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error", "jobs": 1 },
+      "environment": { "STM32_GDBTEST_STAND": "${sourceDir}/hil/F411CE/stands/local.toml" }
     },
     {
-      "name": "HIL_F401CC-host",
-      "configurePreset": "HIL_F401CC",
-      "filter": {
-        "include": {
-          "label": "^host$"
-        }
-      },
-      "output": {
-        "outputOnFailure": true
-      },
-      "execution": {
-        "noTestsAction": "error",
-        "jobs": 1
-      }
+      "name": "f401cc-hil-host",
+      "configurePreset": "f401cc-hil",
+      "filter": { "include": { "label": "^host$" } },
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error", "jobs": 1 }
     },
     {
-      "name": "HIL_F401CC-hw",
-      "configurePreset": "HIL_F401CC",
-      "filter": {
-        "include": {
-          "label": "^hw$"
-        }
-      },
-      "output": {
-        "outputOnFailure": true
-      },
-      "execution": {
-        "noTestsAction": "error",
-        "jobs": 1
-      },
-      "environment": {
-        "STM32_GDBTEST_STAND": "${sourceDir}/hil/stands/f401cc.local.toml"
-      }
+      "name": "f401cc-hil-hw",
+      "configurePreset": "f401cc-hil",
+      "filter": { "include": { "label": "^hw$" } },
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error", "jobs": 1 },
+      "environment": { "STM32_GDBTEST_STAND": "${sourceDir}/hil/F401CC/stands/local.toml" }
     }
   ]
 }

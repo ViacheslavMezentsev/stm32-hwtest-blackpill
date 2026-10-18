@@ -44,19 +44,19 @@ flowchart LR
 ```powershell
 git clone --recursive https://github.com/ViacheslavMezentsev/stm32-hwtest-blackpill.git
 cd stm32-hwtest-blackpill
-cmake --preset Debug_F411CE
-cmake --build --preset Debug_F411CE
+cmake --preset f411ce-debug
+cmake --build --preset f411ce-debug
 ```
 
 Если репозиторий клонирован без `--recursive`: `git submodule update --init`.
 
 | Пресет | Назначение |
 | --- | --- |
-| `Debug_F411CE`, `Release_F411CE` | сборка для F411CE (`build/<пресет>`) |
-| `Debug_F401CC`, `Release_F401CC` | сборка для F401CC |
-| `HIL_F411CE`, `HIL_F401CC` | Debug-сборка с HIL-тестами stm32-gdbtest |
+| `f411ce-debug`, `f411ce-release` | сборка для F411CE (`build/<пресет>`) |
+| `f401cc-debug`, `f401cc-release` | сборка для F401CC |
+| `f411ce-hil`, `f401cc-hil` | Debug-сборка с HIL-тестами stm32-gdbtest |
 
-Тестовые пресеты: `HIL_*-host` и `HIL_*-hw`. Результат: `build/<пресет>/` — ELF, HEX и BIN
+Тестовые пресеты: `<плата>-hil-host` и `<плата>-hil-hw`. Результат: `build/<пресет>/` — ELF, HEX и BIN
 (промежутки BIN заполнены 0xFF). Для каждой платы и toolchain — свой каталог сборки.
 
 ## Приложение
@@ -71,13 +71,13 @@ cmake --build --preset Debug_F411CE
 
 ## HIL-тесты
 
-Сценарии в `hil/tests/board` (stm32-gdbtest v0.4.0, 22 сценария) проверяют прошивку на плате:
+Сценарии в `hil/common/tests/board` (stm32-gdbtest v0.4.0, 22 сценария) проверяют прошивку на плате:
 запуск и тактирование, светодиод, профиль прогона, ADC и DMA (конфигурация, публикация, кто
 считает измерения, серия измерений), TIM2 и RTC, сон WFI, а также реакцию на инъекции — отказы
 ADC и DMA, подменённые отсчёты и калибровки, потерянный обратный вызов, невыполнимое ожидание LSI.
 Плату описывают описание MCU и файл данных платы, общие для всех сценариев. Без платы проверяются
-трассировка требований и подготовка запуска (`ctest --preset HIL_F411CE-host`); на плате —
-`ctest --preset HIL_F411CE-hw` после настройки стенда. Подробно: [hil/README.md](hil/README.md).
+трассировка требований и подготовка запуска (`ctest --preset f411ce-hil-host`); на плате —
+`ctest --preset f411ce-hil-hw` после настройки стенда. Подробно: [hil/README.md](hil/README.md).
 
 Последний аппаратный прогон: F411CE и F401CC через ST-Link/OpenOCD — по 22/22 PASS.
 
@@ -88,7 +88,7 @@ src/            прошивка: main, setup/loop, платформа (CMSIS), 
 cmsis/          заголовки CMSIS (без изменений)
 ld/             скрипт компоновщика (Flash и RAM — по плате)
 cmake/          toolchain и подключение HIL
-hil/            конфигурации прогона, описания MCU, данные плат, сценарии и требования, стенды
+hil/            по плате (F411CE/F401CC) и общие (common/): прогон, MCU, данные, сценарии, стенды, tools
 modules/        stm32-gdbtest (Git-подмодуль)
 ci/             offline-проверки в Docker: сборка, подготовка сценариев, арифметика ADC
 resources/      SVD для отладки в VS Code
@@ -103,7 +103,7 @@ archive/        сохранённые материалы: прежние HAL-и
 
 - stm32-gdbtest v0.4.0: [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/README.md), [справочник API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/docs/ru/api/index.md),
   [техники тестирования](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/docs/ru/TESTING_TECHNIQUES.md), [навыки агентов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/skills/README.md).
-- Этот проект: [HIL-тесты](hil/README.md), [требования](hil/tests/requirements.md),
+- Этот проект: [HIL-тесты](hil/README.md), [требования](hil/common/tests/requirements.md),
   [изменения](CHANGELOG.md), [правила разработки](AGENTS.md).
 - [История](docs/history/README.md): проект начинался с опытов на HAL с несколькими STM32, из
   него выделен модуль stm32-gdbtest; протоколы, архитектура и планы того периода сохранены.
