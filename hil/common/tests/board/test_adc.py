@@ -7,6 +7,19 @@ from statistics import mean
 from stm32_gdbtest import case, within
 
 
+# Маска CMSIS без чтения целевой памяти.
+ADC_MODE_BITS = 'ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS'
+
+# Маска CMSIS без чтения целевой памяти.
+DMA_FORMAT_BITS = 'DMA_SxCR_MSIZE | DMA_SxCR_PSIZE | DMA_SxCR_MINC'
+
+# Маска CMSIS без чтения целевой памяти.
+DMA_HALFWORD_BITS = 'DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC'
+
+# Маска CMSIS без чтения целевой памяти.
+DMA_ERROR_BITS = 'DMA_LISR_TEIF0 | DMA_LISR_DMEIF0 | DMA_LISR_FEIF0'
+
+
 # A valid 12-bit ADC sample excludes both rails (src/adc_units.cpp, valid_raw).
 VALID_SAMPLE = within(1, 4094)
 
@@ -19,19 +32,21 @@ def adc_init(t):
     # TECH-001: the macros are visible in platform.c; platform_adc_start() runs after the preparation.
     t.reach("platform_adc_start")
 
+    sequence = (adc["temperature_channel"] << t.evaluate("ADC_SQR3_SQ1_Pos"))
+    sequence |= adc["vrefint_channel"] << t.evaluate("ADC_SQR3_SQ2_Pos")
+
     # The temperature channel differs between F411 (18) and F401 (16); the board data names it.
-    t.check([
-        ("temperature, then VREFINT", "ADC1->SQR3",
-         f"({adc['temperature_channel']} << ADC_SQR3_SQ1_Pos) | ({adc['vrefint_channel']} << ADC_SQR3_SQ2_Pos)"),
-        ("two conversions", "ADC1->SQR1 & ADC_SQR1_L", "1 << ADC_SQR1_L_Pos"),
-        ("scan mode", "ADC1->CR1 & ADC_CR1_SCAN"),
-        ("ADC on with continuous DMA requests", "ADC1->CR2 & (ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS)",
-         "ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS"),
-        ("internal channels enabled", "ADC->CCR & ADC_CCR_TSVREFE"),
-        ("halfword transfers, memory increment", "DMA2_Stream0->CR & (DMA_SxCR_MSIZE | DMA_SxCR_PSIZE | DMA_SxCR_MINC)",
-         "DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC"),
-        ("peripheral address is ADC1->DR", "DMA2_Stream0->PAR", "(unsigned int)&ADC1->DR")
-    ])
+    t.check("temperature, then VREFINT", t.mmio.read('ADC1.SQR3'), sequence)
+    t.check("two conversions", t.mmio.read('ADC1.SQR1') & t.evaluate('ADC_SQR1_L'), t.evaluate("1 << ADC_SQR1_L_Pos"))
+    t.check("scan mode", t.mmio.read('ADC1.CR1') & t.evaluate('ADC_CR1_SCAN'))
+    t.check("ADC on with continuous DMA requests",
+            t.mmio.read('ADC1.CR2') & (t.evaluate(ADC_MODE_BITS)),
+            t.evaluate(ADC_MODE_BITS))
+    t.check("internal channels enabled", t.mmio.read('ADC.CCR') & t.evaluate('ADC_CCR_TSVREFE'))
+    t.check("halfword transfers, memory increment",
+            t.mmio.read('DMA2_Stream0.CR') & (t.evaluate(DMA_FORMAT_BITS)),
+            t.evaluate(DMA_HALFWORD_BITS))
+    t.check("peripheral address is ADC1->DR", t.mmio.read('DMA2_Stream0.PAR'), t.evaluate("(unsigned int)&ADC1->DR"))
 
 
 # Verify that one completed DMA sequence is published as a factory-calibrated measurement.
@@ -59,16 +74,16 @@ def adc_dma_publication(t):
     t.reach("DMA2_Stream0_IRQHandler")
 
     # TECH-003: a natural peripheral interrupt with a completed transfer, not a software-pended exception.
-    t.check([
-        ("DMA2 stream 0 exception", "SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk", "DMA2_Stream0_IRQn + 16"),
-        ("transfer complete", "DMA2->LISR & DMA_LISR_TCIF0"),
-        ("no DMA errors", "DMA2->LISR & (DMA_LISR_TEIF0 | DMA_LISR_DMEIF0 | DMA_LISR_FEIF0)", 0),
-        ("two samples transferred", "DMA2_Stream0->NDTR", 0),
-        ("normal mode stream stopped", "DMA2_Stream0->CR & DMA_SxCR_EN", 0)
-    ])
+    t.check("DMA2 stream 0 exception",
+            t.mmio.read('SCB.ICSR') & t.evaluate('SCB_ICSR_VECTACTIVE_Msk'),
+            t.evaluate("DMA2_Stream0_IRQn + 16"))
+    t.check("transfer complete", t.mmio.read('DMA2.LISR') & t.evaluate('DMA_LISR_TCIF0'))
+    t.check("no DMA errors", t.mmio.read('DMA2.LISR') & (t.evaluate(DMA_ERROR_BITS)), 0)
+    t.check("two samples transferred", t.mmio.read('DMA2_Stream0.NDTR'), 0)
+    t.check("normal mode stream stopped", t.mmio.read('DMA2_Stream0.CR') & t.evaluate('DMA_SxCR_EN'), 0)
 
     # The samples are read from the DMA destination in SRAM before the application copies them.
-    buffer = t.memory(t.evaluate("DMA2_Stream0->M0AR"), 4)
+    buffer = t.memory(t.mmio.read('DMA2_Stream0.M0AR'), 4)
     temperature, reference = int.from_bytes(buffer[:2], "little"), int.from_bytes(buffer[2:], "little")
     t.reach("app_adc_complete")
     t.check("not published before the callback", t.read("app_state.adc_sequences"), 0)

@@ -5,6 +5,8 @@
 
 ## [Unreleased]
 
+- Миграция 22 сценариев на API 3/MMIO с обязательным проектным SVD (40 регистров/значений), явными эффектами NVIC/SysTick/ADC/DMA и очисткой при исключениях. Модуль закреплён на cb03e86 (кандидат 0.5.0), обновлены шесть навыков. Добавлены 12 host-регрессий и сверка SVD/CMSIS для F411CE/F401CC; CI проверяет 25 host/prepare тестов на профиль. На стенде F411CE пройдены 22/22 hw-сценария; аппаратная приёмка F401CC впереди.
+
 - Пресеты CMake переименованы в нижний регистр (`f411ce-debug/-release/-hil`, `f401cc-*`) со скрытым `base`, как в stm32-hwtest-bluepill; обновлены `.vscode`, `ci/run_cmsis_checks.py`, README и AGENTS. Каталог `hil/` приведён к раскладке bluepill: per-board `hil/F411CE|F401CC/{session,target,board}.toml` и `stands/`, общие `hil/common/{tests,plans}/`, `hil/templates/*.example.toml`, `hil/tools/results.py`. `.clang-format` синхронизирован с bluepill.
 
 - Модуль закреплён на v0.4.0, target schema 2, включён capture; обновлены навыки и добавлен опытный цикл DDTT.

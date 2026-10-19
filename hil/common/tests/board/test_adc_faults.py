@@ -14,48 +14,74 @@ FAULT_ADC_TIMEOUT = 6
 U32_MASK = 0xFFFFFFFF
 
 
-# Verify that a disabled ADC is refused before a conversion starts.
+# Выключение ADC проверяем отдельно; finally возвращает только прежний ADON.
 @case("HW_ADC_DISABLED", labels=("adc", "injection"), contracts=("cmsis_adc_dma",))
 def adc_disabled(t):
     t.reach("platform_adc_start")
+    saved = t.mmio.read("ADC1.CR2")
+    mask = t.evaluate("ADC_CR2_ADON")
+    try:
+        t.mmio.write("ADC1.CR2", saved & ~mask, allow_effects=True)
+        t.reach("platform_error")
+        t.check("disabled ADC error", t.read("platform_fault"), FAULT_ADC_OFF)
+    finally:
+        current = t.mmio.read("ADC1.CR2")
+        restored = (current & ~mask) | (saved & mask)
+        if restored != current:
+            t.mmio.write("ADC1.CR2", restored, allow_effects=True)
 
-    # TECH-006: the ADON bit is cleared on the halted core, as if the ADC had been switched off.
-    t.write("ADC1->CR2", "ADC1->CR2 & ~ADC_CR2_ADON")
-    t.reach("platform_error")
-    t.check("disabled ADC error", t.read("platform_fault"), FAULT_ADC_OFF)
 
-
-# Verify the application deadline when the DMA interrupt never comes.
+# Маскируем только DMA IRQ, сохраняя его исходное разрешение.
 @case("HW_ADC_TIMEOUT", labels=("adc", "injection"), contracts=("cmsis_adc_dma",))
 def adc_timeout(t):
     deadline = t.profile.get("user.timing.adc_deadline_ticks")
     t.reach("platform_adc_start")
-
-    # TECH-006: ICER is write-one-to-clear; the conversion runs, but its completion is never delivered.
-    word, bit = "DMA2_Stream0_IRQn >> 5", "1 << (DMA2_Stream0_IRQn & 31)"
-    t.write(f"NVIC->ICER[{word}]", bit)
-    t.check("DMA interrupt disabled", t.evaluate(f"NVIC->ISER[{word}] & ({bit})"), 0)
+    word = t.evaluate("DMA2_Stream0_IRQn >> 5")
+    bit = t.evaluate("1 << (DMA2_Stream0_IRQn & 31)")
+    enabled = t.mmio.read(f"NVIC.ISER{word}") & bit
     before = t.read("platform_tick")
+    try:
+        t.mmio.write(f"NVIC.ICER{word}", bit, allow_effects=True)
+        t.check("DMA interrupt disabled", t.mmio.read(f"NVIC.ISER{word}") & bit, 0)
+        t.reach("platform_error")
+        t.check("application deadline, ticks", (t.read("platform_tick") - before) & U32_MASK >= deadline)
+        t.check("no publication", t.read("app_state.adc_sequences"), 0)
+    finally:
+        if enabled:
+            t.mmio.write(f"NVIC.ISER{word}", enabled, allow_effects=True)
 
-    # loop() gives up after the deadline without publishing a measurement.
-    t.reach("platform_error")
-    t.check("application deadline, ticks", (t.read("platform_tick") - before) & U32_MASK >= deadline)
-    t.check("no publication", t.read("app_state.adc_sequences"), 0)
 
-
-# Verify that a busy DMA stream is refused before a new conversion.
+# Включаем уже настроенный поток без ADC trigger; NDTR/M0AR меняем только при EN=0.
 @case("HW_ADC_BUSY", labels=("adc", "injection"), contracts=("cmsis_adc_dma",))
 def adc_busy(t):
     t.reach("platform_adc_start")
+    control = t.mmio.read("DMA2_Stream0.CR")
+    enable = t.evaluate("DMA_SxCR_EN")
+    if control & enable:
+        raise RuntimeError("DMA must be disabled before injection")
+    count = t.mmio.read("DMA2_Stream0.NDTR")
+    address = t.mmio.read("DMA2_Stream0.M0AR")
+    destination = t.evaluate("(unsigned int)samples")
+    try:
+        t.mmio.write("DMA2_Stream0.NDTR", 2)
+        t.mmio.write("DMA2_Stream0.M0AR", destination)
+        t.mmio.write("DMA2_Stream0.CR", control | enable, allow_effects=True)
+        t.reach("platform_error")
+        t.check("DMA ownership guard", t.read("platform_fault"), FAULT_DMA_BUSY)
+    finally:
+        current = t.mmio.read("DMA2_Stream0.CR")
+        if current & enable:
+            t.mmio.write("DMA2_Stream0.CR", current & ~enable, allow_effects=True)
 
-    # TECH-006: the stream gets a valid destination and is enabled; no trigger is issued.
-    t.write([
-        ("DMA2_Stream0->NDTR", 2),
-        ("DMA2_Stream0->M0AR", "(unsigned int)samples"),
-        ("DMA2_Stream0->CR", "DMA2_Stream0->CR | DMA_SxCR_EN")
-    ])
-    t.reach("platform_error")
-    t.check("DMA ownership guard", t.read("platform_fault"), FAULT_DMA_BUSY)
+        # Отказ остановки запрещает восстановление счётчика работающего DMA.
+        for _ in range(8):
+            if not t.mmio.read("DMA2_Stream0.CR") & enable:
+                break
+        else:
+            raise RuntimeError("DMA disable not acknowledged; NDTR/M0AR restoration refused")
+        t.mmio.write("DMA2_Stream0.NDTR", count)
+        t.mmio.write("DMA2_Stream0.M0AR", address)
+        t.mmio.write("DMA2_Stream0.CR", control, allow_effects=True)
 
 
 # Verify that invalid samples give an empty INVALID measurement and the next normal one recovers.
@@ -83,15 +109,15 @@ def adc_invalid(t):
 @case("HW_ADC_VECTORS", labels=("adc", "injection"))
 def adc_vectors(t):
     adc = t.profile.data["board"]["adc"]
-    reference = f"*(unsigned short *)0x{adc['vrefint_cal_address']:08X}"
-    anchors = ((adc["ts_cal1_address"], adc["ts_cal1_mdeg_c"]), (adc["ts_cal2_address"], adc["ts_cal2_mdeg_c"]))
+    reference = t.mmio.read("FACTORY.VREFINT_CAL")
+    anchors = (("FACTORY.TS_CAL1", adc["ts_cal1_mdeg_c"]), ("FACTORY.TS_CAL2", adc["ts_cal2_mdeg_c"]))
 
     # TECH-007: a calibration sample as the input gives exactly its calibration point.
-    for address, degrees in anchors:
+    for register, degrees in anchors:
         t.reach("platform_adc_convert")
 
         # Both arguments are replaced by the factory samples read from the system memory.
-        t.write([("temperature", f"*(unsigned short *)0x{address:08X}"), ("reference", reference)])
+        t.write([("temperature", t.mmio.read(register)), ("reference", reference)])
         t.reach("loop")
 
         # The published measurement is the calibration point itself.
@@ -109,10 +135,8 @@ def adc_callback_suppressed(t):
     t.reach("DMA2_Stream0_IRQHandler")
 
     # The transfer is complete before the injection: this models a lost notification, not a DMA failure.
-    t.check([
-        ("DMA finished before the injection", "DMA2_Stream0->NDTR", 0),
-        ("completion pending", "DMA2->LISR & DMA_LISR_TCIF0")
-    ])
+    t.check("DMA finished before the injection", t.mmio.read('DMA2_Stream0.NDTR'), 0)
+    t.check("completion pending", t.mmio.read('DMA2.LISR') & t.evaluate('DMA_LISR_TCIF0'))
 
     # TECH-004: app_adc_complete() is void(void); returning at its entry skips the notification.
     t.reach("app_adc_complete")

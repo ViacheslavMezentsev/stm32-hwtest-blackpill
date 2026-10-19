@@ -11,3 +11,7 @@ board = "board.toml"
 # Preserve immutable evidence for each DDTT attempt.
 [results]
 capture = true
+
+# Проектное подмножество регистров, путь от сессии.
+[mmio]
+svd = "../common/stm32f4-test.svd"

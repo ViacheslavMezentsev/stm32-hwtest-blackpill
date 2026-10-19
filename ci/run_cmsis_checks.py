@@ -1,6 +1,7 @@
 """Build both BlackPill CMSIS boards and prepare their scenarios without hardware."""
 import argparse
 import time
+import sys
 import json
 import os
 from pathlib import Path
@@ -10,6 +11,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 # Scenarios in hil/common/tests/board: each gives one prepare.<ID> test besides host.traceability.
 SCENARIOS = 22
+HOST_CHECKS = {"host.traceability", "host.mmio", "host.svd_elf"}
 
 
 def main():
@@ -42,6 +44,9 @@ def main():
                 "elapsed_s": round(time.perf_counter() - total_started, 3)
             }, indent=2) + "\n")
 
+    run([sys.executable, "modules/stm32-gdbtest/tests/host/test_scenario_style.py",
+         *[str(p) for p in sorted((ROOT / "hil/common/tests/board").glob("test_*.py"))]], "scenario-style")
+
     for board in ("F411CE", "F401CC"):
         record = {"board": board, "status": "ERROR"}
         try:
@@ -57,20 +62,20 @@ def main():
                 ["ctest", "--test-dir", str(build), "-L", "host", "--show-only=json-v1"],
                 cwd=ROOT, env=env, text=True, timeout=30))["tests"]
             names = {test["name"] for test in listing}
-            if len(listing) != SCENARIOS + 1 or sum(name.startswith("prepare.") for name in names) != SCENARIOS:
-                raise ValueError(f"Expected {SCENARIOS} prepare tests and traceability")
+            if len(listing) != SCENARIOS + len(HOST_CHECKS) or sum(name.startswith("prepare.") for name in names) != SCENARIOS:
+                raise ValueError(f"Expected {SCENARIOS} prepare tests and {sorted(HOST_CHECKS)}")
             for test in listing:
                 if test["name"].startswith("prepare."):
                     if "--prepare-only" not in test["command"]:
                         raise ValueError("Prepare command may access hardware")
-                elif test["name"] != "host.traceability":
+                elif test["name"] not in HOST_CHECKS:
                     raise ValueError("Unexpected host test")
             junit = out / (board + "-junit.xml")
             junit.unlink(missing_ok=True)
             run(["ctest", "--test-dir", str(build), "-L", "host", "-j", str(args.prepare_jobs), "--no-tests=error",
                  "--output-on-failure", "--output-junit", str(junit)], board + "-tests")
             cases = ET.parse(junit).getroot().findall(".//testcase")
-            if len(cases) != SCENARIOS + 1 or {c.attrib["name"] for c in cases} != names or any(
+            if len(cases) != SCENARIOS + len(HOST_CHECKS) or {c.attrib["name"] for c in cases} != names or any(
                     c.find(tag) is not None for c in cases for tag in ("skipped", "error", "failure")):
                 raise ValueError("Incomplete or unsuccessful JUnit")
             manifest = json.loads(Path(session["build_manifest"]).read_text())

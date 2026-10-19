@@ -6,9 +6,9 @@ schema = 1
 [frames]
 limit = 8
 
-# Записи серии измерений HW_ADC_SERIES (по одной на итерацию loop()).
+# Серия измерений и журнал MMIO (intent/result); включает 8 попыток наблюдения WFI.
 [records]
-max_records = 64
+max_records = 256
 
 # Сроки приложения (src/program.cpp): ожидание DMA в loop() и интервал idle, тики SysTick по 1 мс.
 [user.timing]

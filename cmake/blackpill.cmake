@@ -41,4 +41,13 @@ include(modules/stm32-gdbtest/stm32_gdbtest/cmake/STM32GDBTest.cmake)
 stm32_gdbtest_attach(${PROJECT_NAME} PROFILE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/hil/common"
  SESSION_CONFIG "${CMAKE_CURRENT_SOURCE_DIR}/hil/${BOARD}/session.toml"
  MANIFEST_INPUTS "${CMAKE_BINARY_DIR}/firmware.ld" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/blackpill.cmake")
+# Типы CMSIS нужны для офлайн-сверки адресов SVD; прошивка не меняется.
+target_compile_options(${PROJECT_NAME} PRIVATE -fno-eliminate-unused-debug-types)
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+set(mmio_gdb "${ARM_TOOLCHAIN_ROOT}/bin/arm-none-eabi-gdb-py3${tool_suffix}")
+add_test(NAME host.mmio COMMAND "${Python3_EXECUTABLE}" -m unittest discover
+ -s "${CMAKE_SOURCE_DIR}/hil/tools" -p "test_mmio_*.py")
+add_test(NAME host.svd_elf COMMAND "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/hil/tools/check_mmio_elf.py"
+ --elf "$<TARGET_FILE:${PROJECT_NAME}>" --gdb "${mmio_gdb}")
+set_tests_properties(host.mmio host.svd_elf PROPERTIES LABELS host TIMEOUT 45)
 endif()

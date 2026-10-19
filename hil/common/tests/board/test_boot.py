@@ -5,11 +5,15 @@ EN: Startup: no fault, HSI clock, the LED pin and the run profile of the board.
 from stm32_gdbtest import case, one_of, within
 
 
+# Маска CMSIS без чтения целевой памяти.
+BUS_CLOCK_BITS = 'RCC_CFGR_SWS | RCC_CFGR_HPRE | RCC_CFGR_PPRE1 | RCC_CFGR_PPRE2'
+
+# Маска CMSIS без чтения целевой памяти.
+SYSTICK_BITS = 'SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk'
+
+
 # HSI is the system clock after reset, without the PLL (RM0383/RM0368: 16 MHz RC oscillator).
 HSI_HZ = 16_000_000
-# RCC_CFGR address (RCC base 0x40023800, offset 0x08). SWS (3:2), HPRE (7:4), PPRE1 (12:10) and
-# PPRE2 (15:13) are zero for HSI as the system clock with undivided buses.
-RCC_CFGR = 0x40023808
 CFGR_CLOCK_FIELDS = 0xFCFC
 # SRAM starts at 0x20000000; the stack is full descending, so the initial stack pointer may equal
 # the end address: the first push stores below it (ld/stm32f4.ld.in).
@@ -23,13 +27,12 @@ USART1_DR = 0x40011004
 def boot(t):
     t.reach("loop")
 
-    # program.cpp sees no device header, so the clock register is read at its address.
+    # Адреса периферии берутся из SVD независимо от видимости макросов.
     t.check([
         ("no platform fault", "platform_fault", 0),
-        ("core clock is HSI", "SystemCoreClock", HSI_HZ),
-        ("HSI system clock, undivided buses",
-         f"*(volatile unsigned int *)0x{RCC_CFGR:08X} & 0x{CFGR_CLOCK_FIELDS:04X}", 0)
+        ("core clock is HSI", "SystemCoreClock", HSI_HZ)
     ])
+    t.check("HSI system clock, undivided buses", t.mmio.read("RCC.CFGR") & CFGR_CLOCK_FIELDS, 0)
 
 
 # Verify the clock tree, the 1 ms SysTick and the electrical configuration of the LED pin.
@@ -42,34 +45,41 @@ def clock_gpio_config(t):
     t.reach("platform_led_toggle")
 
     # Reading SysTick->CTRL clears COUNTFLAG, which the application does not use: it counts interrupts.
-    t.check([
-        ("HSI on and ready", "RCC->CR & (RCC_CR_HSION | RCC_CR_HSIRDY)", "RCC_CR_HSION | RCC_CR_HSIRDY"),
-        ("HSI system clock, undivided buses",
-         "RCC->CFGR & (RCC_CFGR_SWS | RCC_CFGR_HPRE | RCC_CFGR_PPRE1 | RCC_CFGR_PPRE2)", "RCC_CFGR_SWS_HSI"),
-        ("core clock", "SystemCoreClock", HSI_HZ),
-        ("SysTick period 1 ms", "SysTick->LOAD", HSI_HZ // 1000 - 1),
-        ("SysTick core clock, interrupt, enabled",
-         "SysTick->CTRL & (SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk)",
-         "SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk"),
-        (f"{port} clock", f"RCC->AHB1ENR & RCC_AHB1ENR_{port}EN"),
-        (f"P{port[-1]}{pin} output", f"{port}->MODER & GPIO_MODER_MODER{pin}", f"GPIO_MODER_MODER{pin}_0"),
-        (f"P{port[-1]}{pin} push-pull", f"{port}->OTYPER & GPIO_OTYPER_OT{pin}", 0),
-        (f"P{port[-1]}{pin} low speed", f"{port}->OSPEEDR & GPIO_OSPEEDER_OSPEEDR{pin}", 0),
-        (f"P{port[-1]}{pin} no pull", f"{port}->PUPDR & GPIO_PUPDR_PUPDR{pin}", 0)
-    ])
+    t.check("HSI on and ready",
+            t.mmio.read('RCC.CR') & (t.evaluate("RCC_CR_HSION | RCC_CR_HSIRDY")),
+            t.evaluate("RCC_CR_HSION | RCC_CR_HSIRDY"))
+    t.check("HSI system clock, undivided buses",
+            t.mmio.read('RCC.CFGR') & (t.evaluate(BUS_CLOCK_BITS)),
+            t.evaluate("RCC_CFGR_SWS_HSI"))
+
+    # Проверяем опубликованное состояние отдельно от MMIO-снимка.
+    t.check([ ("core clock", "SystemCoreClock", HSI_HZ) ])
+    t.check("SysTick period 1 ms", t.mmio.read('SysTick.LOAD'), HSI_HZ // 1000 - 1)
+    t.check("SysTick core clock, interrupt, enabled",
+            t.mmio.read('SysTick.CTRL', allow_effects=True) & (t.evaluate(SYSTICK_BITS)),
+            t.evaluate(SYSTICK_BITS))
+    t.check(f"{port} clock", t.mmio.read("RCC.AHB1ENR") & t.evaluate(f"RCC_AHB1ENR_{port}EN"))
+    t.check(f"P{port[-1]}{pin} output",
+            t.mmio.read(f"{port}.MODER") & t.evaluate(f"GPIO_MODER_MODER{pin}"),
+            t.evaluate(f"GPIO_MODER_MODER{pin}_0"))
+    t.check(f"P{port[-1]}{pin} push-pull", t.mmio.read(f"{port}.OTYPER") & t.evaluate(f"GPIO_OTYPER_OT{pin}"), 0)
+    t.check(f"P{port[-1]}{pin} low speed",
+            t.mmio.read(f"{port}.OSPEEDR") & t.evaluate(f"GPIO_OSPEEDER_OSPEEDR{pin}"),
+            0)
+    t.check(f"P{port[-1]}{pin} no pull", t.mmio.read(f"{port}.PUPDR") & t.evaluate(f"GPIO_PUPDR_PUPDR{pin}"), 0)
 
 
 # Verify that the LED goes off, on and off again over three consecutive toggles.
 @case("HW_GPIO", labels=("gpio",), contracts=("cmsis_clock_gpio",))
 def gpio(t):
     board = t.profile.data["board"]["board"]
-    led_on = (f"(({board['led_port']}->ODR & GPIO_ODR_OD{board['led_pin']}) != 0) == "
-              f"{int(board['led_active_high'])}")
+
 
     # Each entry of platform_led_toggle() sees the level the previous toggle left.
     for expected in (0, 1, 0):
         t.reach("platform_led_toggle")
-        t.check(f"LED {'on' if expected else 'off'} before the toggle", t.evaluate(led_on), expected)
+        level = bool(t.mmio.read(f"{board['led_port']}.ODR") & (1 << board["led_pin"]))
+        t.check(f"LED {'on' if expected else 'off'} before the toggle", level == board["led_active_high"], expected)
 
 
 # Verify that the image, the board data and the build belong to the board the run configuration names.
@@ -87,9 +97,9 @@ def board_profile(t):
 
     # The chip answers as the description says: identity register and factory flash size.
     identity = profile["identity"]
-    chip = t.evaluate(f"*(volatile unsigned int *)0x{identity['address']:08X}") & identity["mask"]
+    chip = t.mmio.read("DBGMCU.IDCODE") & identity["mask"]
     t.check(f"DEV_ID 0x{chip:03X} matches {profile['mcu']}", chip, identity["value"])
-    flash_kib = t.evaluate(f"*(volatile unsigned short *)0x{profile['flash_size_address']:08X}")
+    flash_kib = t.mmio.read("FACTORY.FLASH_SIZE")
     t.check(f"F_SIZE {flash_kib} KiB covers the profile", flash_kib * 1024 >= profile["flash_size"])
 
     # The flashed image starts with a vector table: the stack in SRAM, reset in the flash, Thumb code.

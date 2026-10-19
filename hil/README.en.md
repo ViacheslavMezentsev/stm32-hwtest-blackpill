@@ -11,6 +11,7 @@ firmware on the board: the runner starts the debugger's GDB server, GDB resets t
 ```text
 hil/
   common/tests/   board/test_*.py, requirements.md, contracts.json, native/ (ADC arithmetic on the PC)
+  common/stm32f4-test.svd  MMIO
   common/plans/   DDTT
   F411CE/         session.toml, target.toml, board.toml, stands/   (Flash 512 KiB, DEV_ID 0x431)
   F401CC/         session.toml, target.toml, board.toml, stands/   (Flash 256 KiB, DEV_ID 0x423)
@@ -20,13 +21,13 @@ hil/
 ```
 
 The board is chosen by the build: presets `f411ce-hil` and `f401cc-hil` set `BOARD` and
-`BLACKPILL_HIL=ON`; `cmake/blackpill.cmake` attaches stm32-gdbtest v0.4.0 (`modules/stm32-gdbtest`)
+`BLACKPILL_HIL=ON`; `cmake/blackpill.cmake` attaches stm32-gdbtest 0.5.0 candidate (cb03e86) (`modules/stm32-gdbtest`)
 with the run configuration `hil/<MCU>/session.toml` (`SESSION_CONFIG`) and the shared scenarios
 `hil/common/tests`. The configuration ties the MCU description (`target.toml`), the shared `api.toml`
 and the board data file (`board.toml`) together; scenarios read them through `t.profile`
 (`t.profile.data["board"]`, `t.profile.get("user.timing.adc_deadline_ticks")`), so one scenario serves
 both boards and board-specific expectations live in data, not in code. The scenarios use the API of
-module 0.4.0 and pass the module style test:
+module API 3 and pass the module style test:
 `python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/common/tests/board/*.py`.
 
 ## Stand
@@ -64,7 +65,7 @@ python hil/tools/results.py --runs build/f411ce-hil/hwtest/runs
 The firmware is programmed only if the Flash image differs (`flash = "if-different"` in the stand).
 Do not debug in VS Code and run the tests with the same debugger at the same time.
 
-| Scenario | Checks | Techniques ([catalogue](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.4.0/docs/en/TESTING_TECHNIQUES.md)) |
+| Scenario | Checks | Techniques ([catalogue](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cb03e86616417a7f0f24202137fe751624cf043e/docs/en/TESTING_TECHNIQUES.md)) |
 | --- | --- | --- |
 | `HW_BOOT` | `loop()` without a fault, SYSCLK from the 16 MHz HSI, undivided buses | `check(rows)` table, register address |
 | `HW_CLOCK_GPIO_CONFIG` | HSI, dividers, 1 ms SysTick, PC13 pin | table, contract, TECH-001 |
@@ -117,8 +118,10 @@ apply to the current CMSIS firmware.
 [Plan](common/plans/ddtt-feedback.en.md) and [cycle results](common/plans/ddtt-feedback-results.en.md):
 the scenario first exposes the defect in baseline firmware, then checks its fix and regression.
 Skill: `.claude/skills/stm32-gdbtest-develop/SKILL.md`; this branch includes a trial copy while
-the module gitlink remains on released 0.4.0. Other skill copies are refreshed for 0.4.0.
+the module gitlink is pinned to cb03e86 (0.5.0 candidate, API 3). All six skill copies match this revision.
 Unlike stand-loop execution, development needs a source checkout and compiler, not just a ZIP.
 Profiles use target schema 2 with `[openocd]`; sessions enable `[results] capture = true`.
 
 New scenario: `HW_ADC_TIMEOUT_DIAGNOSTIC` (`common/tests/board/test_ddtt_feedback.py`).
+
+[MMIO/SVD migration and offline checks](../docs/MMIO_SVD.en.md).

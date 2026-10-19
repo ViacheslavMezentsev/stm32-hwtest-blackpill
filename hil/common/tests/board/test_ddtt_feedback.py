@@ -11,16 +11,20 @@ def adc_timeout_diagnostic(t):
     deadline = t.profile.get("user.timing.adc_deadline_ticks")
     t.reach("platform_adc_start")
 
-    # Clear only the DMA interrupt enable; the ADC and DMA transfer may still complete normally.
-    word, bit = "DMA2_Stream0_IRQn >> 5", "1 << (DMA2_Stream0_IRQn & 31)"
-    t.write(f"NVIC->ICER[{word}]", bit)
-    t.check("DMA notification disabled", t.evaluate(f"NVIC->ISER[{word}] & ({bit})"), 0)
+    # Сохраняем разрешение IRQ, но не снимаем pending и не останавливаем само преобразование.
+    word = t.evaluate("DMA2_Stream0_IRQn >> 5")
+    bit = t.evaluate("1 << (DMA2_Stream0_IRQn & 31)")
+    enabled = t.mmio.read(f"NVIC.ISER{word}") & bit
     before = t.read("platform_tick")
-
-    # Retain the failure state before checking the new diagnostic requirement.
-    t.reach("platform_error")
-    elapsed = (t.read("platform_tick") - before) & 0xFFFFFFFF
-    t.record("adc.timeout", {"elapsed_ticks": elapsed, "fault": t.read("platform_fault")})
-    t.check("deadline elapsed", elapsed >= deadline)
-    t.check("no publication", t.read("app_state.adc_sequences"), 0)
-    t.check("application ADC timeout code", t.read("platform_fault"), 6)
+    try:
+        t.mmio.write(f"NVIC.ICER{word}", bit, allow_effects=True)
+        t.check("DMA notification disabled", t.mmio.read(f"NVIC.ISER{word}") & bit, 0)
+        t.reach("platform_error")
+        elapsed = (t.read("platform_tick") - before) & 0xFFFFFFFF
+        t.record("adc.timeout", {"elapsed_ticks": elapsed, "fault": t.read("platform_fault")})
+        t.check("deadline elapsed", elapsed >= deadline)
+        t.check("no publication", t.read("app_state.adc_sequences"), 0)
+        t.check("application ADC timeout code", t.read("platform_fault"), 6)
+    finally:
+        if enabled:
+            t.mmio.write(f"NVIC.ISER{word}", enabled, allow_effects=True)

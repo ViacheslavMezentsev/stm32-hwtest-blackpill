@@ -6,6 +6,8 @@ documentation alignment are kept in the Russian changelog, most of them with an 
 
 ## [Unreleased]
 
+- Migrate 22 scenarios to API 3/MMIO with a required project SVD (40 registers/values), explicit NVIC/SysTick/ADC/DMA effects and exception cleanup. Pin the module to cb03e86 (0.5.0 candidate), refresh six skills. Add 12 host regressions and SVD/CMSIS checks for F411CE/F401CC; CI checks 25 host/prepare tests per profile. All 22 hw scenarios pass on the F411CE stand; F401CC hardware acceptance is pending.
+
 - Renamed the CMake presets to lowercase (`f411ce-debug/-release/-hil`, `f401cc-*`) with a hidden `base`, like stm32-hwtest-bluepill; updated `.vscode`, `ci/run_cmsis_checks.py`, README and AGENTS. The `hil/` directory now follows the bluepill layout: per-board `hil/F411CE|F401CC/{session,target,board}.toml` and `stands/`, shared `hil/common/{tests,plans}/`, `hil/templates/*.example.toml`, `hil/tools/results.py`. `.clang-format` synced with bluepill.
 
 - Pinned the module to v0.4.0, target schema 2 and capture; refreshed skills and added a trial DDTT development loop.
