@@ -22,7 +22,7 @@ hil/
 ```
 
 Плату выбирает сборка: пресеты `f411ce-hil` и `f401cc-hil` задают `BOARD` и
-`BLACKPILL_HIL=ON`, `cmake/blackpill.cmake` подключает stm32-gdbtest 0.5.0 candidate (cb03e86) (`modules/stm32-gdbtest`) с
+`BLACKPILL_HIL=ON`, `cmake/blackpill.cmake` подключает stm32-gdbtest 0.5.0 final candidate (8fdbb58) (`modules/stm32-gdbtest`) с
 конфигурацией прогона `hil/<MCU>/session.toml` (`SESSION_CONFIG`) и общими сценариями `hil/common/tests`.
 Конфигурация связывает описание MCU (`target.toml`), общий `api.toml` и файл данных платы (`board.toml`):
 сценарии читают их через `t.profile` (`t.profile.data["board"]`, `t.profile.get("user.timing.adc_deadline_ticks")`),
@@ -65,7 +65,7 @@ python hil/tools/results.py --runs build/f411ce-hil/hwtest/runs
 Прошивка записывается, только если образ во Flash отличается (`flash = "if-different"` в стенде).
 Не запускайте отладку VS Code и тесты одновременно с одним отладчиком.
 
-| Сценарий | Что проверяет | Приёмы ([техники](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cb03e86616417a7f0f24202137fe751624cf043e/docs/ru/TESTING_TECHNIQUES.md)) |
+| Сценарий | Что проверяет | Приёмы ([техники](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/8fdbb58be35689376a70eb1973bea7096de6f45d/docs/ru/TESTING_TECHNIQUES.md)) |
 | --- | --- | --- |
 | `HW_BOOT` | `loop()` без отказа, SYSCLK от HSI 16 МГц без деления шин | таблица `check(rows)`, адрес регистра |
 | `HW_CLOCK_GPIO_CONFIG` | HSI, делители, SysTick 1 мс, вывод PC13 | таблица, контракт, TECH-001 |
@@ -117,7 +117,7 @@ backup domain не сбрасывается, несовместимый исто
 [План](common/plans/ddtt-feedback.md) и [результат цикла](common/plans/ddtt-feedback-results.md):
 сначала сценарий выявляет дефект на исходной прошивке, затем проверяет исправление и регрессию.
 Навык — `.claude/skills/stm32-gdbtest-develop/SKILL.md`; его опытная копия сопровождает эту ветку,
-gitlink закреплён на cb03e86 (кандидат 0.5.0, API 3). Все шесть копий навыков синхронизированы с ним.
+gitlink закреплён на 8fdbb58 (финальный кандидат 0.5.0, API 3). Все шесть копий навыков синхронизированы с ним.
 В отличие от stand-loop, разработке нужен checkout исходников и компилятор, а не только ZIP.
 Профили используют target schema 2 с `[openocd]`; сессии включают `[results] capture = true`.
 

@@ -71,7 +71,7 @@ cmake --build --preset f411ce-debug
 
 ## HIL-тесты
 
-Сценарии в `hil/common/tests/board` (stm32-gdbtest 0.5.0 candidate (cb03e86), 22 сценария) проверяют прошивку на плате:
+Сценарии в `hil/common/tests/board` (stm32-gdbtest 0.5.0 final candidate (8fdbb58), 22 сценария) проверяют прошивку на плате:
 запуск и тактирование, светодиод, профиль прогона, ADC и DMA (конфигурация, публикация, кто
 считает измерения, серия измерений), TIM2 и RTC, сон WFI, а также реакцию на инъекции — отказы
 ADC и DMA, подменённые отсчёты и калибровки, потерянный обратный вызов, невыполнимое ожидание LSI.
@@ -101,8 +101,8 @@ archive/        сохранённые материалы: прежние HAL-и
 
 ## Документация
 
-- stm32-gdbtest 0.5.0 candidate (cb03e86): [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cb03e86616417a7f0f24202137fe751624cf043e/README.md), [справочник API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cb03e86616417a7f0f24202137fe751624cf043e/docs/ru/api/index.md),
-  [техники тестирования](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cb03e86616417a7f0f24202137fe751624cf043e/docs/ru/TESTING_TECHNIQUES.md), [навыки агентов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cb03e86616417a7f0f24202137fe751624cf043e/skills/README.md).
+- stm32-gdbtest 0.5.0 final candidate (8fdbb58): [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/8fdbb58be35689376a70eb1973bea7096de6f45d/README.md), [справочник API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/8fdbb58be35689376a70eb1973bea7096de6f45d/docs/ru/api/index.md),
+  [техники тестирования](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/8fdbb58be35689376a70eb1973bea7096de6f45d/docs/ru/TESTING_TECHNIQUES.md), [навыки агентов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/8fdbb58be35689376a70eb1973bea7096de6f45d/skills/README.md).
 - Этот проект: [HIL-тесты](hil/README.md), [требования](hil/common/tests/requirements.md),
   [изменения](CHANGELOG.md), [правила разработки](AGENTS.md).
 - [История](docs/history/README.md): проект начинался с опытов на HAL с несколькими STM32, из

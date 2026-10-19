@@ -21,7 +21,7 @@ hil/
 ```
 
 The board is chosen by the build: presets `f411ce-hil` and `f401cc-hil` set `BOARD` and
-`BLACKPILL_HIL=ON`; `cmake/blackpill.cmake` attaches stm32-gdbtest 0.5.0 candidate (cb03e86) (`modules/stm32-gdbtest`)
+`BLACKPILL_HIL=ON`; `cmake/blackpill.cmake` attaches stm32-gdbtest 0.5.0 final candidate (8fdbb58) (`modules/stm32-gdbtest`)
 with the run configuration `hil/<MCU>/session.toml` (`SESSION_CONFIG`) and the shared scenarios
 `hil/common/tests`. The configuration ties the MCU description (`target.toml`), the shared `api.toml`
 and the board data file (`board.toml`) together; scenarios read them through `t.profile`
@@ -65,7 +65,7 @@ python hil/tools/results.py --runs build/f411ce-hil/hwtest/runs
 The firmware is programmed only if the Flash image differs (`flash = "if-different"` in the stand).
 Do not debug in VS Code and run the tests with the same debugger at the same time.
 
-| Scenario | Checks | Techniques ([catalogue](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/cb03e86616417a7f0f24202137fe751624cf043e/docs/en/TESTING_TECHNIQUES.md)) |
+| Scenario | Checks | Techniques ([catalogue](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/8fdbb58be35689376a70eb1973bea7096de6f45d/docs/en/TESTING_TECHNIQUES.md)) |
 | --- | --- | --- |
 | `HW_BOOT` | `loop()` without a fault, SYSCLK from the 16 MHz HSI, undivided buses | `check(rows)` table, register address |
 | `HW_CLOCK_GPIO_CONFIG` | HSI, dividers, 1 ms SysTick, PC13 pin | table, contract, TECH-001 |
@@ -118,7 +118,7 @@ apply to the current CMSIS firmware.
 [Plan](common/plans/ddtt-feedback.en.md) and [cycle results](common/plans/ddtt-feedback-results.en.md):
 the scenario first exposes the defect in baseline firmware, then checks its fix and regression.
 Skill: `.claude/skills/stm32-gdbtest-develop/SKILL.md`; this branch includes a trial copy while
-the module gitlink is pinned to cb03e86 (0.5.0 candidate, API 3). All six skill copies match this revision.
+the module gitlink is pinned to 8fdbb58 (0.5.0 final candidate, API 3). All six skill copies match this revision.
 Unlike stand-loop execution, development needs a source checkout and compiler, not just a ZIP.
 Profiles use target schema 2 with `[openocd]`; sessions enable `[results] capture = true`.
 
