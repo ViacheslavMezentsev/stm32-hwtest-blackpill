@@ -18,7 +18,7 @@ and VREFINT on channel 17.
 | `ld/`, `cmake/` | Linker script template (Flash/RAM from `BOARD`), toolchain and HIL integration (`blackpill.cmake`) |
 | `hil/` | HIL: `F411CE/`, `F401CC/` (per-board `session`/`target`/`board` and private `stands/`), `common/tests/` (scenarios, requirements, contracts, native ADC test), `common/plans/` (DDTT), `templates/` (stand examples), `tools/` (results.py), `api.toml` |
 | `ci/` | Offline checks in Docker (`run_cmsis_checks.py`: builds, `prepare.*`, native ADC) |
-| `modules/stm32-gdbtest` | Git submodule, pinned to 0.5.0 final candidate (a7b0951) |
+| `modules/stm32-gdbtest` | Git submodule, pinned to 0.6.0 (v0.6.0, API 3) |
 | `.claude/skills/` | Copies of the stm32-gdbtest skills (integration, scenarios, run, results, stand-loop and develop); refresh with the submodule |
 | `docs/history/`, `archive/` | History of the project stm32-gdbtest was extracted from and retained material (HAL sources, K1921 and H503 examples, experiments); keep, do not update |
 
@@ -42,7 +42,7 @@ Requirements: CMake ≥ 3.25, Ninja, xPack GNU Arm 14.2.1-1.1 or 13.3.1-1.1 (loo
    functions readable from GDB: the HIL scenarios depend on these names. Renaming them means
    updating `hil/common/tests` and `hil/common/tests/requirements.md` in the same commit. No test hooks in the firmware.
 2. Every `@case` ID has a `## HW_...` section in `hil/common/tests/requirements.md`. Scenarios follow
-   the stm32-gdbtest API of the pinned submodule (0.5.0 final candidate (a7b0951)) and its scenario style
+   the stm32-gdbtest API of the pinned submodule (0.6.0 (v0.6.0, API 3)) and its scenario style
    (`skills/stm32-gdbtest-scenarios` in the module; check with
    `python modules/stm32-gdbtest/tests/host/test_scenario_style.py hil/common/tests/board/*.py`).
    Board-specific expectations belong in `hil/<MCU>/board.toml`, scenario parameters in
@@ -65,5 +65,5 @@ Requirements: CMake ≥ 3.25, Ninja, xPack GNU Arm 14.2.1-1.1 or 13.3.1-1.1 (loo
 
 For firmware changes with target feedback, read `.claude/skills/stm32-gdbtest-develop/SKILL.md`
 and `hil/common/plans/ddtt-feedback.en.md`. The develop skill is a trial copy accompanying this branch;
-the module is pinned to a7b0951 (0.5.0 final candidate, API 3). Preserve red attempts, then verify the unchanged
+the module is pinned to tag v0.6.0 (API 3). Preserve red attempts, then verify the unchanged
 assertion and adjacent scenarios after fixing production code. No test hooks.

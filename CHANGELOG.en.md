@@ -6,6 +6,7 @@ documentation alignment are kept in the Russian changelog, most of them with an 
 
 ## [Unreleased]
 
+- The stm32-gdbtest submodule is pinned to release v0.6.0 (e68a455, API_VERSION=3); the six skill copies are refreshed and scenarios gains the 0.6.0 routes. Stepping through a scenario uses only `run --interactive`: the module 0.5.x fallback (PYTHONUSERBASE hook, 300 s limit, `manual-runs`) is removed. Scenarios and SVD are unchanged.
 - The stm32-gdbtest submodule moves to a7b0951, the final 0.5.0 candidate after the live-observer example's hardware assessment fix (core and API unchanged, version 0.5.0). Skill copies are unchanged.
 - Final 0.5.0 candidate acceptance: the stm32-gdbtest submodule moves to 8fdbb58 (version 0.5.0, API_VERSION=3) and the skill copies are refreshed (Agent Skills format, TTDD). Scenarios and SVD are unchanged; host checks run on this gitlink, hardware checks in the P5b campaign.
 - Migrate 22 scenarios to API 3/MMIO with a required project SVD (40 registers/values), explicit NVIC/SysTick/ADC/DMA effects and exception cleanup. Pin the module to cb03e86 (0.5.0 candidate), refresh six skills. Add 12 host regressions and SVD/CMSIS checks for F411CE/F401CC; CI checks 25 host/prepare tests per profile. All 22 hw scenarios pass on the F411CE stand; F401CC hardware acceptance is pending.

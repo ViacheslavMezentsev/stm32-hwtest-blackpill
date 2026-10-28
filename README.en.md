@@ -74,7 +74,7 @@ arithmetic rather than the temperature accuracy.
 
 ## HIL tests
 
-The scenarios in `hil/common/tests/board` (stm32-gdbtest 0.5.0 final candidate (a7b0951), 22 scenarios) check the firmware on
+The scenarios in `hil/common/tests/board` (stm32-gdbtest 0.6.0 (v0.6.0, API 3), 22 scenarios) check the firmware on
 the board: startup and clock, the LED, the run profile, ADC and DMA (configuration, publication, who
 counts the measurements, a measurement series), TIM2 and RTC, WFI sleep, and the reaction to
 injections — ADC and DMA failures, substituted samples and calibrations, a lost callback, an LSI wait
@@ -105,8 +105,8 @@ archive/        retained material: former HAL sources, K1921 and H503 examples, 
 
 ## Documentation
 
-- stm32-gdbtest 0.5.0 final candidate (a7b0951): [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a7b09516abac467839ee9efc8ee286835c6001e0/README.en.md), [API reference](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a7b09516abac467839ee9efc8ee286835c6001e0/docs/en/api/index.md),
-  [testing techniques](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a7b09516abac467839ee9efc8ee286835c6001e0/docs/en/TESTING_TECHNIQUES.md), [agent skills](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a7b09516abac467839ee9efc8ee286835c6001e0/skills/README.en.md).
+- stm32-gdbtest 0.6.0 (v0.6.0, API 3): [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/README.en.md), [API reference](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/docs/en/api/index.md),
+  [testing techniques](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/docs/en/TESTING_TECHNIQUES.md), [agent skills](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/skills/README.en.md).
 - This project: [HIL tests](hil/README.en.md), [requirements](hil/common/tests/requirements.md) (Russian),
   [changes](CHANGELOG.en.md), [development rules](AGENTS.md).
 - [History](docs/history/README.md) (Russian): the project began as HAL experiments on several STM32

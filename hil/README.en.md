@@ -21,7 +21,7 @@ hil/
 ```
 
 The board is chosen by the build: presets `f411ce-hil` and `f401cc-hil` set `BOARD` and
-`BLACKPILL_HIL=ON`; `cmake/blackpill.cmake` attaches stm32-gdbtest 0.5.0 final candidate (a7b0951) (`modules/stm32-gdbtest`)
+`BLACKPILL_HIL=ON`; `cmake/blackpill.cmake` attaches stm32-gdbtest 0.6.0 (v0.6.0, API 3) (`modules/stm32-gdbtest`)
 with the run configuration `hil/<MCU>/session.toml` (`SESSION_CONFIG`) and the shared scenarios
 `hil/common/tests`. The configuration ties the MCU description (`target.toml`), the shared `api.toml`
 and the board data file (`board.toml`) together; scenarios read them through `t.profile`
@@ -69,9 +69,9 @@ To step through a scenario: set a breakpoint in `hil/common/tests/board/*.py`, r
 "HIL: F411CE — пошаговый проход сценария (VS Code)…", then F5 "Сценарий: подключиться (debugpy)".
 There is no time limit and Ctrl+C cancels the run; the result goes to
 `build/<preset>/hwtest/interactive-runs`, is not part of the summary above, and the scenario does not
-change (with module 0.5.x: up to 300 s, result in `manual-runs`). Details: [stepping through a scenario](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/main/docs/en/MANUAL_DEBUG.md).
+change. Details: [stepping through a scenario](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/docs/en/MANUAL_DEBUG.md).
 
-| Scenario | Checks | Techniques ([catalogue](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a7b09516abac467839ee9efc8ee286835c6001e0/docs/en/TESTING_TECHNIQUES.md)) |
+| Scenario | Checks | Techniques ([catalogue](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/docs/en/TESTING_TECHNIQUES.md)) |
 | --- | --- | --- |
 | `HW_BOOT` | `loop()` without a fault, SYSCLK from the 16 MHz HSI, undivided buses | `check(rows)` table, register address |
 | `HW_CLOCK_GPIO_CONFIG` | HSI, dividers, 1 ms SysTick, PC13 pin | table, contract, TECH-001 |
@@ -124,7 +124,7 @@ apply to the current CMSIS firmware.
 [Plan](common/plans/ddtt-feedback.en.md) and [cycle results](common/plans/ddtt-feedback-results.en.md):
 the scenario first exposes the defect in baseline firmware, then checks its fix and regression.
 Skill: `.claude/skills/stm32-gdbtest-develop/SKILL.md`; this branch includes a trial copy while
-the module gitlink is pinned to a7b0951 (0.5.0 final candidate, API 3). All six skill copies match this revision.
+the module gitlink is pinned to tag v0.6.0 (API 3). All six skill copies match this revision.
 Unlike stand-loop execution, development needs a source checkout and compiler, not just a ZIP.
 Profiles use target schema 2 with `[openocd]`; sessions enable `[results] capture = true`.
 
