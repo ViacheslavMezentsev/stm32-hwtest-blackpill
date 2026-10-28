@@ -65,6 +65,12 @@ python hil/tools/results.py --runs build/f411ce-hil/hwtest/runs
 Прошивка записывается, только если образ во Flash отличается (`flash = "if-different"` в стенде).
 Не запускайте отладку VS Code и тесты одновременно с одним отладчиком.
 
+Пошаговый проход сценария: точка останова в `hil/common/tests/board/*.py`, задача
+«HIL: F411CE — пошаговый проход сценария (VS Code)…», затем F5 «Сценарий: подключиться (debugpy)».
+Ограничения по времени нет, Ctrl+C отменяет запуск; итог пишется в
+`build/<пресет>/hwtest/interactive-runs` и не входит в сводку выше, сценарий не меняется
+(с модулем 0.5.x — до 300 с, итог в `manual-runs`). Подробно — [пошаговый проход сценария](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/main/docs/ru/MANUAL_DEBUG.md).
+
 | Сценарий | Что проверяет | Приёмы ([техники](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a7b09516abac467839ee9efc8ee286835c6001e0/docs/ru/TESTING_TECHNIQUES.md)) |
 | --- | --- | --- |
 | `HW_BOOT` | `loop()` без отказа, SYSCLK от HSI 16 МГц без деления шин | таблица `check(rows)`, адрес регистра |

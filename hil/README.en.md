@@ -65,6 +65,12 @@ python hil/tools/results.py --runs build/f411ce-hil/hwtest/runs
 The firmware is programmed only if the Flash image differs (`flash = "if-different"` in the stand).
 Do not debug in VS Code and run the tests with the same debugger at the same time.
 
+To step through a scenario: set a breakpoint in `hil/common/tests/board/*.py`, run the task
+"HIL: F411CE — пошаговый проход сценария (VS Code)…", then F5 "Сценарий: подключиться (debugpy)".
+There is no time limit and Ctrl+C cancels the run; the result goes to
+`build/<preset>/hwtest/interactive-runs`, is not part of the summary above, and the scenario does not
+change (with module 0.5.x: up to 300 s, result in `manual-runs`). Details: [stepping through a scenario](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/main/docs/en/MANUAL_DEBUG.md).
+
 | Scenario | Checks | Techniques ([catalogue](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/a7b09516abac467839ee9efc8ee286835c6001e0/docs/en/TESTING_TECHNIQUES.md)) |
 | --- | --- | --- |
 | `HW_BOOT` | `loop()` without a fault, SYSCLK from the 16 MHz HSI, undivided buses | `check(rows)` table, register address |

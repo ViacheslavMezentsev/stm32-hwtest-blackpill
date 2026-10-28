@@ -114,6 +114,25 @@
       "dependsOn": "HIL: F411CE — собрать"
     },
     {
+      "label": "HIL: F411CE — пошаговый проход сценария (VS Code)…",
+      "detail": "Сценарий ждёт отладчик без ограничения по времени: затем F5 «Сценарий: подключиться (debugpy)». Итог в hwtest/interactive-runs.",
+      "type": "process",
+      "command": "python",
+      "args": [ "-B", "hil/tools/debug_scenario.py", "--gdbtest", "${config:hil.gdbtest}", "--build", "build/f411ce-hil", "--test", "${input:test}", "--stand", "hil/F411CE/stands/local.toml" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "stm32-gdbtest-manual",
+        "pattern": { "regexp": "^__never_matches__$" },
+        "background": {
+          "activatesByDefault": true,
+          "beginsPattern": "^(Interactive run|Модуль без)",
+          "endsPattern": "^Interactive: attach the debugger"
+        }
+      },
+      "dependsOn": "HIL: F411CE — собрать"
+    },
+    {
       "label": "HIL: F411CE — результаты",
       "type": "process",
       "command": "python",
@@ -172,6 +191,25 @@
       "args": [ "-B", "${config:hil.gdbtest}/stm32_gdbtest/cli.py", "run", "--session", "build/f401cc-hil/hwtest/session.json", "--identity-policy", "strict", "--test", "${input:test}", "--stand", "hil/F401CC/stands/local.toml" ],
       "options": { "cwd": "${workspaceFolder}" },
       "problemMatcher": [],
+      "dependsOn": "HIL: F401CC — собрать"
+    },
+    {
+      "label": "HIL: F401CC — пошаговый проход сценария (VS Code)…",
+      "detail": "Сценарий ждёт отладчик без ограничения по времени: затем F5 «Сценарий: подключиться (debugpy)». Итог в hwtest/interactive-runs.",
+      "type": "process",
+      "command": "python",
+      "args": [ "-B", "hil/tools/debug_scenario.py", "--gdbtest", "${config:hil.gdbtest}", "--build", "build/f401cc-hil", "--test", "${input:test}", "--stand", "hil/F401CC/stands/local.toml" ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "stm32-gdbtest-manual",
+        "pattern": { "regexp": "^__never_matches__$" },
+        "background": {
+          "activatesByDefault": true,
+          "beginsPattern": "^(Interactive run|Модуль без)",
+          "endsPattern": "^Interactive: attach the debugger"
+        }
+      },
       "dependsOn": "HIL: F401CC — собрать"
     },
     {
