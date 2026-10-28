@@ -32,12 +32,15 @@ its serial number in the stand file.
 
 ## Requirements (Windows)
 
-- [xPack GNU Arm Embedded GCC 13.3.1-1.1](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/tag/v13.3.1-1.1),
-  unpacked to `%USERPROFILE%\xpack-arm-none-eabi-gcc-13.3.1-1.1`, or its path in
-  `ARM_TOOLCHAIN_ROOT` (the Linux default is `/opt/xpack-arm-none-eabi-gcc-13.3.1-1.1`);
+- [xPack GNU Arm Embedded GCC 14.2.1-1.1](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/tag/v14.2.1-1.1)
+  (or 13.3.1-1.1). The build finds it itself: `ARM_TOOLCHAIN_ROOT`, then
+  `xpack-arm-none-eabi-gcc-14.2.1-1.1` and `-13.3.1-1.1` in `%USERPROFILE%`, `$HOME` and `/opt`, then
+  `arm-none-eabi-gcc` from `PATH`. The path found is kept in the build cache; after changing the
+  toolchain configure with `--fresh` (CMake Tools: "Delete Cache and Reconfigure");
 - CMake ≥ 3.25 and Ninja on `PATH`;
 - for HIL tests: Python ≥ 3.11 and an ST-Link with OpenOCD (or a J-Link);
-- VS Code with CMake Tools, C/C++ and Cortex-Debug (optional).
+- VS Code with CMake Tools, C/C++, Cortex-Debug and Python (optional); the Pylance path to
+  `stm32_gdbtest` and other settings are already in `.vscode/settings.json`.
 
 ## Getting and building
 

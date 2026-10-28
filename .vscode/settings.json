@@ -1,9 +1,18 @@
 {
+  "cSpell.ignoreRegExpList": ["\\b[0-9A-Z_]+\\b"],
   "cmake.useCMakePresets": "always",
   "cmake.configureOnOpen": false,
+  // ARM GCC, not MSVC: do not activate the Visual Studio developer environment.
+  "cmake.useVsDeveloperEnvironment": "never",
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "cortex-debug.gdbPath.windows": "${config:toolchain}/bin/arm-none-eabi-gdb.exe",
   "cortex-debug.openocdPath.windows": "openocd.exe",
-  "toolchain": "${env:USERPROFILE}/xpack-arm-none-eabi-gcc-13.3.1-1.1",
+  // Cortex-Debug GDB only; the build finds its toolchain in cmake/arm-gcc.cmake.
+  // On Linux use ${env:HOME}/xpack-arm-none-eabi-gcc-14.2.1-1.1.
+  "toolchain": "${env:USERPROFILE}/xpack-arm-none-eabi-gcc-14.2.1-1.1",
+  // Pylance: stm32_gdbtest lives in the submodule; gdb exists only inside GDB, its types
+  // come from the stubs bundled with Pylance (no source, so that warning is silenced).
+  "python.analysis.extraPaths": ["${workspaceFolder}/modules/stm32-gdbtest"],
+  "python.analysis.diagnosticSeverityOverrides": { "reportMissingModuleSource": "none" },
   "hil.gdbtest": "modules/stm32-gdbtest"
 }

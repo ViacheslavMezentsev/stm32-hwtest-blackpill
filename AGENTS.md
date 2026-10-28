@@ -33,8 +33,8 @@ python -B ci/run_cmsis_checks.py        # the CI check, inside the Docker image 
 clang-format --dry-run --Werror src/*.cpp src/*.c src/*.h
 ```
 
-Requirements: CMake ≥ 3.25, Ninja, xPack GNU Arm 13.3.1-1.1 (`ARM_TOOLCHAIN_ROOT` or
-`%USERPROFILE%/xpack-arm-none-eabi-gcc-13.3.1-1.1`), Python ≥ 3.11 for HIL.
+Requirements: CMake ≥ 3.25, Ninja, xPack GNU Arm 14.2.1-1.1 or 13.3.1-1.1 (lookup order in
+`cmake/arm-gcc.cmake`: `ARM_TOOLCHAIN_ROOT`, xPack folders, `PATH`), Python ≥ 3.11 for HIL.
 
 ## Rules
 

@@ -32,12 +32,15 @@ flowchart LR
 
 ## Требования (Windows)
 
-- [xPack GNU Arm Embedded GCC 13.3.1-1.1](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/tag/v13.3.1-1.1),
-  распакованный в `%USERPROFILE%\xpack-arm-none-eabi-gcc-13.3.1-1.1`, или путь в переменной
-  `ARM_TOOLCHAIN_ROOT` (Linux по умолчанию — `/opt/xpack-arm-none-eabi-gcc-13.3.1-1.1`);
+- [xPack GNU Arm Embedded GCC 14.2.1-1.1](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/tag/v14.2.1-1.1)
+  (или 13.3.1-1.1). Сборка ищет его сама: `ARM_TOOLCHAIN_ROOT`, затем
+  `xpack-arm-none-eabi-gcc-14.2.1-1.1` и `-13.3.1-1.1` в `%USERPROFILE%`, `$HOME` и `/opt`, затем
+  `arm-none-eabi-gcc` из `PATH`. Найденный путь запоминается в кэше сборки; после смены
+  тулчейна — configure с `--fresh` (в CMake Tools: «Delete Cache and Reconfigure»);
 - CMake ≥ 3.25 и Ninja в `PATH`;
 - для HIL-тестов — Python ≥ 3.11 и ST-Link с OpenOCD (или J-Link);
-- VS Code с расширениями CMake Tools, C/C++ и Cortex-Debug (необязательно).
+- VS Code с расширениями CMake Tools, C/C++, Cortex-Debug и Python (необязательно); пути
+  Pylance к `stm32_gdbtest` и прочие настройки уже в `.vscode/settings.json`.
 
 ## Получение и сборка
 
