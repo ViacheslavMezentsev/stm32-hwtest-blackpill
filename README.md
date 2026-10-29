@@ -74,7 +74,7 @@ cmake --build --preset f411ce-debug
 
 ## HIL-тесты
 
-Сценарии в `hil/common/tests/board` (stm32-gdbtest 0.6.0 (v0.6.0, API 3), 22 сценария) проверяют прошивку на плате:
+Сценарии в `hil/common/tests/board` (stm32-gdbtest 0.6.1 (v0.6.1, API 3), 22 сценария) проверяют прошивку на плате:
 запуск и тактирование, светодиод, профиль прогона, ADC и DMA (конфигурация, публикация, кто
 считает измерения, серия измерений), TIM2 и RTC, сон WFI, а также реакцию на инъекции — отказы
 ADC и DMA, подменённые отсчёты и калибровки, потерянный обратный вызов, невыполнимое ожидание LSI.
@@ -104,8 +104,8 @@ archive/        сохранённые материалы: прежние HAL-и
 
 ## Документация
 
-- stm32-gdbtest 0.6.0 (v0.6.0, API 3): [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/README.md), [справочник API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/docs/ru/api/index.md),
-  [техники тестирования](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/docs/ru/TESTING_TECHNIQUES.md), [навыки агентов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/skills/README.md).
+- stm32-gdbtest 0.6.1 (v0.6.1, API 3): [README](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.1/README.md), [справочник API](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.1/docs/ru/api/index.md),
+  [техники тестирования](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.1/docs/ru/TESTING_TECHNIQUES.md), [навыки агентов](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.1/skills/README.md).
 - Этот проект: [HIL-тесты](hil/README.md), [требования](hil/common/tests/requirements.md),
   [изменения](CHANGELOG.md), [правила разработки](AGENTS.md).
 - [История](docs/history/README.md): проект начинался с опытов на HAL с несколькими STM32, из

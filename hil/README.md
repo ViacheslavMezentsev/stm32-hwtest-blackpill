@@ -22,7 +22,7 @@ hil/
 ```
 
 Плату выбирает сборка: пресеты `f411ce-hil` и `f401cc-hil` задают `BOARD` и
-`BLACKPILL_HIL=ON`, `cmake/blackpill.cmake` подключает stm32-gdbtest 0.6.0 (v0.6.0, API 3) (`modules/stm32-gdbtest`) с
+`BLACKPILL_HIL=ON`, `cmake/blackpill.cmake` подключает stm32-gdbtest 0.6.1 (v0.6.1, API 3) (`modules/stm32-gdbtest`) с
 конфигурацией прогона `hil/<MCU>/session.toml` (`SESSION_CONFIG`) и общими сценариями `hil/common/tests`.
 Конфигурация связывает описание MCU (`target.toml`), общий `api.toml` и файл данных платы (`board.toml`):
 сценарии читают их через `t.profile` (`t.profile.data["board"]`, `t.profile.get("user.timing.adc_deadline_ticks")`),
@@ -69,9 +69,9 @@ python hil/tools/results.py --runs build/f411ce-hil/hwtest/runs
 «HIL: F411CE — пошаговый проход сценария (VS Code)…», затем F5 «Сценарий: подключиться (debugpy)».
 Ограничения по времени нет, Ctrl+C отменяет запуск; итог пишется в
 `build/<пресет>/hwtest/interactive-runs` и не входит в сводку выше, сценарий не меняется.
-Подробно — [пошаговый проход сценария](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/docs/ru/MANUAL_DEBUG.md).
+Подробно — [пошаговый проход сценария](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.1/docs/ru/MANUAL_DEBUG.md).
 
-| Сценарий | Что проверяет | Приёмы ([техники](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.0/docs/ru/TESTING_TECHNIQUES.md)) |
+| Сценарий | Что проверяет | Приёмы ([техники](https://github.com/ViacheslavMezentsev/stm32-gdbtest/blob/v0.6.1/docs/ru/TESTING_TECHNIQUES.md)) |
 | --- | --- | --- |
 | `HW_BOOT` | `loop()` без отказа, SYSCLK от HSI 16 МГц без деления шин | таблица `check(rows)`, адрес регистра |
 | `HW_CLOCK_GPIO_CONFIG` | HSI, делители, SysTick 1 мс, вывод PC13 | таблица, контракт, TECH-001 |
@@ -123,7 +123,7 @@ backup domain не сбрасывается, несовместимый исто
 [План](common/plans/ddtt-feedback.md) и [результат цикла](common/plans/ddtt-feedback-results.md):
 сначала сценарий выявляет дефект на исходной прошивке, затем проверяет исправление и регрессию.
 Навык — `.claude/skills/stm32-gdbtest-develop/SKILL.md`; его опытная копия сопровождает эту ветку,
-gitlink закреплён на теге v0.6.0 (API 3). Все шесть копий навыков синхронизированы с ним.
+gitlink закреплён на теге v0.6.1 (API 3). Все шесть копий навыков синхронизированы с ним.
 В отличие от stand-loop, разработке нужен checkout исходников и компилятор, а не только ZIP.
 Профили используют target schema 2 с `[openocd]`; сессии включают `[results] capture = true`.
 

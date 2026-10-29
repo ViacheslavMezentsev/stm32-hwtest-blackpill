@@ -2,7 +2,7 @@
 
 [Русский](MMIO_SVD.md)
 
-The module is pinned to tag v0.6.0 (e68a455bb136c06c64b48792f6bf0cde40ff2c9d)
+The module is pinned to tag v0.6.1 (7f4f2ef75a0fd57a9d71f049768ad84a942f9d45)
 with API 3. No core changes are needed. Ordinary def scenarios remain synchronous.
 All 22 scenario IDs and firmware sources are preserved.
 
